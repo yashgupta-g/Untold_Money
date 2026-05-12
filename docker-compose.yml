@@ -1,0 +1,159 @@
+version: "3.9"
+
+services:
+  # --- PostgreSQL Database ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: untoldmoney-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-untoldmoney}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_postgres_password}
+      POSTGRES_DB: ${POSTGRES_DB:-untoldmoney}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-untoldmoney}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- Redis ---
+  redis:
+    image: redis:7-alpine
+    container_name: untoldmoney-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # --- FastAPI Backend ---
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: untoldmoney-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - DEBUG=${DEBUG:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - POSTGRES_USER=${POSTGRES_USER:-untoldmoney}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_postgres_password}
+      - POSTGRES_DB=${POSTGRES_DB:-untoldmoney}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-untoldmoney}:${POSTGRES_PASSWORD:-changeme_postgres_password}@postgres:5432/${POSTGRES_DB:-untoldmoney}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme_super_secret_key_at_least_32_chars}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - REFRESH_TOKEN_EXPIRE_DAYS=${REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      - BACKEND_CORS_ORIGINS=${BACKEND_CORS_ORIGINS:-["http://localhost:3000"]}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo 'Waiting for database...' &&
+        sleep 2 &&
+        alembic upgrade head 2>/dev/null || echo 'Migration skipped (run manually if needed)' &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+  # --- Next.js Frontend ---
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: untoldmoney-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - api
+
+  # --- Celery Worker ---
+  worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: untoldmoney-worker
+    restart: unless-stopped
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - POSTGRES_USER=${POSTGRES_USER:-untoldmoney}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_postgres_password}
+      - POSTGRES_DB=${POSTGRES_DB:-untoldmoney}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-untoldmoney}:${POSTGRES_PASSWORD:-changeme_postgres_password}@postgres:5432/${POSTGRES_DB:-untoldmoney}
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme_super_secret_key_at_least_32_chars}
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: celery -A app.workers.celery_app worker --loglevel=info --concurrency=2
+
+  # --- Celery Beat Scheduler ---
+  scheduler:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: untoldmoney-scheduler
+    restart: unless-stopped
+    environment:
+      - APP_ENV=${APP_ENV:-local}
+      - POSTGRES_USER=${POSTGRES_USER:-untoldmoney}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-changeme_postgres_password}
+      - POSTGRES_DB=${POSTGRES_DB:-untoldmoney}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-untoldmoney}:${POSTGRES_PASSWORD:-changeme_postgres_password}@postgres:5432/${POSTGRES_DB:-untoldmoney}
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme_super_secret_key_at_least_32_chars}
+    volumes:
+      - ./apps/api:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: celery -A app.workers.celery_app beat --loglevel=info
+
+volumes:
+  postgres_data:
+  redis_data:
