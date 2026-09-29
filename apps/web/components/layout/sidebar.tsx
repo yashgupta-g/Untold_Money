@@ -15,7 +15,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useState } from "react";
+import { useSidebar } from "./sidebar-context";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -33,7 +33,7 @@ const adminItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const { collapsed, toggle } = useSidebar();
 
   return (
     <aside
@@ -128,7 +128,7 @@ export function Sidebar() {
       {/* Collapse Toggle */}
       <div className="border-t border-sidebar-border p-3">
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={toggle}
           className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
         >
           {collapsed ? (

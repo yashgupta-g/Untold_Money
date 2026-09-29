@@ -4,7 +4,9 @@ Handles model training, prediction generation, and LLM explanation requests.
 """
 
 from __future__ import annotations
-
+ 
+from typing import Optional
+ 
 from app.workers.celery_app import celery_app
 
 
@@ -19,7 +21,7 @@ def generate_prediction(instrument_id: str, model_name: str = "baseline") -> dic
 
 
 @celery_app.task(name="ml_jobs.train_model")
-def train_model(model_name: str, config: dict | None = None) -> dict:
+def train_model(model_name: str, config: Optional[dict] = None) -> dict:
     """
     Train or retrain an ML model.
     Placeholder — will be implemented with MLflow tracking.

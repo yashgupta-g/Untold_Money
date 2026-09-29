@@ -8,7 +8,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import field_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     """Central application configuration."""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=("../../.env", ".env"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",
@@ -59,29 +59,31 @@ class Settings(BaseSettings):
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
 
-    @field_validator("DATABASE_URL", mode="before")
-    @classmethod
-    def assemble_db_url(cls, v: str, info) -> str:  # noqa: N805
-        if v:
-            return v
-        data = info.data
-        user = data.get("POSTGRES_USER", "untoldmoney")
-        password = data.get("POSTGRES_PASSWORD", "changeme")
-        host = data.get("POSTGRES_HOST", "localhost")
-        port = data.get("POSTGRES_PORT", 5432)
-        db = data.get("POSTGRES_DB", "untoldmoney")
-        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{db}"
+    @model_validator(mode="after")
+    def assemble_urls(self) -> "Settings":
+        """Auto-assemble DATABASE_URL and REDIS_URL from components if not set."""
+        if not self.DATABASE_URL:
+            self.DATABASE_URL = (
+                f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+                f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+            )
+        if not self.REDIS_URL:
+            self.REDIS_URL = f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+        return self
 
-    @field_validator("REDIS_URL", mode="before")
-    @classmethod
-    def assemble_redis_url(cls, v: str, info) -> str:  # noqa: N805
-        if v:
-            return v
-        data = info.data
-        host = data.get("REDIS_HOST", "localhost")
-        port = data.get("REDIS_PORT", 6379)
-        db = data.get("REDIS_DB", 0)
-        return f"redis://{host}:{port}/{db}"
+    @model_validator(mode="after")
+    def validate_production_secrets(self) -> "Settings":
+        """Prevent startup with default secrets in non-local environments."""
+        if self.APP_ENV != "local":
+            if "changeme" in self.JWT_SECRET_KEY:
+                raise ValueError(
+                    "JWT_SECRET_KEY must be changed from default in non-local environments"
+                )
+            if "changeme" in self.POSTGRES_PASSWORD:
+                raise ValueError(
+                    "POSTGRES_PASSWORD must be changed from default in non-local environments"
+                )
+        return self
 
     @property
     def database_url_sync(self) -> str:

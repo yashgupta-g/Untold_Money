@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text, text
 from sqlalchemy.dialects.postgresql import UUID
@@ -26,19 +27,20 @@ class Trade(UUIDPrimaryKeyMixin, Base):
     trade_side: Mapped[str] = mapped_column(String(10), nullable=False)  # BUY / SELL
     quantity: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
     entry_price: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
-    exit_price: Mapped[float | None] = mapped_column(Numeric(18, 4), nullable=True)
-    stop_loss: Mapped[float | None] = mapped_column(Numeric(18, 4), nullable=True)
-    target_price: Mapped[float | None] = mapped_column(Numeric(18, 4), nullable=True)
+    exit_price: Mapped[Optional[float]] = mapped_column(Numeric(18, 4), nullable=True)
+    stop_loss: Mapped[Optional[float]] = mapped_column(Numeric(18, 4), nullable=True)
+    target_price: Mapped[Optional[float]] = mapped_column(Numeric(18, 4), nullable=True)
     fees: Mapped[float] = mapped_column(
         Numeric(18, 4), nullable=False, default=0, server_default=text("0")
     )
     trade_status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="OPEN", server_default=text("'OPEN'")
     )
-    strategy_tag: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    mistake_tag: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    emotion_tag: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    strategy_tag: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    mistake_tag: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    emotion_tag: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
     trade_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

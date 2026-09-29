@@ -1,13 +1,14 @@
 """
-Portfolio and Holdings models.
+Portfolio, Holdings, and PortfolioSnapshot models.
 """
 
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
+from typing import Optional
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String, UniqueConstraint, text
+from sqlalchemy import Date, DateTime, ForeignKey, Numeric, String, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -53,3 +54,28 @@ class Holding(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     def __repr__(self) -> str:
         return f"<Holding portfolio={self.portfolio_id} instrument={self.instrument_id}>"
+
+
+class PortfolioSnapshot(UUIDPrimaryKeyMixin, Base):
+    """Daily snapshot of portfolio valuation for historical tracking."""
+
+    __tablename__ = "portfolio_snapshots"
+    __table_args__ = (
+        UniqueConstraint("portfolio_id", "snapshot_date", name="uq_portfolio_snapshots_portfolio_date"),
+    )
+
+    portfolio_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("portfolios.id"), nullable=False, index=True
+    )
+    total_invested: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+    total_value: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+    unrealized_pnl: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+    snapshot_date: Mapped[date] = mapped_column(Date, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    def __repr__(self) -> str:
+        return f"<PortfolioSnapshot portfolio={self.portfolio_id} date={self.snapshot_date}>"

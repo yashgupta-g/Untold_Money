@@ -13,7 +13,7 @@ dist/
 build/
 .eggs/
 *.egg
-.venv/
+.venv*/
 venv/
 env/
 .mypy_cache/

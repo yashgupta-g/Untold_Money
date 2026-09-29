@@ -12,15 +12,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { useDispatch } from "react-redux";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
-import { apiClient } from "@/lib/api-client";
-import { setTokens } from "@/lib/auth";
+import { useLoginMutation } from "@/store/api/authApi";
+import { setCredentials } from "@/store/slices/authSlice";
 import type { AuthResponse } from "@/types";
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loginUser, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -31,19 +33,22 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
     try {
-      const response = await apiClient.post<AuthResponse>("/auth/login", data);
+      const response = await loginUser(data).unwrap();
       if (response.success && response.data) {
-        setTokens(response.data.tokens.access_token, response.data.tokens.refresh_token);
+        dispatch(
+          setCredentials({
+            user: response.data.user,
+            accessToken: response.data.tokens.access_token,
+            refreshToken: response.data.tokens.refresh_token,
+          })
+        );
         toast.success("Welcome back!");
         router.push("/dashboard");
       }
     } catch (error: any) {
-      const message = error?.response?.data?.message || "Login failed. Please try again.";
+      const message = error?.data?.message || "Login failed. Please try again.";
       toast.error(message);
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -1,25 +1,29 @@
 """
 Market candle model — OHLCV price data designed for TimescaleDB migration.
 Uses bigserial PK for high-volume time-series data.
+Includes DataIngestionRun for tracking ingestion job metadata.
 """
 
 from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import (
     BigInteger,
     DateTime,
     ForeignKey,
+    Integer,
     Numeric,
     String,
+    Text,
     UniqueConstraint,
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.core.database import Base
+from app.core.database import Base, UUIDPrimaryKeyMixin
 
 
 class MarketCandle(Base):
@@ -51,3 +55,27 @@ class MarketCandle(Base):
 
     def __repr__(self) -> str:
         return f"<MarketCandle {self.instrument_id} {self.candle_time} {self.interval}>"
+
+
+class DataIngestionRun(UUIDPrimaryKeyMixin, Base):
+    """Tracks each data ingestion job for audit and debugging."""
+
+    __tablename__ = "data_ingestion_runs"
+
+    provider: Mapped[str] = mapped_column(String(50), nullable=False)
+    symbol_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    candle_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    status: Mapped[str] = mapped_column(String(20), nullable=False, default="running")
+    error_message: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    started_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+    completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    def __repr__(self) -> str:
+        return f"<DataIngestionRun {self.id} {self.provider} {self.status}>"
+

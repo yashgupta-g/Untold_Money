@@ -19,8 +19,8 @@ export const registerSchema = z.object({
     .regex(/[a-z]/, "Must contain at least one lowercase letter")
     .regex(/[0-9]/, "Must contain at least one number"),
   phone: z.string().max(20).optional().or(z.literal("")),
-  accept_terms: z.literal(true, { errorMap: () => ({ message: "You must accept the terms" }) }),
-  accept_privacy: z.literal(true, { errorMap: () => ({ message: "You must accept the privacy policy" }) }),
+  accept_terms: z.literal(true, { message: "You must accept the terms" }),
+  accept_privacy: z.literal(true, { message: "You must accept the privacy policy" }),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;

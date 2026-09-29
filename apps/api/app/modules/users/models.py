@@ -6,8 +6,9 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
-from sqlalchemy import Boolean, DateTime, String, text
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -19,7 +20,7 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False, index=True)
-    phone: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     password_hash: Mapped[str] = mapped_column(String(512), nullable=False)
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="active", server_default=text("'active'")
@@ -31,9 +32,18 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         String(20), nullable=False, default="user", server_default=text("'user'")
     )
 
-    # Relationships
-    sessions: Mapped[list["UserSession"]] = relationship(back_populates="user", lazy="selectin")
-    consents: Mapped[list["UserConsent"]] = relationship(back_populates="user", lazy="selectin")
+    # Relationships — lazy="select" (default) to avoid N+1 on every query.
+    # Use selectinload() explicitly when you need related data.
+    sessions: Mapped[list["UserSession"]] = relationship(
+        back_populates="user",
+        lazy="select",
+        cascade="all, delete-orphan",
+    )
+    consents: Mapped[list["UserConsent"]] = relationship(
+        back_populates="user",
+        lazy="select",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self) -> str:
         return f"<User {self.email}>"
@@ -44,14 +54,15 @@ class UserSession(UUIDPrimaryKeyMixin, Base):
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     refresh_token_hash: Mapped[str] = mapped_column(String(512), nullable=False)
-    device_info: Mapped[str | None] = mapped_column(String(512), nullable=True)
-    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
+    device_info: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    ip_address: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),
@@ -74,14 +85,15 @@ class UserConsent(UUIDPrimaryKeyMixin, Base):
 
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     consent_type: Mapped[str] = mapped_column(String(50), nullable=False)
     version: Mapped[str] = mapped_column(String(20), nullable=False, default="1.0")
     accepted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
-    user_agent: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    ip_address: Mapped[Optional[str]] = mapped_column(String(45), nullable=True)
+    user_agent: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

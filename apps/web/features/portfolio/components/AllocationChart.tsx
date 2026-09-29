@@ -1,0 +1,167 @@
+"use client";
+
+import { Loader2, AlertTriangle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
+} from "recharts";
+import type { PortfolioAllocationData } from "@/store/api/portfolioApi";
+
+const COLORS = [
+  "oklch(0.65 0.20 260)",   // primary blue
+  "oklch(0.72 0.19 142)",   // green
+  "oklch(0.80 0.18 85)",    // yellow
+  "oklch(0.70 0.18 320)",   // purple
+  "oklch(0.63 0.24 25)",    // red
+  "oklch(0.68 0.16 200)",   // teal
+  "oklch(0.75 0.14 50)",    // orange
+  "oklch(0.60 0.22 280)",   // indigo
+];
+
+function formatINR(v: number) {
+  return v.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{ name: string; value: number; payload: { allocation_percent: number } }>;
+}
+
+function CustomTooltip({ active, payload }: CustomTooltipProps) {
+  if (!active || !payload?.length) return null;
+  const item = payload[0];
+  return (
+    <div className="rounded-lg border border-border/60 bg-popover px-3 py-2 shadow-xl">
+      <p className="text-sm font-semibold">{item.name}</p>
+      <p className="text-xs text-muted-foreground">
+        ₹{formatINR(item.value)} ({item.payload.allocation_percent}%)
+      </p>
+    </div>
+  );
+}
+
+interface AllocationChartProps {
+  allocation: PortfolioAllocationData;
+  isLoading?: boolean;
+}
+
+export function AllocationChart({ allocation, isLoading }: AllocationChartProps) {
+  if (isLoading) {
+    return (
+      <Card className="border-border/50 bg-card/80">
+        <CardContent className="flex items-center justify-center py-16">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!allocation || allocation.holdings.length === 0) return null;
+
+  const holdingData = allocation.holdings.map((h) => ({
+    name: h.symbol,
+    value: h.market_value,
+    allocation_percent: h.allocation_percent,
+  }));
+
+  const sectorData = allocation.sector_breakdown.map((s) => ({
+    name: s.sector,
+    value: s.total_value,
+    allocation_percent: s.allocation_percent,
+  }));
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-2">
+      {/* Holdings Allocation Donut */}
+      <Card className="border-border/50 bg-card/80">
+        <CardHeader className="pb-2 pt-5 px-5">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold">
+              Holding Allocation
+            </CardTitle>
+            {allocation.concentration_risk && (
+              <Badge
+                variant="destructive"
+                className="gap-1 text-[10px] font-medium"
+              >
+                <AlertTriangle className="h-3 w-3" />
+                Concentration Risk
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="px-2 pb-4">
+          <ResponsiveContainer width="100%" height={260}>
+            <PieChart>
+              <Pie
+                data={holdingData}
+                cx="50%"
+                cy="50%"
+                innerRadius={65}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="value"
+                stroke="none"
+              >
+                {holdingData.map((_, i) => (
+                  <Cell
+                    key={i}
+                    fill={COLORS[i % COLORS.length]}
+                    className="transition-opacity duration-200 hover:opacity-80"
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend
+                layout="vertical"
+                align="right"
+                verticalAlign="middle"
+                iconType="circle"
+                iconSize={8}
+                formatter={(value: string) => (
+                  <span className="text-xs text-muted-foreground">{value}</span>
+                )}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Sector Breakdown */}
+      <Card className="border-border/50 bg-card/80">
+        <CardHeader className="pb-2 pt-5 px-5">
+          <CardTitle className="text-base font-semibold">
+            Sector Allocation
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="px-5 pb-5">
+          <div className="space-y-3">
+            {sectorData.map((s, i) => (
+              <div key={s.name}>
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <span className="font-medium">{s.name}</span>
+                  <span className="tabular-nums text-muted-foreground">
+                    {s.allocation_percent}%
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${s.allocation_percent}%`,
+                      backgroundColor: COLORS[i % COLORS.length],
+                    }}
+                  />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-0.5">
+                  ₹{formatINR(s.value)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

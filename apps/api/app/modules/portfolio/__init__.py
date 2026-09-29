@@ -1,4 +1,4 @@
 # Portfolio module
-from app.modules.portfolio.models import Holding, Portfolio
+from app.modules.portfolio.models import Holding, Portfolio, PortfolioSnapshot
 
-__all__ = ["Holding", "Portfolio"]
+__all__ = ["Holding", "Portfolio", "PortfolioSnapshot"]

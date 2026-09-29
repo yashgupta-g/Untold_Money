@@ -37,7 +37,7 @@ async def register(
     result = await service.register(data, ip_address=ip, user_agent=ua)
     return {
         "success": True,
-        "message": "Registration successful",
+        "message": "Registration successful", 
         "data": result.model_dump(mode="json"),
     }
 

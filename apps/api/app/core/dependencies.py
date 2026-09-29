@@ -6,7 +6,7 @@ Centralizes session, auth, and service dependencies.
 from __future__ import annotations
 
 import uuid
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends, Header, Request
 from jose import JWTError
@@ -24,8 +24,9 @@ SettingsDep = Annotated[Settings, Depends(get_settings)]
 
 async def get_current_user_id(
     request: Request,
-    authorization: str | None = Header(default=None),
+    authorization: Optional[str] = Header(default=None),
 ) -> uuid.UUID:
+
     """
     Extract and validate the current user from the JWT access token.
     Returns the user UUID.
@@ -57,6 +58,38 @@ async def get_current_user_id(
 
 
 CurrentUserIdDep = Annotated[uuid.UUID, Depends(get_current_user_id)]
+
+
+async def get_optional_user_id(
+    authorization: Optional[str] = Header(default=None),
+) -> Optional[uuid.UUID]:
+    """
+    Same as get_current_user_id but returns None instead of 401.
+    Use for public endpoints that optionally personalize for logged-in users.
+    """
+    if not authorization:
+        return None
+
+    scheme, _, token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not token:
+        return None
+
+    try:
+        payload = decode_token(token)
+    except JWTError:
+        return None
+
+    subject = payload.get("sub")
+    if not subject:
+        return None
+
+    try:
+        return uuid.UUID(subject)
+    except ValueError:
+        return None
+
+
+OptionalUserIdDep = Annotated[Optional[uuid.UUID], Depends(get_optional_user_id)]
 
 
 def get_client_ip(request: Request) -> str:

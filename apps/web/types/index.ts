@@ -20,9 +20,17 @@ export interface TokenResponse {
   expires_in: number;
 }
 
+export interface UserResponse extends User {}
+
 export interface AuthResponse {
-  user: User;
+  user: UserResponse;
   tokens: TokenResponse;
+}
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data: T;
 }
 
 export interface Stock {

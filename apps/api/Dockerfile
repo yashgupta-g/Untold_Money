@@ -6,18 +6,22 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# System dependencies
+# System dependencies (build-time only)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy project definition and install dependencies
+# Copy all source first because `pip install -e .` needs the package to exist
 COPY pyproject.toml ./
+COPY app/ ./app/
+
 RUN pip install --upgrade pip && \
     pip install -e "."
 
-# Copy application code
-COPY . .
+# Copy Alembic config (needed for migrations)
+COPY alembic.ini ./
+COPY alembic/ ./alembic/
 
 EXPOSE 8000
 

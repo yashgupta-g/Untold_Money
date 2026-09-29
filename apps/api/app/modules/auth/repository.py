@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -21,12 +22,12 @@ class AuthRepository:
 
     # --- User ---
 
-    async def get_user_by_email(self, email: str) -> User | None:
+    async def get_user_by_email(self, email: str) -> Optional[User]:
         stmt = select(User).where(User.email == email)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_user_by_id(self, user_id: uuid.UUID) -> User | None:
+    async def get_user_by_id(self, user_id: uuid.UUID) -> Optional[User]:
         stmt = select(User).where(User.id == user_id)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
@@ -44,7 +45,9 @@ class AuthRepository:
         await self.session.flush()
         return session_obj
 
-    async def get_session_by_token_hash(self, token_hash: str) -> UserSession | None:
+    async def get_session_by_token_hash(
+        self, token_hash: str, user_id: Optional[uuid.UUID] = None
+    ) -> Optional[UserSession]:
         stmt = select(UserSession).where(
             UserSession.refresh_token_hash == token_hash,
             UserSession.revoked_at.is_(None),
@@ -52,12 +55,18 @@ class AuthRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def revoke_session(self, session_id: uuid.UUID) -> None:
+    async def revoke_sessions(self, user_id: uuid.UUID, token_hash: Optional[str] = None) -> None:
         stmt = (
             update(UserSession)
-            .where(UserSession.id == session_id)
-            .values(revoked_at=datetime.now(timezone.utc))
+            .where(
+                UserSession.user_id == user_id,
+                UserSession.revoked_at.is_(None),
+            )
         )
+        if token_hash:
+            stmt = stmt.where(UserSession.refresh_token_hash == token_hash)
+
+        stmt = stmt.values(revoked_at=datetime.now(timezone.utc))
         await self.session.execute(stmt)
 
     async def revoke_all_user_sessions(self, user_id: uuid.UUID) -> None:

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Roboto_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -8,8 +8,8 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMonoCondensed = Roboto_Mono({
+  variable: "--font-roboto",
   subsets: ["latin"],
 });
 
@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   keywords: ["stock analytics", "portfolio management", "trade journal", "AI finance", "technical indicators"],
 };
 
+import { Providers } from "./providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,9 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${robotoMonoCondensed.variable} antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
         <Toaster richColors position="top-right" />
       </body>
     </html>

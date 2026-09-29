@@ -1,106 +1,181 @@
 "use client";
 
-import { Search, Filter, TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import {
+  Search,
+  TrendingUp,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  Loader2,
+  BarChart3,
+  Filter,
+  RefreshCw,
+} from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  useGetInstrumentsQuery,
+  useGetQuoteQuery,
+  type InstrumentDetail,
+} from "@/store/api/marketApi";
 
-const mockStocks = [
-  { symbol: "RELIANCE", name: "Reliance Industries", price: 2480.5, change: 1.25, sector: "Oil & Gas", volume: "12.5M" },
-  { symbol: "TCS", name: "Tata Consultancy Services", price: 3650.0, change: -0.85, sector: "IT", volume: "4.2M" },
-  { symbol: "HDFCBANK", name: "HDFC Bank", price: 1580.0, change: 0.45, sector: "Banking", volume: "8.1M" },
-  { symbol: "INFY", name: "Infosys", price: 1420.75, change: 2.1, sector: "IT", volume: "6.8M" },
-  { symbol: "ICICIBANK", name: "ICICI Bank", price: 1050.25, change: -1.3, sector: "Banking", volume: "9.3M" },
-  { symbol: "TATAMOTORS", name: "Tata Motors", price: 685.4, change: 4.21, sector: "Auto", volume: "15.2M" },
-  { symbol: "WIPRO", name: "Wipro", price: 445.0, change: -0.55, sector: "IT", volume: "3.6M" },
-  { symbol: "SBIN", name: "State Bank of India", price: 625.8, change: 1.92, sector: "Banking", volume: "11.4M" },
-  { symbol: "ADANIENT", name: "Adani Enterprises", price: 2450.0, change: 3.85, sector: "Conglomerate", volume: "7.9M" },
-  { symbol: "BAJFINANCE", name: "Bajaj Finance", price: 6780.25, change: -2.14, sector: "NBFC", volume: "2.8M" },
-  { symbol: "LT", name: "Larsen & Toubro", price: 3280.5, change: 0.95, sector: "Capital Goods", volume: "3.1M" },
-  { symbol: "SUNPHARMA", name: "Sun Pharma", price: 1120.5, change: -1.05, sector: "Pharma", volume: "5.4M" },
-];
+function StockRow({ instrument }: { instrument: InstrumentDetail }) {
+  const { data: quoteRes, isLoading: quoteLoading } = useGetQuoteQuery(instrument.symbol);
+  const quote = quoteRes?.data;
+  const isPositive = quote ? quote.change >= 0 : true;
+
+  return (
+    <Link href={`/stocks/${instrument.symbol}`} className="block">
+      <div className="grid grid-cols-12 items-center gap-4 rounded-xl px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 hover:shadow-sm group">
+        {/* Symbol & Name */}
+        <div className="col-span-4 flex items-center gap-3 min-w-0">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary group-hover:bg-primary/20 transition-colors">
+            {instrument.symbol.slice(0, 2)}
+          </div>
+          <div className="min-w-0">
+            <p className="font-semibold truncate group-hover:text-primary transition-colors">{instrument.symbol}</p>
+            <p className="text-xs text-muted-foreground truncate">{instrument.name}</p>
+          </div>
+        </div>
+
+        {/* Sector */}
+        <div className="col-span-2 hidden md:block">
+          {instrument.sector && (
+            <Badge variant="secondary" className="text-[10px] font-normal">
+              {instrument.sector}
+            </Badge>
+          )}
+        </div>
+
+        {/* Price */}
+        <div className="col-span-2 text-right">
+          {quoteLoading ? (
+            <div className="flex justify-end">
+              <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+            </div>
+          ) : quote ? (
+            <p className="font-semibold tabular-nums">₹{quote.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</p>
+          ) : (
+            <p className="text-muted-foreground">—</p>
+          )}
+        </div>
+
+        {/* Change */}
+        <div className="col-span-2 text-right">
+          {quoteLoading ? (
+            <div className="flex justify-end">
+              <div className="h-4 w-14 animate-pulse rounded bg-muted" />
+            </div>
+          ) : quote ? (
+            <div className={`flex items-center justify-end gap-1 font-medium ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+              {isPositive ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
+              <span className="tabular-nums">{isPositive ? "+" : ""}{quote.change_percent.toFixed(2)}%</span>
+            </div>
+          ) : null}
+        </div>
+
+        {/* Volume */}
+        <div className="col-span-2 hidden lg:block text-right">
+          {quoteLoading ? (
+            <div className="flex justify-end">
+              <div className="h-4 w-14 animate-pulse rounded bg-muted" />
+            </div>
+          ) : quote ? (
+            <p className="text-xs text-muted-foreground tabular-nums">
+              {(quote.volume / 100000).toFixed(1)}L
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function StocksPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data: instrumentsRes, isLoading, isFetching, refetch } = useGetInstrumentsQuery({
+    q: searchQuery,
+    limit: 50,
+  });
+
+  const instruments = instrumentsRes?.data ?? [];
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Stocks</h1>
           <p className="text-sm text-muted-foreground">
-            Browse and analyze stocks across Indian exchanges
+            Browse and search {instruments.length} instruments on NSE
           </p>
         </div>
-        <Badge variant="secondary" className="text-xs font-mono">
-          NSE · {mockStocks.length} instruments
-        </Badge>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="gap-2"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          Refresh
+        </Button>
       </div>
 
-      {/* Search & Filter */}
-      <div className="flex gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search by symbol, name, or sector..."
-            className="bg-muted/50 pl-9 border-none"
-            id="stock-search"
-          />
-        </div>
-        <button className="flex items-center gap-2 rounded-lg border border-border/50 bg-card/80 px-4 text-sm text-muted-foreground transition-colors hover:text-foreground">
-          <Filter className="h-4 w-4" />
-          Filters
-        </button>
+      {/* Search */}
+      <div className="relative max-w-md">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          placeholder="Search by symbol or name..."
+          className="bg-muted/50 pl-9"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          id="stock-search-input"
+        />
       </div>
 
-      {/* Stock Grid */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {mockStocks.map((stock) => (
-          <Link key={stock.symbol} href={`/stocks/${stock.symbol}`}>
-            <Card className="group cursor-pointer border-border/50 bg-card/80 transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm font-bold">{stock.symbol}</p>
-                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
-                      {stock.name}
-                    </p>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className={`text-[10px] ${
-                      stock.change >= 0
-                        ? "border-chart-2/30 text-chart-2"
-                        : "border-destructive/30 text-destructive"
-                    }`}
-                  >
-                    {stock.change >= 0 ? "+" : ""}
-                    {stock.change}%
-                  </Badge>
-                </div>
+      {/* Stock Table */}
+      <Card className="border-border/50 bg-card/80 overflow-hidden">
+        <CardContent className="p-0">
+          {/* Table Header */}
+          <div className="grid grid-cols-12 gap-4 border-b border-border/50 px-4 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <span className="col-span-4">Instrument</span>
+            <span className="col-span-2 hidden md:block">Sector</span>
+            <span className="col-span-2 text-right">Price</span>
+            <span className="col-span-2 text-right">Change</span>
+            <span className="col-span-2 hidden lg:block text-right">Volume</span>
+          </div>
 
-                <div className="mt-3 flex items-end justify-between">
-                  <div>
-                    <p className="text-lg font-bold">₹{stock.price.toLocaleString()}</p>
-                    <div className="mt-1 flex items-center gap-1">
-                      {stock.change >= 0 ? (
-                        <TrendingUp className="h-3 w-3 text-chart-2" />
-                      ) : (
-                        <TrendingDown className="h-3 w-3 text-destructive" />
-                      )}
-                      <span className="text-[11px] text-muted-foreground">
-                        Vol: {stock.volume}
-                      </span>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="text-[10px]">
-                    {stock.sector}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="mt-3 text-sm text-muted-foreground">Loading instruments...</p>
+            </div>
+          ) : instruments.length === 0 ? (
+            /* Empty State */
+            <div className="flex flex-col items-center justify-center py-20">
+              <BarChart3 className="h-12 w-12 text-muted-foreground/30" />
+              <p className="mt-3 text-sm font-medium">No instruments found</p>
+              <p className="text-xs text-muted-foreground">
+                {searchQuery ? `No results for "${searchQuery}"` : "Run mock ingestion to seed data"}
+              </p>
+            </div>
+          ) : (
+            /* Stock Rows */
+            <div className="divide-y divide-border/30">
+              {instruments.map((instrument) => (
+                <StockRow key={instrument.id} instrument={instrument} />
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

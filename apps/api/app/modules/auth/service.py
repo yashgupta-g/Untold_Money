@@ -35,7 +35,6 @@ from app.modules.audit.service import AuditService
 from app.modules.users.models import User, UserConsent, UserSession
 
 logger = get_logger(__name__)
-settings = get_settings()
 
 
 class AuthService:
@@ -157,7 +156,7 @@ class AuthService:
         user_id: uuid.UUID,
         ip_address: str,
         user_agent: str,
-        refresh_token: str | None = None,
+        refresh_token: Optional[str] = None,
     ) -> None:
         """Revoke user session(s)."""
         if refresh_token:
@@ -194,6 +193,7 @@ class AuthService:
         user_agent: str,
     ) -> TokenResponse:
         """Create access + refresh tokens and persist session."""
+        settings = get_settings()
         access_token = create_access_token(subject=str(user_id))
         refresh_token = create_refresh_token(subject=str(user_id))
 
@@ -215,3 +215,4 @@ class AuthService:
             refresh_token=refresh_token,
             expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         )
+

@@ -5,7 +5,7 @@ Provides consistent error response format across the API.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -24,7 +24,7 @@ class AppException(Exception):
         message: str = "An unexpected error occurred",
         error_code: str = "INTERNAL_ERROR",
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        details: dict[str, Any] | None = None,
+        details: Optional[dict[str, Any]] = None,
     ):
         self.message = message
         self.error_code = error_code

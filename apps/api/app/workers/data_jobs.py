@@ -4,12 +4,14 @@ Handles fetching market data from providers, instrument sync, and candle import.
 """
 
 from __future__ import annotations
-
+ 
+from typing import Optional
+ 
 from app.workers.celery_app import celery_app
 
 
 @celery_app.task(name="data_jobs.fetch_market_data")
-def fetch_market_data(instrument_id: str | None = None) -> dict:
+def fetch_market_data(instrument_id: Optional[str] = None) -> dict:
     """
     Fetch OHLCV market data from configured data provider.
     Placeholder — will be implemented with data provider abstraction.

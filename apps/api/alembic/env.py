@@ -2,6 +2,8 @@
 Alembic migration environment.
 Uses the application's settings for the database URL and imports all models
 so that autogenerate can detect schema changes.
+
+Supports both offline (SQL script generation) and online (async DB connection) modes.
 """
 
 from __future__ import annotations
@@ -11,24 +13,26 @@ from logging.config import fileConfig
 
 from alembic import context
 from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import get_settings
 from app.core.database import Base
 
-# Import ALL models so Alembic autogenerate detects them
+# Import ALL models so Alembic autogenerate detects them.
+# Order matters: parent tables before children.
 from app.modules.users.models import User, UserConsent, UserSession  # noqa: F401
 from app.modules.audit.models import AuditLog  # noqa: F401
 from app.modules.instruments.models import Exchange, Instrument  # noqa: F401
 from app.modules.market_data.models import MarketCandle  # noqa: F401
 from app.modules.portfolio.models import Holding, Portfolio  # noqa: F401
 from app.modules.trades.models import Trade  # noqa: F401
+from app.modules.analytics.models import TechnicalIndicator, StockScore  # noqa: F401
+from app.modules.predictions.models import Prediction  # noqa: F401
 
 config = context.config
 settings = get_settings()
 
-# Override sqlalchemy.url with our application config
+# Override sqlalchemy.url with our application config (sync URL for offline mode)
 config.set_main_option("sqlalchemy.url", settings.database_url_sync)
 
 if config.config_file_name is not None:
@@ -45,25 +49,27 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
     )
 
     with context.begin_transaction():
         context.run_migrations()
 
 
-def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+def do_run_migrations(connection) -> None:
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        compare_type=True,
+    )
     with context.begin_transaction():
         context.run_migrations()
 
 
 async def run_async_migrations() -> None:
     """Run migrations in 'online' mode with async engine."""
-    configuration = config.get_section(config.config_ini_section, {})
-    configuration["sqlalchemy.url"] = settings.DATABASE_URL
-    connectable = async_engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
+    connectable = create_async_engine(
+        settings.DATABASE_URL,
         poolclass=pool.NullPool,
     )
 
