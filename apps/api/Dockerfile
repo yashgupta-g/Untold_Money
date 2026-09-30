@@ -17,7 +17,7 @@ COPY pyproject.toml ./
 COPY app/ ./app/
 
 RUN pip install --upgrade pip && \
-    pip install -e "."
+    pip install -e ".[ml]"
 
 # Copy Alembic config (needed for migrations)
 COPY alembic.ini ./
