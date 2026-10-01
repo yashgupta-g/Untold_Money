@@ -48,7 +48,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
     return (
       <Card className="border-border/50 bg-card/80">
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -73,7 +73,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
       <CardHeader className="pb-3 pt-5 px-5">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
+            <TrendingUp className="h-4 w-4 text-primary-ink" />
             Technical Indicators
           </CardTitle>
           {data.computed_at && (

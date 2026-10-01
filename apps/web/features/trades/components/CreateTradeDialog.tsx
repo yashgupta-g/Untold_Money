@@ -185,7 +185,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                 <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-40 overflow-y-auto rounded-lg border border-border/60 bg-popover shadow-xl">
                   {searchFetching ? (
                     <div className="flex items-center justify-center py-3">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                      <Loader2 className="h-4 w-4 animate-spin text-primary-ink" />
                     </div>
                   ) : instruments.length === 0 ? (
                     <p className="py-3 text-center text-xs text-muted-foreground">No results</p>
@@ -193,7 +193,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                     instruments.map((inst) => (
                       <button key={inst.id} onClick={() => handleSelect(inst)}
                         className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors">
-                        <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-[10px] font-bold text-primary">
+                        <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-[10px] font-bold text-primary-ink">
                           {inst.symbol.slice(0, 2)}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -236,7 +236,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                 {(["OPEN", "CLOSED"] as const).map((s) => (
                   <button key={s} onClick={() => setTradeStatus(s)}
                     className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
-                      tradeStatus === s ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+                      tradeStatus === s ? "bg-primary/10 text-primary-ink" : "text-muted-foreground hover:text-foreground"
                     }`}>
                     {s}
                   </button>

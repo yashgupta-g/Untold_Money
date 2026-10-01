@@ -81,7 +81,7 @@ export default function RegisterPage() {
               <TrendingUp className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold tracking-tight">
-              Untold<span className="text-primary">Money</span>
+              Untold<span className="text-primary-ink">Money</span>
             </span>
           </Link>
           <div>
@@ -186,7 +186,7 @@ export default function RegisterPage() {
                 />
                 <span className="text-muted-foreground">
                   I accept the{" "}
-                  <span className="text-primary hover:underline cursor-pointer">Terms of Service</span>
+                  <span className="text-primary-ink hover:underline cursor-pointer">Terms of Service</span>
                 </span>
               </label>
               {errors.accept_terms && (
@@ -201,7 +201,7 @@ export default function RegisterPage() {
                 />
                 <span className="text-muted-foreground">
                   I accept the{" "}
-                  <span className="text-primary hover:underline cursor-pointer">Privacy Policy</span>
+                  <span className="text-primary-ink hover:underline cursor-pointer">Privacy Policy</span>
                 </span>
               </label>
               {errors.accept_privacy && (
@@ -228,7 +228,7 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:underline">
+            <Link href="/login" className="font-medium text-primary-ink hover:underline">
               Sign in
             </Link>
           </p>

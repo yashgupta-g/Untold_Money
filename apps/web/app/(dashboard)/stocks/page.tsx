@@ -34,11 +34,11 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
       <div className="grid grid-cols-12 items-center gap-4 rounded-xl px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 hover:shadow-sm group">
         {/* Symbol & Name */}
         <div className="col-span-4 flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary group-hover:bg-primary/20 transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary-ink group-hover:bg-primary/20 transition-colors">
             {instrument.symbol.slice(0, 2)}
           </div>
           <div className="min-w-0">
-            <p className="font-semibold truncate group-hover:text-primary transition-colors">{instrument.symbol}</p>
+            <p className="font-semibold truncate group-hover:text-primary-ink transition-colors">{instrument.symbol}</p>
             <p className="text-xs text-muted-foreground truncate">{instrument.name}</p>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function StocksPage() {
           {/* Loading State */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Loader2 className="h-8 w-8 animate-spin text-primary-ink" />
               <p className="mt-3 text-sm text-muted-foreground">Loading instruments...</p>
             </div>
           ) : instruments.length === 0 ? (

@@ -108,7 +108,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
               <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border/60 bg-popover shadow-xl">
                 {isFetching ? (
                   <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <Loader2 className="h-4 w-4 animate-spin text-primary-ink" />
                   </div>
                 ) : instruments.length === 0 ? (
                   <p className="py-4 text-center text-xs text-muted-foreground">
@@ -121,7 +121,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
                       onClick={() => handleSelect(inst)}
                       className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/50"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary-ink">
                         {inst.symbol.slice(0, 2)}
                       </div>
                       <div className="min-w-0 flex-1">

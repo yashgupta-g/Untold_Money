@@ -67,7 +67,7 @@ function PriceChart({
   if (isLoading) {
     return (
       <div className="flex h-72 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <Loader2 className="h-6 w-6 animate-spin text-primary-ink" />
       </div>
     );
   }
@@ -175,7 +175,7 @@ export default function StockDetailPage() {
   if (instrumentLoading) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary-ink" />
       </div>
     );
   }
@@ -209,7 +209,7 @@ export default function StockDetailPage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             {/* Left — Symbol Info */}
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-lg font-bold text-primary">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-lg font-bold text-primary-ink">
                 {symbol.slice(0, 2)}
               </div>
               <div>
@@ -290,7 +290,7 @@ export default function StockDetailPage() {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Activity className="h-4 w-4 text-primary" />
+              <Activity className="h-4 w-4 text-primary-ink" />
               Price Chart
             </CardTitle>
             <div className="flex gap-1">
@@ -300,7 +300,7 @@ export default function StockDetailPage() {
                   onClick={() => setSelectedInterval(opt)}
                   className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                     selectedInterval.value === opt.value
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary-ink"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >

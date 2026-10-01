@@ -50,7 +50,7 @@ export function Sidebar() {
               <TrendingUp className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold tracking-tight text-sidebar-foreground">
-              Untold<span className="text-primary">Money</span>
+              Untold<span className="text-primary-ink">Money</span>
             </span>
           </Link>
         )}
@@ -79,14 +79,14 @@ export function Sidebar() {
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary shadow-sm"
+                  ? "bg-primary/10 text-primary-ink shadow-sm"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               )}
             >
               <item.icon
                 className={cn(
                   "h-[18px] w-[18px] shrink-0 transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground group-hover:text-sidebar-foreground"
+                  isActive ? "text-primary-ink" : "text-muted-foreground group-hover:text-sidebar-foreground"
                 )}
               />
               {!collapsed && <span>{item.label}</span>}
@@ -114,7 +114,7 @@ export function Sidebar() {
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               )}
             >

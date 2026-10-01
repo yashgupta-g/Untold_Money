@@ -1,0 +1,455 @@
+/* Phone mockup frame + the three illustrative app screens. */
+
+.phone {
+  --p-ink: #14130f;
+  --p-ink-2: #3b3932;
+  --p-mu: #77746a;
+  --p-line: rgba(20, 19, 15, 0.08);
+  --p-soft: #f5f3ec;
+  --p-brand: #fcdb02;
+  --p-brand-soft: #fff6bf;
+  --p-brand-ink: #7a5e00;
+  --p-good: #15803d;
+  --p-good-soft: #e7f5ec;
+  --p-bad: #b42318;
+
+  position: relative;
+  width: 300px;
+  height: 620px;
+  padding: 10px;
+  border-radius: 52px;
+  background: #1c1b18;
+  box-shadow:
+    inset 0 0 0 2px #3a3833,
+    inset 0 0 0 5px #111,
+    0 40px 70px -30px rgba(20, 19, 15, 0.55),
+    0 12px 24px -12px rgba(20, 19, 15, 0.35);
+  text-align: left;
+  flex-shrink: 0;
+}
+
+/* Side buttons */
+.phone::before,
+.phone::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  border-radius: 2px;
+  background: #2b2a26;
+}
+
+.phone::before {
+  left: -3px;
+  top: 118px;
+  height: 56px;
+  box-shadow: 0 72px 0 #2b2a26;
+}
+
+.phone::after {
+  right: -3px;
+  top: 150px;
+  height: 84px;
+}
+
+.screen {
+  position: relative;
+  height: 100%;
+  border-radius: 42px;
+  overflow: hidden;
+  background: #fff;
+  color: var(--p-ink);
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+}
+
+.island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 94px;
+  height: 27px;
+  border-radius: 20px;
+  background: #0a0a09;
+  z-index: 2;
+}
+
+.status {
+  height: 48px;
+  flex-shrink: 0;
+  padding: 15px 28px 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.statusIcons {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding-top: 2px;
+}
+
+.appBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 16px 12px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--p-soft);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.appTitle {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.appSub {
+  font-size: 10.5px;
+  color: var(--p-mu);
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.label {
+  font-size: 10.5px;
+  color: var(--p-mu);
+  font-weight: 500;
+}
+
+.bigValue {
+  font-size: 27px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.up {
+  color: var(--p-good);
+  font-weight: 600;
+}
+
+.down {
+  color: var(--p-bad);
+  font-weight: 600;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* --- Stock screen --- */
+
+.chart {
+  display: block;
+  width: 100%;
+  height: 104px;
+}
+
+.scoreCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--p-soft);
+}
+
+.ring {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.ring svg {
+  display: block;
+  transform: rotate(-90deg);
+}
+
+.ringValue {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pillBrand {
+  background: var(--p-brand);
+  color: var(--p-ink);
+}
+
+.pillGood {
+  background: var(--p-good-soft);
+  color: var(--p-good);
+}
+
+.pillMuted {
+  background: var(--p-soft);
+  color: var(--p-ink-2);
+}
+
+.pillWarn {
+  background: var(--p-brand-soft);
+  color: var(--p-brand-ink);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--p-line);
+}
+
+.listRow:first-child {
+  border-top: 0;
+}
+
+.listName {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.listMeta {
+  font-size: 10.5px;
+  color: var(--p-mu);
+}
+
+.listEnd {
+  margin-left: auto;
+  text-align: right;
+}
+
+/* --- Portfolio screen --- */
+
+.split {
+  display: flex;
+  gap: 14px;
+  font-size: 10.5px;
+  color: var(--p-mu);
+}
+
+.split b {
+  display: block;
+  font-size: 12px;
+  color: var(--p-ink);
+  font-weight: 600;
+}
+
+.donutWrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.donut {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+}
+
+.donut svg {
+  display: block;
+  transform: rotate(-90deg);
+}
+
+.donutCenter {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-size: 9.5px;
+  color: var(--p-mu);
+  line-height: 1.2;
+}
+
+.donutCenter b {
+  font-size: 17px;
+  color: var(--p-ink);
+  letter-spacing: -0.02em;
+}
+
+.legend {
+  display: grid;
+  gap: 5px;
+  font-size: 10.5px;
+  flex: 1;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend em {
+  margin-left: auto;
+  font-style: normal;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.warn {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: var(--p-brand-soft);
+  color: var(--p-ink-2);
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.warn svg {
+  color: var(--p-brand-ink);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--p-soft);
+  flex-shrink: 0;
+}
+
+.avatarBrand {
+  background: var(--p-brand);
+}
+
+/* --- Journal screen --- */
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stat {
+  padding: 9px 10px;
+  border-radius: 14px;
+  background: var(--p-soft);
+}
+
+.stat b {
+  display: block;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.statBrand {
+  background: var(--p-brand);
+}
+
+.tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* --- Tab bar --- */
+
+.tabBar {
+  height: 66px;
+  flex-shrink: 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--p-line);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 9px;
+  background: #fff;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #99968c;
+}
+
+.tabActive {
+  color: var(--p-ink);
+  font-weight: 700;
+}
+
+.tabActive svg {
+  color: var(--p-ink);
+}

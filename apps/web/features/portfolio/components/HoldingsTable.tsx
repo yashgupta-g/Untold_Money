@@ -122,7 +122,7 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          className="h-7 w-7 text-muted-foreground hover:text-primary"
+                          className="h-7 w-7 text-muted-foreground hover:text-primary-ink"
                           onClick={() => setEditHolding(h)}
                         >
                           <Pencil className="h-3.5 w-3.5" />

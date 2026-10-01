@@ -25,7 +25,7 @@ export default function SettingsPage() {
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
                 <div className="rounded-lg bg-primary/10 p-2">
-                  <item.icon className="h-4 w-4 text-primary" />
+                  <item.icon className="h-4 w-4 text-primary-ink" />
                 </div>
                 <div>
                   <p className="font-semibold">{item.title}</p>

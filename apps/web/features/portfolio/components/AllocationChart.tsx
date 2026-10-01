@@ -8,15 +8,17 @@ import {
 } from "recharts";
 import type { PortfolioAllocationData } from "@/store/api/portfolioApi";
 
+// Colorblind-safe categorical order for the light surface. Keep the order:
+// it's what keeps adjacent slices distinguishable.
 const COLORS = [
-  "oklch(0.65 0.20 260)",   // primary blue
-  "oklch(0.72 0.19 142)",   // green
-  "oklch(0.80 0.18 85)",    // yellow
-  "oklch(0.70 0.18 320)",   // purple
-  "oklch(0.63 0.24 25)",    // red
-  "oklch(0.68 0.16 200)",   // teal
-  "oklch(0.75 0.14 50)",    // orange
-  "oklch(0.60 0.22 280)",   // indigo
+  "#2a78d6", // blue
+  "#eb6834", // orange
+  "#1baf7a", // aqua
+  "#eda100", // yellow
+  "#e87ba4", // magenta
+  "#008300", // green
+  "#4a3aa7", // violet
+  "#e34948", // red
 ];
 
 function formatINR(v: number) {
@@ -51,7 +53,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
     return (
       <Card className="border-border/50 bg-card/80">
         <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );

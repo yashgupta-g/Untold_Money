@@ -68,7 +68,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
               className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
                 filters.trade_status === opt.value ||
                 (!filters.trade_status && opt.value === undefined)
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -86,7 +86,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
               className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
                 filters.trade_side === opt.value ||
                 (!filters.trade_side && opt.value === undefined)
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

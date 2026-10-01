@@ -37,7 +37,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
-              <p className="font-semibold group-hover:text-primary transition-colors">
+              <p className="font-semibold group-hover:text-primary-ink transition-colors">
                 {portfolio.name}
               </p>
               <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
               </div>
             </div>
             <div className="rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
-              <Wallet className="h-4 w-4 text-primary" />
+              <Wallet className="h-4 w-4 text-primary-ink" />
             </div>
           </div>
 
@@ -173,7 +173,7 @@ export default function PortfolioPage() {
       {/* Loading */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary-ink" />
           <p className="mt-3 text-sm text-muted-foreground">
             Loading portfolios...
           </p>

@@ -31,7 +31,7 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       value: analytics.total_trades.toString(),
       sub: `${analytics.open_trades} open · ${analytics.closed_trades} closed`,
       icon: ArrowLeftRight,
-      color: "text-primary",
+      color: "text-primary-ink",
       bg: "bg-primary/10",
     },
     {

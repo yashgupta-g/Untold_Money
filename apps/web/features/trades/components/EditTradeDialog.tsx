@@ -69,7 +69,7 @@ export function EditTradeDialog({ trade, onClose }: EditTradeDialogProps) {
               {(["OPEN", "CLOSED"] as const).map((s) => (
                 <button key={s} onClick={() => setTradeStatus(s)}
                   className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
-                    tradeStatus === s ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+                    tradeStatus === s ? "bg-primary/10 text-primary-ink" : "text-muted-foreground hover:text-foreground"
                   }`}>
                   {s}
                 </button>

@@ -27,7 +27,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       label: "Total Invested",
       value: `₹${formatINR(summary.total_invested)}`,
       icon: Wallet,
-      color: "text-primary",
+      color: "text-primary-ink",
       bg: "bg-primary/10",
     },
     {

@@ -161,7 +161,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                           variant="secondary"
                           className={`text-[10px] ${
                             trade.trade_status === "OPEN"
-                              ? "bg-primary/10 text-primary"
+                              ? "bg-primary/10 text-primary-ink"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -179,7 +179,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="h-7 w-7 text-muted-foreground hover:text-primary"
+                            className="h-7 w-7 text-muted-foreground hover:text-primary-ink"
                             onClick={() => setEditTrade(trade)}
                           >
                             <Pencil className="h-3.5 w-3.5" />

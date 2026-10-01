@@ -49,7 +49,7 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
     return (
       <Card className="border-border/50 bg-card/80">
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -79,7 +79,7 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
     <Card className="border-border/50 bg-card/80">
       <CardHeader className="pb-3 pt-5 px-5">
         <CardTitle className="text-base font-semibold flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-primary" />
+          <Gauge className="h-4 w-4 text-primary-ink" />
           Stock Score
         </CardTitle>
       </CardHeader>

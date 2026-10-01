@@ -33,7 +33,7 @@ export default function AlertsPage() {
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
                 <div className={`rounded-lg p-2 ${alert.status === "triggered" ? "bg-chart-2/10" : alert.status === "expired" ? "bg-muted" : "bg-primary/10"}`}>
-                  <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary"}`} />
+                  <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary-ink"}`} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function AlertsPage() {
                 <Badge
                   variant="secondary"
                   className={`text-[10px] ${
-                    alert.status === "active" ? "bg-primary/10 text-primary" :
+                    alert.status === "active" ? "bg-primary/10 text-primary-ink" :
                     alert.status === "triggered" ? "bg-chart-2/10 text-chart-2" :
                     "bg-muted text-muted-foreground"
                   }`}

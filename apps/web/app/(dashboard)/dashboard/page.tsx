@@ -93,7 +93,7 @@ export default function DashboardPage() {
                   <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
                 </div>
                 <div className="rounded-lg bg-primary/10 p-2 transition-colors group-hover:bg-primary/20">
-                  <stat.icon className="h-4 w-4 text-primary" />
+                  <stat.icon className="h-4 w-4 text-primary-ink" />
                 </div>
               </div>
               <div className="mt-3 flex items-center gap-2">
@@ -171,7 +171,7 @@ export default function DashboardPage() {
                     <Badge
                       variant="secondary"
                       className={`text-[10px] ${
-                        trade.status === "OPEN" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                        trade.status === "OPEN" ? "bg-primary/10 text-primary-ink" : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {trade.status}
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                   key={period}
                   className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
                     period === "1M"
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary-ink"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >

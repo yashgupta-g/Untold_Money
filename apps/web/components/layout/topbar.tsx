@@ -48,7 +48,7 @@ export function Topbar() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-9 gap-2 px-2" id="user-menu-btn">
               <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-primary/20 text-xs font-semibold text-primary">
+                <AvatarFallback className="bg-primary/20 text-xs font-semibold text-primary-ink">
                   YG
                 </AvatarFallback>
               </Avatar>
