@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Loader2, Plus, Search, X } from "lucide-react";
+import { CircleNotch, Plus, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -152,7 +152,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
               <select
                 value={portfolioId}
                 onChange={(e) => setPortfolioId(e.target.value)}
-                className="h-9 w-full rounded-md border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30"
+                className="h-9 w-full border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30"
               >
                 {portfolios.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
@@ -162,7 +162,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             <div className="space-y-1.5 relative" ref={searchRef}>
               <Label className="text-xs">Instrument</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                 <Input
                   placeholder="Search symbol..."
                   value={searchQuery}
@@ -182,10 +182,10 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                 )}
               </div>
               {showSearchResults && searchQuery.length >= 2 && (
-                <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-40 overflow-y-auto rounded-lg border border-border/60 bg-popover shadow-xl">
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-40 overflow-y-auto border border-border/60 bg-popover">
                   {searchFetching ? (
                     <div className="flex items-center justify-center py-3">
-                      <Loader2 className="h-4 w-4 animate-spin text-primary-ink" />
+                      <CircleNotch className="h-4 w-4 animate-spin text-primary-ink" />
                     </div>
                   ) : instruments.length === 0 ? (
                     <p className="py-3 text-center text-xs text-muted-foreground">No results</p>
@@ -193,7 +193,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                     instruments.map((inst) => (
                       <button key={inst.id} onClick={() => handleSelect(inst)}
                         className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors">
-                        <div className="flex h-7 w-7 items-center justify-center rounded bg-primary/10 text-[10px] font-bold text-primary-ink">
+                        <div className="flex h-7 w-7 items-center justify-center bg-primary/10 text-[10px] font-bold text-primary-ink">
                           {inst.symbol.slice(0, 2)}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -217,10 +217,10 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <Label className="text-xs">Side</Label>
-              <div className="flex rounded-lg border border-border/50 p-0.5">
+              <div className="flex border border-border/50 p-0.5">
                 {(["BUY", "SELL"] as const).map((s) => (
                   <button key={s} onClick={() => setTradeSide(s)}
-                    className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+                    className={`flex-1 py-1.5 text-xs font-medium transition-colors ${
                       tradeSide === s
                         ? s === "BUY" ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"
                         : "text-muted-foreground hover:text-foreground"
@@ -232,10 +232,10 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Status</Label>
-              <div className="flex rounded-lg border border-border/50 p-0.5">
+              <div className="flex border border-border/50 p-0.5">
                 {(["OPEN", "CLOSED"] as const).map((s) => (
                   <button key={s} onClick={() => setTradeStatus(s)}
-                    className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+                    className={`flex-1 py-1.5 text-xs font-medium transition-colors ${
                       tradeStatus === s ? "bg-primary/10 text-primary-ink" : "text-muted-foreground hover:text-foreground"
                     }`}>
                     {s}
@@ -301,7 +301,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             <div className="space-y-1.5">
               <Label className="text-xs">Emotion</Label>
               <select value={emotionTag} onChange={(e) => setEmotionTag(e.target.value)}
-                className="h-9 w-full rounded-md border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30">
+                className="h-9 w-full border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30">
                 <option value="">Select...</option>
                 {EMOTION_OPTIONS.map((e) => <option key={e} value={e}>{e}</option>)}
               </select>
@@ -318,7 +318,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             <Label className="text-xs">Notes</Label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
               placeholder="Trade rationale, observations..."
-              className="w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
+              className="w-full border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
               rows={2} />
           </div>
         </div>
@@ -327,7 +327,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
           <Button variant="outline" size="sm" onClick={onClose}>Cancel</Button>
           <Button size="sm" className="gap-2" onClick={handleSubmit}
             disabled={isLoading || !selectedInstrument || !quantity || !entryPrice || !portfolioId}>
-            {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+            {isLoading ? <CircleNotch className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
             Log Trade
           </Button>
         </DialogFooter>

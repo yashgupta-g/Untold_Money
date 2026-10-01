@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, AlertTriangle } from "lucide-react";
+import { CircleNotch, Warning } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -34,7 +34,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   const item = payload[0];
   return (
-    <div className="rounded-lg border border-border/60 bg-popover px-3 py-2 shadow-xl">
+    <div className="border border-border/60 bg-popover px-3 py-2">
       <p className="text-sm font-semibold">{item.name}</p>
       <p className="text-xs text-muted-foreground">
         ₹{formatINR(item.value)} ({item.payload.allocation_percent}%)
@@ -51,9 +51,9 @@ interface AllocationChartProps {
 export function AllocationChart({ allocation, isLoading }: AllocationChartProps) {
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-primary-ink" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -76,7 +76,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {/* Holdings Allocation Donut */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-2 pt-5 px-5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold">
@@ -87,7 +87,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
                 variant="destructive"
                 className="gap-1 text-[10px] font-medium"
               >
-                <AlertTriangle className="h-3 w-3" />
+                <Warning className="h-3 w-3" />
                 Concentration Risk
               </Badge>
             )}
@@ -131,7 +131,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
       </Card>
 
       {/* Sector Breakdown */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-2 pt-5 px-5">
           <CardTitle className="text-base font-semibold">
             Sector Allocation

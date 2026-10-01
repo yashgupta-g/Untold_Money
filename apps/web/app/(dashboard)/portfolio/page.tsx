@@ -2,18 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  PieChart,
-  Plus,
-  Loader2,
-  ArrowUpRight,
-  ArrowDownRight,
-  Wallet,
-  TrendingUp,
-  MoreHorizontal,
-  Trash2,
-  Pencil,
-} from "lucide-react";
+import { ChartPieSlice, Plus, CircleNotch, ArrowUpRight, ArrowDownRight, Wallet, TrendUp, DotsThree, Trash, PencilSimple } from "@phosphor-icons/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,7 +22,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
 
   return (
     <Link href={`/portfolio/${portfolio.id}`} className="block">
-      <Card className="group border-border/50 bg-card/80 transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+      <Card className="group border-border/50 transition-all duration-300 hover:border-primary/20">
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -49,7 +38,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
                 </span>
               </div>
             </div>
-            <div className="rounded-lg bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+            <div className="bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
               <Wallet className="h-4 w-4 text-primary-ink" />
             </div>
           </div>
@@ -131,7 +120,7 @@ export default function PortfolioPage() {
 
       {/* Create Form */}
       {showCreateForm && (
-        <Card className="border-primary/20 bg-card/80">
+        <Card className="border-primary/20">
           <CardContent className="p-4">
             <div className="flex items-end gap-3">
               <div className="flex-1 space-y-1.5">
@@ -153,7 +142,7 @@ export default function PortfolioPage() {
                 size="sm"
               >
                 {isCreating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <CircleNotch className="h-4 w-4 animate-spin" />
                 ) : (
                   "Create"
                 )}
@@ -173,16 +162,16 @@ export default function PortfolioPage() {
       {/* Loading */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-primary-ink" />
+          <CircleNotch className="h-8 w-8 animate-spin text-primary-ink" />
           <p className="mt-3 text-sm text-muted-foreground">
             Loading portfolios...
           </p>
         </div>
       ) : portfolios.length === 0 ? (
         /* Empty State */
-        <Card className="border-border/50 bg-card/80">
+        <Card className="border-border/50">
           <CardContent className="flex flex-col items-center justify-center py-20">
-            <PieChart className="h-12 w-12 text-muted-foreground/30" />
+            <ChartPieSlice className="h-12 w-12 text-muted-foreground/30" />
             <p className="mt-3 text-lg font-medium">No portfolios yet</p>
             <p className="text-sm text-muted-foreground">
               Create your first portfolio to start tracking investments

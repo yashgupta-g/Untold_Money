@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, AlertTriangle } from "lucide-react";
+import { CircleNotch, Warning } from "@phosphor-icons/react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
@@ -28,7 +28,7 @@ export function DeleteTradeDialog({ trade, onClose }: DeleteTradeDialogProps) {
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mb-2">
-            <AlertTriangle className="h-6 w-6 text-red-500" />
+            <Warning className="h-6 w-6 text-red-500" />
           </div>
           <DialogTitle className="text-center">Delete Trade</DialogTitle>
           <DialogDescription className="text-center">
@@ -51,7 +51,7 @@ export function DeleteTradeDialog({ trade, onClose }: DeleteTradeDialogProps) {
             disabled={isLoading}
           >
             {isLoading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <CircleNotch className="h-3.5 w-3.5 animate-spin" />
             ) : (
               "Delete"
             )}

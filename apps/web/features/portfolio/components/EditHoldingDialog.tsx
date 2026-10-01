@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
@@ -83,7 +83,7 @@ export function EditHoldingDialog({ holding, portfolioId, onClose }: EditHolding
             onClick={handleSave}
             disabled={isLoading || !quantity || !avgPrice}
           >
-            {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save"}
+            {isLoading ? <CircleNotch className="h-3.5 w-3.5 animate-spin" /> : "Save"}
           </Button>
         </DialogFooter>
       </DialogContent>

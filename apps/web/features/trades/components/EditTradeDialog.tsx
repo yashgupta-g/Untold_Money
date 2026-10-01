@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
@@ -65,10 +65,10 @@ export function EditTradeDialog({ trade, onClose }: EditTradeDialogProps) {
           {/* Status */}
           <div className="space-y-1.5">
             <Label className="text-xs">Status</Label>
-            <div className="flex rounded-lg border border-border/50 p-0.5">
+            <div className="flex border border-border/50 p-0.5">
               {(["OPEN", "CLOSED"] as const).map((s) => (
                 <button key={s} onClick={() => setTradeStatus(s)}
-                  className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 py-1.5 text-xs font-medium transition-colors ${
                     tradeStatus === s ? "bg-primary/10 text-primary-ink" : "text-muted-foreground hover:text-foreground"
                   }`}>
                   {s}
@@ -127,7 +127,7 @@ export function EditTradeDialog({ trade, onClose }: EditTradeDialogProps) {
             <Label className="text-xs">Notes</Label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
               placeholder="Trade observations..."
-              className="w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
+              className="w-full border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
               rows={2} />
           </div>
         </div>
@@ -135,7 +135,7 @@ export function EditTradeDialog({ trade, onClose }: EditTradeDialogProps) {
         <DialogFooter>
           <Button variant="outline" size="sm" onClick={onClose}>Cancel</Button>
           <Button size="sm" onClick={handleSave} disabled={isLoading}>
-            {isLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save Changes"}
+            {isLoading ? <CircleNotch className="h-3.5 w-3.5 animate-spin" /> : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

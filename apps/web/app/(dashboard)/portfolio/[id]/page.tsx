@@ -3,13 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Loader2,
-  PieChart,
-  Plus,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowLeft, CircleNotch, ChartPieSlice, Plus, ArrowsClockwise } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -51,7 +45,7 @@ export default function PortfolioDetailPage() {
       <div className="flex h-[60vh] flex-col items-center justify-center">
         <div className="relative">
           <div className="h-12 w-12 rounded-full border-2 border-primary/20" />
-          <Loader2 className="absolute inset-0 h-12 w-12 animate-spin text-primary-ink" />
+          <CircleNotch className="absolute inset-0 h-12 w-12 animate-spin text-primary-ink" />
         </div>
         <p className="mt-4 text-sm text-muted-foreground">Loading portfolio...</p>
       </div>
@@ -62,15 +56,15 @@ export default function PortfolioDetailPage() {
   if (isError) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <div className="rounded-2xl bg-red-500/10 p-4 mb-4">
-          <PieChart className="h-10 w-10 text-red-500/60" />
+        <div className="bg-red-500/10 p-4 mb-4">
+          <ChartPieSlice className="h-10 w-10 text-red-500/60" />
         </div>
         <p className="text-lg font-medium">Failed to load portfolio</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Something went wrong. Please try again.
         </p>
         <Button onClick={() => refetch()} variant="outline" className="mt-4 gap-2" size="sm">
-          <RefreshCw className="h-3.5 w-3.5" />
+          <ArrowsClockwise className="h-3.5 w-3.5" />
           Retry
         </Button>
       </div>
@@ -81,8 +75,8 @@ export default function PortfolioDetailPage() {
   if (!portfolio) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <div className="rounded-2xl bg-muted/50 p-4">
-          <PieChart className="h-10 w-10 text-muted-foreground/40" />
+        <div className="bg-muted/50 p-4">
+          <ChartPieSlice className="h-10 w-10 text-muted-foreground/40" />
         </div>
         <p className="mt-4 text-lg font-medium">Portfolio not found</p>
         <Link href="/portfolio">
@@ -140,13 +134,13 @@ export default function PortfolioDetailPage() {
       {summaryLoading && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="border-border/50 bg-card/80 animate-pulse">
+            <Card key={i} className="border-border/50 animate-pulse">
               <CardContent className="p-5">
                 <div className="flex items-center gap-4">
-                  <div className="h-11 w-11 rounded-xl bg-muted/50" />
+                  <div className="h-11 w-11 bg-muted/50" />
                   <div className="space-y-2 flex-1">
-                    <div className="h-3 w-20 rounded bg-muted/50" />
-                    <div className="h-6 w-28 rounded bg-muted/50" />
+                    <div className="h-3 w-20 bg-muted/50" />
+                    <div className="h-6 w-28 bg-muted/50" />
                   </div>
                 </div>
               </CardContent>

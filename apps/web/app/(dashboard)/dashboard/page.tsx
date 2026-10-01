@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  TrendingUp,
-  TrendingDown,
-  BarChart3,
-  PieChart,
-  Activity,
-  ArrowUpRight,
-  ArrowDownRight,
-  Wallet,
-  Target,
-  Zap,
-} from "lucide-react";
+import { TrendUp, TrendDown, ChartBar, ChartPieSlice, Pulse, ArrowUpRight, ArrowDownRight, Wallet, Target, Lightning } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,7 +18,7 @@ const statsCards = [
     value: "+₹8,420",
     change: "+0.68%",
     trend: "up" as const,
-    icon: TrendingUp,
+    icon: TrendUp,
     description: "15 holdings active",
   },
   {
@@ -45,7 +34,7 @@ const statsCards = [
     value: "7",
     change: "3 profitable",
     trend: "up" as const,
-    icon: Activity,
+    icon: Pulse,
     description: "₹2.1L deployed",
   },
 ];
@@ -82,7 +71,7 @@ export default function DashboardPage() {
         {statsCards.map((stat) => (
           <Card
             key={stat.title}
-            className="group border-border/50 bg-card/80 transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5"
+            className="group border-border/50 transition-all duration-300 hover:border-primary/20"
           >
             <CardContent className="p-5">
               <div className="flex items-start justify-between">
@@ -92,7 +81,7 @@ export default function DashboardPage() {
                   </p>
                   <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
                 </div>
-                <div className="rounded-lg bg-primary/10 p-2 transition-colors group-hover:bg-primary/20">
+                <div className="bg-primary/10 p-2 transition-colors group-hover:bg-primary/20">
                   <stat.icon className="h-4 w-4 text-primary-ink" />
                 </div>
               </div>
@@ -119,12 +108,12 @@ export default function DashboardPage() {
       {/* Content Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Recent Trades */}
-        <Card className="lg:col-span-2 border-border/50 bg-card/80">
+        <Card className="lg:col-span-2 border-border/50">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold">Recent Trades</CardTitle>
               <Badge variant="secondary" className="text-xs">
-                <Zap className="mr-1 h-3 w-3" />
+                <Lightning className="mr-1 h-3 w-3" />
                 Live
               </Badge>
             </div>
@@ -143,7 +132,7 @@ export default function DashboardPage() {
               {recentTrades.map((trade, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-6 gap-4 rounded-lg py-2.5 text-sm transition-colors hover:bg-muted/30"
+                  className="grid grid-cols-6 gap-4 py-2.5 text-sm transition-colors hover:bg-muted/30"
                 >
                   <span className="font-medium">{trade.symbol}</span>
                   <span>
@@ -184,7 +173,7 @@ export default function DashboardPage() {
         </Card>
 
         {/* Top Movers */}
-        <Card className="border-border/50 bg-card/80">
+        <Card className="border-border/50">
           <CardHeader className="pb-3">
             <CardTitle className="text-base font-semibold">Top Movers</CardTitle>
           </CardHeader>
@@ -193,7 +182,7 @@ export default function DashboardPage() {
               {topMovers.map((mover) => (
                 <div
                   key={mover.symbol}
-                  className="flex items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-muted/30"
+                  className="flex items-center justify-between p-2.5 transition-colors hover:bg-muted/30"
                 >
                   <div>
                     <p className="text-sm font-medium">{mover.symbol}</p>
@@ -205,9 +194,9 @@ export default function DashboardPage() {
                     }`}
                   >
                     {mover.trend === "up" ? (
-                      <TrendingUp className="h-3.5 w-3.5" />
+                      <TrendUp className="h-3.5 w-3.5" />
                     ) : (
-                      <TrendingDown className="h-3.5 w-3.5" />
+                      <TrendDown className="h-3.5 w-3.5" />
                     )}
                     {mover.change}
                   </div>
@@ -219,7 +208,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Chart placeholder */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold">Portfolio Performance</CardTitle>
@@ -227,7 +216,7 @@ export default function DashboardPage() {
               {["1W", "1M", "3M", "6M", "1Y"].map((period) => (
                 <button
                   key={period}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
                     period === "1M"
                       ? "bg-primary/10 text-primary-ink"
                       : "text-muted-foreground hover:text-foreground"
@@ -240,9 +229,9 @@ export default function DashboardPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex h-64 items-center justify-center rounded-lg border border-dashed border-border/50 bg-muted/20">
+          <div className="flex h-64 items-center justify-center border border-dashed border-border/50 bg-muted/20">
             <div className="text-center">
-              <BarChart3 className="mx-auto h-10 w-10 text-muted-foreground/40" />
+              <ChartBar className="mx-auto h-10 w-10 text-muted-foreground/40" />
               <p className="mt-2 text-sm text-muted-foreground">
                 Portfolio performance chart coming soon
               </p>

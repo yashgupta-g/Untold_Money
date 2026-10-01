@@ -2,17 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import {
-  Search,
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight,
-  Loader2,
-  BarChart3,
-  Filter,
-  RefreshCw,
-} from "lucide-react";
+import { MagnifyingGlass, TrendUp, TrendDown, ArrowUpRight, ArrowDownRight, CircleNotch, ChartBar, Funnel, ArrowsClockwise } from "@phosphor-icons/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,10 +21,10 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
 
   return (
     <Link href={`/stocks/${instrument.symbol}`} className="block">
-      <div className="grid grid-cols-12 items-center gap-4 rounded-xl px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 hover:shadow-sm group">
+      <div className="grid grid-cols-12 items-center gap-4 px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 group">
         {/* Symbol & Name */}
         <div className="col-span-4 flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary-ink group-hover:bg-primary/20 transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary/10 text-xs font-bold text-primary-ink group-hover:bg-primary/20 transition-colors">
             {instrument.symbol.slice(0, 2)}
           </div>
           <div className="min-w-0">
@@ -56,7 +46,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-16 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-16 animate-pulse bg-muted" />
             </div>
           ) : quote ? (
             <p className="font-semibold tabular-nums">₹{quote.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</p>
@@ -69,7 +59,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-14 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-14 animate-pulse bg-muted" />
             </div>
           ) : quote ? (
             <div className={`flex items-center justify-end gap-1 font-medium ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
@@ -83,7 +73,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 hidden lg:block text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-14 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-14 animate-pulse bg-muted" />
             </div>
           ) : quote ? (
             <p className="text-xs text-muted-foreground tabular-nums">
@@ -122,14 +112,14 @@ export default function StocksPage() {
           disabled={isFetching}
           className="gap-2"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          <ArrowsClockwise className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
           Refresh
         </Button>
       </div>
 
       {/* Search */}
       <div className="relative max-w-md">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search by symbol or name..."
           className="bg-muted/50 pl-9"
@@ -140,7 +130,7 @@ export default function StocksPage() {
       </div>
 
       {/* Stock Table */}
-      <Card className="border-border/50 bg-card/80 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 border-b border-border/50 px-4 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -154,13 +144,13 @@ export default function StocksPage() {
           {/* Loading State */}
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary-ink" />
+              <CircleNotch className="h-8 w-8 animate-spin text-primary-ink" />
               <p className="mt-3 text-sm text-muted-foreground">Loading instruments...</p>
             </div>
           ) : instruments.length === 0 ? (
             /* Empty State */
             <div className="flex flex-col items-center justify-center py-20">
-              <BarChart3 className="h-12 w-12 text-muted-foreground/30" />
+              <ChartBar className="h-12 w-12 text-muted-foreground/30" />
               <p className="mt-3 text-sm font-medium">No instruments found</p>
               <p className="text-xs text-muted-foreground">
                 {searchQuery ? `No results for "${searchQuery}"` : "Run mock ingestion to seed data"}

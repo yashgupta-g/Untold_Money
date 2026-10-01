@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Plus, Loader2, Search, X } from "lucide-react";
+import { Plus, CircleNotch, MagnifyingGlass, X } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +68,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
   if (!isOpen) return null;
 
   return (
-    <Card className="border-primary/20 bg-card/90 backdrop-blur-sm animate-in slide-in-from-top-2 duration-300">
+    <Card className="border-primary/20 animate-in slide-in-from-top-2 duration-300">
       <CardContent className="p-5">
         <div className="grid gap-4 sm:grid-cols-4">
           {/* Instrument Search */}
@@ -77,7 +77,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
               Search Instrument
             </Label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
               <Input
                 id="instrument-search"
                 placeholder="e.g., RELIANCE, TCS..."
@@ -105,10 +105,10 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
 
             {/* Dropdown */}
             {showResults && searchQuery.length >= 2 && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-52 overflow-y-auto rounded-lg border border-border/60 bg-popover shadow-xl">
+              <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-52 overflow-y-auto border border-border/60 bg-popover">
                 {isFetching ? (
                   <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary-ink" />
+                    <CircleNotch className="h-4 w-4 animate-spin text-primary-ink" />
                   </div>
                 ) : instruments.length === 0 ? (
                   <p className="py-4 text-center text-xs text-muted-foreground">
@@ -121,7 +121,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
                       onClick={() => handleSelect(inst)}
                       className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/50"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-xs font-bold text-primary-ink">
+                      <div className="flex h-8 w-8 items-center justify-center bg-primary/10 text-xs font-bold text-primary-ink">
                         {inst.symbol.slice(0, 2)}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -131,7 +131,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
                         </p>
                       </div>
                       {inst.sector && (
-                        <span className="text-[10px] text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] text-muted-foreground bg-muted/50 px-1.5 py-0.5">
                           {inst.sector}
                         </span>
                       )}
@@ -195,7 +195,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
             disabled={isLoading || !selectedInstrument || !quantity || !avgPrice}
           >
             {isLoading ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <CircleNotch className="h-3.5 w-3.5 animate-spin" />
             ) : (
               <Plus className="h-3.5 w-3.5" />
             )}

@@ -30,8 +30,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${robotoMonoCondensed.variable}`}>
       <body className="antialiased">
-        <Providers>{children}</Providers>
-        <Toaster richColors position="top-right" />
+        <Providers>
+          {children}
+          <Toaster richColors position="top-right" />
+        </Providers>
       </body>
     </html>
   );

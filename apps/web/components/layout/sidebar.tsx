@@ -3,32 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  TrendingUp,
-  PieChart,
-  ArrowLeftRight,
-  Eye,
-  Bell,
-  Settings,
-  Shield,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { SquaresFour, TrendUp, ChartPieSlice, ArrowsLeftRight, Eye, Bell, GearSix, ShieldCheck, CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { useSidebar } from "./sidebar-context";
 
 const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Stocks", href: "/stocks", icon: TrendingUp },
-  { label: "Portfolio", href: "/portfolio", icon: PieChart },
-  { label: "Trades", href: "/trades", icon: ArrowLeftRight },
+  { label: "Dashboard", href: "/dashboard", icon: SquaresFour },
+  { label: "Stocks", href: "/stocks", icon: TrendUp },
+  { label: "Portfolio", href: "/portfolio", icon: ChartPieSlice },
+  { label: "Trades", href: "/trades", icon: ArrowsLeftRight },
   { label: "Watchlist", href: "/watchlist", icon: Eye },
   { label: "Alerts", href: "/alerts", icon: Bell },
-  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "Settings", href: "/settings", icon: GearSix },
 ];
 
 const adminItems = [
-  { label: "Admin", href: "/admin", icon: Shield },
+  { label: "Admin", href: "/admin", icon: ShieldCheck },
 ];
 
 export function Sidebar() {
@@ -46,8 +35,8 @@ export function Sidebar() {
       <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
         {!collapsed && (
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <TrendingUp className="h-4 w-4 text-primary-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center bg-primary">
+              <TrendUp className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="text-lg font-bold tracking-tight text-sidebar-foreground">
               Untold<span className="text-primary-ink">Money</span>
@@ -55,8 +44,8 @@ export function Sidebar() {
           </Link>
         )}
         {collapsed && (
-          <div className="mx-auto flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <TrendingUp className="h-4 w-4 text-primary-foreground" />
+          <div className="mx-auto flex h-8 w-8 items-center justify-center bg-primary">
+            <TrendUp className="h-4 w-4 text-primary-foreground" />
           </div>
         )}
       </div>
@@ -77,9 +66,9 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "bg-primary/10 text-primary-ink shadow-sm"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               )}
             >
@@ -112,7 +101,7 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
                   ? "bg-primary/10 text-primary-ink"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
@@ -129,13 +118,13 @@ export function Sidebar() {
       <div className="border-t border-sidebar-border p-3">
         <button
           onClick={toggle}
-          className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+          className="flex w-full items-center justify-center gap-2 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
         >
           {collapsed ? (
-            <ChevronRight className="h-4 w-4" />
+            <CaretRight className="h-4 w-4" />
           ) : (
             <>
-              <ChevronLeft className="h-4 w-4" />
+              <CaretLeft className="h-4 w-4" />
               <span>Collapse</span>
             </>
           )}
