@@ -109,17 +109,17 @@ function PriceChart({
             <stop offset="95%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
         <XAxis
           dataKey="time"
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
           domain={["auto", "auto"]}
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v: number) => `₹${v.toLocaleString("en-IN")}`}
@@ -127,12 +127,12 @@ function PriceChart({
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "8px",
             fontSize: "12px",
           }}
-          formatter={(value: number | string | undefined) => [`₹${Number(value ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`, "Price"]}
+          formatter={(value) => [`₹${Number(value ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`, "Price"]}
         />
         <Area
           type="monotone"

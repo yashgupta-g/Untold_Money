@@ -45,15 +45,15 @@ export function Topbar() {
 
         {/* User Menu */}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-9 gap-2 px-2" id="user-menu-btn">
-              <Avatar className="h-7 w-7">
-                <AvatarFallback className="bg-primary/20 text-xs font-semibold text-primary-ink">
-                  YG
-                </AvatarFallback>
-              </Avatar>
-              <span className="hidden text-sm font-medium sm:block">Yash G.</span>
-            </Button>
+          <DropdownMenuTrigger
+            render={<Button variant="ghost" className="h-9 gap-2 px-2" id="user-menu-btn" />}
+          >
+            <Avatar className="h-7 w-7">
+              <AvatarFallback className="bg-primary/20 text-xs font-semibold text-primary-ink">
+                YG
+              </AvatarFallback>
+            </Avatar>
+            <span className="hidden text-sm font-medium sm:block">Yash G.</span>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem>
