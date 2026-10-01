@@ -21,14 +21,12 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       value: `₹${formatINR(summary.total_invested)}`,
       icon: Wallet,
       color: "text-primary-ink",
-      bg: "bg-primary/10",
     },
     {
       label: "Current Value",
       value: `₹${formatINR(summary.total_value)}`,
       icon: TrendUp,
       color: "text-chart-2",
-      bg: "bg-chart-2/10",
     },
     {
       label: "Unrealized P&L",
@@ -54,7 +52,7 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
           className="border-border/50 transition-all duration-300 hover:border-primary/20"
         >
           <CardContent className="flex items-center gap-4 p-5">
-            <div className={`${card.bg} p-3 transition-colors`}>
+            <div className="border border-border p-3">
               <card.icon className={`h-5 w-5 ${card.color}`} />
             </div>
             <div className="min-w-0">

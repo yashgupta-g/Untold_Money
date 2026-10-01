@@ -197,7 +197,7 @@ export default function StockDetailPage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             {/* Left — Symbol Info */}
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center bg-primary/10 text-lg font-bold text-primary-ink">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-border text-lg font-bold text-primary-ink">
                 {symbol.slice(0, 2)}
               </div>
               <div>

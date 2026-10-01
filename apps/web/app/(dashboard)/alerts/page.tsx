@@ -32,7 +32,7 @@ export default function AlertsPage() {
           <Card key={alert.id} className="border-border/50 transition-all hover:border-border">
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <div className={`p-2 ${alert.status === "triggered" ? "bg-chart-2/10" : alert.status === "expired" ? "bg-muted" : "bg-primary/10"}`}>
+                <div className="border border-border p-2">
                   <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary-ink"}`} />
                 </div>
                 <div>

@@ -38,7 +38,7 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
                 </span>
               </div>
             </div>
-            <div className="bg-primary/10 p-2 group-hover:bg-primary/20 transition-colors">
+            <div className="border border-border p-2">
               <Wallet className="h-4 w-4 text-primary-ink" />
             </div>
           </div>
@@ -132,7 +132,7 @@ export default function PortfolioPage() {
                   placeholder="e.g., Long Term, Swing Trading"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  className="bg-muted/50"
+                 
                   onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 />
               </div>

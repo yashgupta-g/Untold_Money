@@ -22,7 +22,7 @@ export function Topbar() {
           <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search stocks, portfolios, trades..."
-            className="h-9 bg-muted/50 pl-9 text-sm border-none focus-visible:ring-1 focus-visible:ring-primary/50"
+            className="h-9 pl-9 text-sm"
             id="global-search"
           />
         </div>

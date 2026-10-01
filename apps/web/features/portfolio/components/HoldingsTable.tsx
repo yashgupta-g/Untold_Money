@@ -29,7 +29,7 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
     return (
       <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-16">
-          <div className="bg-muted/50 p-4">
+          <div className="border border-border p-4">
             <ChartPieSlice className="h-10 w-10 text-muted-foreground/40" />
           </div>
           <p className="mt-4 text-base font-medium">No holdings yet</p>

@@ -24,7 +24,7 @@ export default function SettingsPage() {
           <Card key={item.title} className="cursor-pointer border-border/50 transition-all hover:border-primary/20">
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                <div className="bg-primary/10 p-2">
+                <div className="border border-border p-2">
                   <item.icon className="h-4 w-4 text-primary-ink" />
                 </div>
                 <div>

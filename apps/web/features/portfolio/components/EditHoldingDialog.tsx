@@ -55,7 +55,7 @@ export function EditHoldingDialog({ holding, portfolioId, onClose }: EditHolding
               type="number"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="bg-muted/50"
+             
               min="0"
               step="any"
             />
@@ -67,7 +67,7 @@ export function EditHoldingDialog({ holding, portfolioId, onClose }: EditHolding
               type="number"
               value={avgPrice}
               onChange={(e) => setAvgPrice(e.target.value)}
-              className="bg-muted/50"
+             
               min="0"
               step="any"
             />

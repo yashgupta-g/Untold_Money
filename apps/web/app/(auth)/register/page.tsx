@@ -68,12 +68,6 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-12">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute -left-40 bottom-1/4 h-[500px] w-[500px] rounded-full bg-chart-2/5 blur-[120px]" />
-      </div>
-
       <Card className="relative z-10 w-full max-w-md border-border/50">
         <CardHeader className="space-y-4 text-center">
           <Link href="/" className="mx-auto flex items-center gap-2">
@@ -100,7 +94,7 @@ export default function RegisterPage() {
                 id="full_name"
                 placeholder="John Doe"
                 {...register("full_name")}
-                className="bg-muted/50"
+               
               />
               {errors.full_name && (
                 <p className="text-xs text-destructive">{errors.full_name.message}</p>
@@ -114,7 +108,7 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...register("email")}
-                className="bg-muted/50"
+               
               />
               {errors.email && (
                 <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -128,7 +122,7 @@ export default function RegisterPage() {
                 type="tel"
                 placeholder="+91 98765 43210"
                 {...register("phone")}
-                className="bg-muted/50"
+               
               />
             </div>
 
@@ -140,7 +134,7 @@ export default function RegisterPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
                   {...register("password")}
-                  className="bg-muted/50 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"

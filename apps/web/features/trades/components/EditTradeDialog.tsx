@@ -127,7 +127,7 @@ export function EditTradeDialog({ trade, onClose }: EditTradeDialogProps) {
             <Label className="text-xs">Notes</Label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
               placeholder="Trade observations..."
-              className="w-full border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
+              className="w-full border border-input bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
               rows={2} />
           </div>
         </div>

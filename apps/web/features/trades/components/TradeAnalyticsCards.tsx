@@ -23,7 +23,6 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       sub: `${analytics.open_trades} open · ${analytics.closed_trades} closed`,
       icon: ArrowsLeftRight,
       color: "text-primary-ink",
-      bg: "bg-primary/10",
     },
     {
       label: "Win Rate",
@@ -47,7 +46,6 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       sub: "Currently active",
       icon: Pulse,
       color: "text-chart-2",
-      bg: "bg-chart-2/10",
     },
     {
       label: "Profit Factor",
@@ -71,7 +69,6 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       sub: `Avg Loss: ₹${formatINR(analytics.avg_loss)}`,
       icon: Medal,
       color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
     },
     {
       label: "Closed Trades",
@@ -79,7 +76,6 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       sub: "Completed trades",
       icon: WarningCircle,
       color: "text-muted-foreground",
-      bg: "bg-muted/50",
     },
   ];
 
@@ -94,7 +90,7 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
           >
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className={`${card.bg} p-2.5 transition-colors`}>
+                <div className="border border-border p-2.5">
                   <card.icon className={`h-4 w-4 ${card.color}`} />
                 </div>
                 <div className="min-w-0 flex-1">

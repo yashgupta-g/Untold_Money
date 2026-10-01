@@ -54,12 +54,6 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute -right-40 bottom-1/4 h-[500px] w-[500px] rounded-full bg-chart-5/5 blur-[120px]" />
-      </div>
-
       <Card className="relative z-10 w-full max-w-md border-border/50">
         <CardHeader className="space-y-4 text-center">
           <Link href="/" className="mx-auto flex items-center gap-2">
@@ -87,7 +81,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...register("email")}
-                className="bg-muted/50"
+               
               />
               {errors.email && (
                 <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -102,7 +96,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   {...register("password")}
-                  className="bg-muted/50 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"

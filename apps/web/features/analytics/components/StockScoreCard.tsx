@@ -29,9 +29,9 @@ function ScoreBar({ label, value, icon: Icon }: { label: string; value: number; 
         </div>
         <span className="text-xs font-bold tabular-nums">{value}/100</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden">
+      <div className="h-2 w-full bg-muted/50 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all duration-700 ${color}`}
+          className={`h-full transition-all duration-700 ${color}`}
           style={{ width: `${value}%` }}
         />
       </div>
@@ -87,9 +87,8 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
         <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
           {/* Score Circle */}
           <div className="flex flex-col items-center justify-center">
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-4 border-border/30">
-              <div className={`absolute inset-1 rounded-full ${signalConfig.bg}`} />
-              <div className="relative text-center">
+            <div className="flex h-32 w-32 items-center justify-center border border-border">
+              <div className="text-center">
                 <p className={`text-3xl font-black tabular-nums ${scoreColor}`}>
                   {data.final_score}
                 </p>

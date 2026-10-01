@@ -152,7 +152,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
               <select
                 value={portfolioId}
                 onChange={(e) => setPortfolioId(e.target.value)}
-                className="h-9 w-full border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30"
+                className="h-9 w-full border border-input bg-transparent px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30"
               >
                 {portfolios.map((p) => (
                   <option key={p.id} value={p.id}>{p.name}</option>
@@ -193,7 +193,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
                     instruments.map((inst) => (
                       <button key={inst.id} onClick={() => handleSelect(inst)}
                         className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-muted/50 transition-colors">
-                        <div className="flex h-7 w-7 items-center justify-center bg-primary/10 text-[10px] font-bold text-primary-ink">
+                        <div className="flex h-7 w-7 items-center justify-center border border-border text-[10px] font-bold text-primary-ink">
                           {inst.symbol.slice(0, 2)}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -301,7 +301,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             <div className="space-y-1.5">
               <Label className="text-xs">Emotion</Label>
               <select value={emotionTag} onChange={(e) => setEmotionTag(e.target.value)}
-                className="h-9 w-full border border-border/50 bg-muted/50 px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30">
+                className="h-9 w-full border border-input bg-transparent px-3 text-sm outline-none focus:ring-1 focus:ring-primary/30">
                 <option value="">Select...</option>
                 {EMOTION_OPTIONS.map((e) => <option key={e} value={e}>{e}</option>)}
               </select>
@@ -318,7 +318,7 @@ export function CreateTradeDialog({ open, onClose }: CreateTradeDialogProps) {
             <Label className="text-xs">Notes</Label>
             <textarea value={notes} onChange={(e) => setNotes(e.target.value)}
               placeholder="Trade rationale, observations..."
-              className="w-full border border-border/50 bg-muted/50 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
+              className="w-full border border-input bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
               rows={2} />
           </div>
         </div>

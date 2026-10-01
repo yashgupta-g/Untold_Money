@@ -47,7 +47,7 @@ export default function TradesPage() {
           </p>
         </div>
         <div className="flex h-[40vh] flex-col items-center justify-center">
-          <div className="bg-red-500/10 p-4 mb-4">
+          <div className="border border-destructive/30 p-4 mb-4">
             <ArrowsLeftRight className="h-10 w-10 text-red-500/60" />
           </div>
           <p className="text-lg font-medium">Failed to load trades</p>

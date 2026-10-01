@@ -56,7 +56,7 @@ export default function PortfolioDetailPage() {
   if (isError) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <div className="bg-red-500/10 p-4 mb-4">
+        <div className="border border-destructive/30 p-4 mb-4">
           <ChartPieSlice className="h-10 w-10 text-red-500/60" />
         </div>
         <p className="text-lg font-medium">Failed to load portfolio</p>
@@ -75,7 +75,7 @@ export default function PortfolioDetailPage() {
   if (!portfolio) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <div className="bg-muted/50 p-4">
+        <div className="border border-border p-4">
           <ChartPieSlice className="h-10 w-10 text-muted-foreground/40" />
         </div>
         <p className="mt-4 text-lg font-medium">Portfolio not found</p>

@@ -27,7 +27,7 @@ export default function AdminPage() {
                   <p className="mt-1 text-2xl font-bold">{s.value}</p>
                   <p className="text-xs text-muted-foreground">{s.sub}</p>
                 </div>
-                <div className="bg-primary/10 p-2">
+                <div className="border border-border p-2">
                   <s.icon className="h-4 w-4 text-primary-ink" />
                 </div>
               </div>

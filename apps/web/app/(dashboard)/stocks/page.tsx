@@ -24,7 +24,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
       <div className="grid grid-cols-12 items-center gap-4 px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 group">
         {/* Symbol & Name */}
         <div className="col-span-4 flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-primary/10 text-xs font-bold text-primary-ink group-hover:bg-primary/20 transition-colors">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border text-xs font-bold text-primary-ink">
             {instrument.symbol.slice(0, 2)}
           </div>
           <div className="min-w-0">
@@ -122,7 +122,7 @@ export default function StocksPage() {
         <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search by symbol or name..."
-          className="bg-muted/50 pl-9"
+          className="pl-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           id="stock-search-input"

@@ -121,7 +121,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
                       onClick={() => handleSelect(inst)}
                       className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-muted/50"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center bg-primary/10 text-xs font-bold text-primary-ink">
+                      <div className="flex h-8 w-8 items-center justify-center border border-border text-xs font-bold text-primary-ink">
                         {inst.symbol.slice(0, 2)}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -159,7 +159,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
               placeholder="100"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="bg-muted/50"
+             
               min="0"
               step="any"
             />
@@ -176,7 +176,7 @@ export function AddHoldingForm({ portfolioId, isOpen, onClose }: AddHoldingFormP
               placeholder="1500.00"
               value={avgPrice}
               onChange={(e) => setAvgPrice(e.target.value)}
-              className="bg-muted/50"
+             
               min="0"
               step="any"
             />

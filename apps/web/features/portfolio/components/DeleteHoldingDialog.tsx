@@ -28,7 +28,7 @@ export function DeleteHoldingDialog({ holding, portfolioId, onClose }: DeleteHol
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mb-2">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center border border-destructive/30 mb-2">
             <Warning className="h-6 w-6 text-red-500" />
           </div>
           <DialogTitle className="text-center">Remove Holding</DialogTitle>

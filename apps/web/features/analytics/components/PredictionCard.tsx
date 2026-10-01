@@ -40,9 +40,9 @@ function SignalBar({ signal }: { signal: TopSignal }) {
       <span className="text-muted-foreground">{featureLabel(signal.feature)}</span>
       <div className="flex items-center gap-2">
         <span className="font-mono tabular-nums">{signal.value.toFixed(2)}</span>
-        <div className="h-1.5 w-16 rounded-full bg-muted/50 overflow-hidden">
+        <div className="h-1.5 w-16 bg-muted/50 overflow-hidden">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full bg-primary transition-all duration-500"
             style={{ width: `${Math.min(signal.importance * 100 * 4, 100)}%` }}
           />
         </div>
@@ -107,14 +107,8 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
 
   return (
     <Card className="border-border/50 overflow-hidden">
-      {/* Gradient accent bar */}
-      <div
-        className={`h-1 w-full ${
-          isUp
-            ? "bg-gradient-to-r from-emerald-500 to-emerald-300"
-            : "bg-gradient-to-r from-red-500 to-red-300"
-        }`}
-      />
+      {/* Direction accent rule */}
+      <div className={`h-0.5 w-full ${isUp ? "bg-primary" : "bg-destructive"}`} />
 
       <CardHeader className="pb-3 pt-5 px-5">
         <div className="flex items-center justify-between">
@@ -223,9 +217,9 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
               </div>
             </div>
 
-            <div className="mt-3 h-2 w-full rounded-full bg-muted/50 overflow-hidden relative">
+            <div className="mt-3 h-2 w-full bg-muted/50 overflow-hidden relative">
               <div
-                className="absolute h-full bg-gradient-to-r from-red-400 via-amber-400 to-emerald-400 rounded-full"
+                className="absolute h-full bg-gradient-to-r from-red-400 via-amber-400 to-emerald-400"
                 style={{ width: "100%" }}
               />
               {/* Current price marker */}
@@ -250,7 +244,7 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
 
         {/* Explanation */}
         {direction?.explanation && (
-          <div className="border border-dashed border-primary/20 bg-primary/5 p-4">
+          <div className="border border-border p-4">
             <div className="flex items-start gap-2">
               <Info className="h-3.5 w-3.5 text-primary-ink mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">

@@ -81,7 +81,7 @@ export default function DashboardPage() {
                   </p>
                   <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
                 </div>
-                <div className="bg-primary/10 p-2 transition-colors group-hover:bg-primary/20">
+                <div className="border border-border p-2">
                   <stat.icon className="h-4 w-4 text-primary-ink" />
                 </div>
               </div>

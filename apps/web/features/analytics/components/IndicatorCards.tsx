@@ -101,7 +101,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
                   {formatValue(indicator.name, indicator.value)}
                 </p>
                 <div className="mt-2 flex items-center gap-1.5">
-                  <div className={`p-1 ${signal.bg}`}>
+                  <div className="p-1">
                     <SignalIcon className={`h-3 w-3 ${signal.color}`} />
                   </div>
                   <Badge variant="secondary" className={`text-[10px] ${signal.bg} ${signal.color} border-0`}>
