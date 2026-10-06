@@ -106,32 +106,32 @@ export function StockScreen() {
         <svg className={styles.chart} viewBox="0 0 248 104" aria-hidden="true">
           <defs>
             <linearGradient id="um-stock-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fcdb02" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#fcdb02" stopOpacity="0" />
+              <stop offset="0%" stopColor="#0d9958" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#0d9958" stopOpacity="0" />
             </linearGradient>
           </defs>
           <path d={chart.area} fill="url(#um-stock-fill)" />
           <path
             d={chart.line}
             fill="none"
-            stroke="#14130f"
+            stroke="#0f1412"
             strokeWidth="2"
             strokeLinejoin="round"
             strokeLinecap="round"
           />
-          <circle cx={chart.last.x} cy={chart.last.y} r="4.5" fill="#fcdb02" stroke="#14130f" strokeWidth="2" />
+          <circle cx={chart.last.x} cy={chart.last.y} r="4.5" fill="#0d9958" stroke="#0f1412" strokeWidth="2" />
         </svg>
 
         <div className={styles.scoreCard}>
           <div className={styles.ring}>
             <svg width="52" height="52" viewBox="0 0 52 52">
-              <circle cx="26" cy="26" r={RING_RADIUS} fill="none" stroke="#e6e2d6" strokeWidth="6" />
+              <circle cx="26" cy="26" r={RING_RADIUS} fill="none" stroke="#e3e8e5" strokeWidth="6" />
               <circle
                 cx="26"
                 cy="26"
                 r={RING_RADIUS}
                 fill="none"
-                stroke="#fcdb02"
+                stroke="#0d9958"
                 strokeWidth="6"
                 strokeLinecap="round"
                 strokeDasharray={`${(SCORE / 100) * circumference} ${circumference}`}
@@ -190,11 +190,11 @@ function IndicatorRow({
 // --- Portfolio screen ---
 
 export const HOLDINGS = [
-  { label: "A", pct: 34, value: "₹4,23,531", color: "#fcdb02" },
-  { label: "B", pct: 24, value: "₹2,98,963", color: "#14130f" },
-  { label: "C", pct: 18, value: "₹2,24,222", color: "#4a4740" },
-  { label: "D", pct: 14, value: "₹1,74,395", color: "#8a877e" },
-  { label: "E", pct: 10, value: "₹1,24,568", color: "#c9c5ba" },
+  { label: "A", pct: 34, value: "₹4,23,531", color: "#d97706" },
+  { label: "B", pct: 24, value: "₹2,98,963", color: "#0f1412" },
+  { label: "C", pct: 18, value: "₹2,24,222", color: "#45504b" },
+  { label: "D", pct: 14, value: "₹1,74,395", color: "#85908b" },
+  { label: "E", pct: 10, value: "₹1,24,568", color: "#c4ccc8" },
 ];
 
 const DONUT_RADIUS = 38;
@@ -334,12 +334,12 @@ export function JournalScreen() {
         <svg className={styles.chart} style={{ height: 46 }} viewBox="0 0 248 46" aria-hidden="true">
           <defs>
             <linearGradient id="um-journal-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fcdb02" stopOpacity="0.5" />
-              <stop offset="100%" stopColor="#fcdb02" stopOpacity="0" />
+              <stop offset="0%" stopColor="#0d9958" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#0d9958" stopOpacity="0" />
             </linearGradient>
           </defs>
           <path d={equity.area} fill="url(#um-journal-fill)" />
-          <path d={equity.line} fill="none" stroke="#14130f" strokeWidth="2" strokeLinejoin="round" />
+          <path d={equity.line} fill="none" stroke="#0f1412" strokeWidth="2" strokeLinejoin="round" />
         </svg>
 
         <div className={styles.list}>

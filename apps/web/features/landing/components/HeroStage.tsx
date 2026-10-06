@@ -155,7 +155,7 @@ export function HeroStage() {
           <path
             d={rsi.line}
             fill="none"
-            stroke="#fcdb02"
+            stroke="#0d9958"
             strokeWidth="2"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"

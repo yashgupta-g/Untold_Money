@@ -1,26 +1,33 @@
 /*
- * Landing page. Light, warm paper surface with the brand yellow (#FCDB02)
- * used as a fill. Yellow never carries text on light surfaces; ink does.
+ * Landing page. Light surface with the brand green (#0D9958), shared with
+ * the app. Green fills carry white text; green text uses --brand-ink.
+ * Warnings (concentration, repeated mistakes) use amber, never the brand.
  */
 
 .page {
-  --paper: #faf8f3;
-  --paper-2: #f0ede4;
+  --paper: #f7f9f8;
+  --paper-2: #ebf1ee;
   --card: #fff;
-  --ink: #14130f;
-  --ink-2: #3b3932;
-  --mu: #6b685f;
-  --line: rgba(20, 19, 15, 0.1);
-  --line-2: rgba(20, 19, 15, 0.18);
-  --brand: #fcdb02;
-  --brand-soft: #fff6bf;
-  --brand-ink: #7a5e00;
+  --ink: #0f1412;
+  --ink-2: #2f3a35;
+  --mu: #5f6b66;
+  --line: rgba(15, 20, 18, 0.1);
+  --line-2: rgba(15, 20, 18, 0.18);
+  --brand: #0d9958;
+  --brand-soft: #dcf5e8;
+  --brand-ink: #087541;
+  --brand-hl: #a8e6c5;
+  --on-brand: #fff;
+  --on-brand-mu: rgba(255, 255, 255, 0.84);
+  --warn: #d97706;
+  --warn-soft: #fef3c7;
+  --warn-ink: #92400e;
   --good: #15803d;
   --bad: #b42318;
-  --on-ink: #f5f3ec;
-  --on-ink-mu: #a9a597;
+  --on-ink: #f2f5f3;
+  --on-ink-mu: #a3aea9;
   --sans: var(--font-inter), -apple-system, "Segoe UI", sans-serif;
-  --shadow: 0 1px 2px rgba(20, 19, 15, 0.06), 0 18px 40px -16px rgba(20, 19, 15, 0.22);
+  --shadow: 0 1px 2px rgba(15, 20, 18, 0.06), 0 18px 40px -16px rgba(15, 20, 18, 0.22);
 
   color-scheme: light;
   min-height: 100vh;
@@ -34,7 +41,7 @@
 }
 
 :global(body):has(.page) {
-  background: #faf8f3;
+  background: #f7f9f8;
 }
 
 .page [id] {
@@ -64,7 +71,7 @@
   top: 0;
   z-index: 40;
   padding-top: env(safe-area-inset-top, 0px);
-  background: rgba(250, 248, 243, 0.82);
+  background: rgba(247, 249, 248, 0.82);
   backdrop-filter: saturate(1.4) blur(12px);
 }
 
@@ -90,7 +97,7 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: var(--ink);
+  background: var(--brand);
   display: grid;
   place-items: center;
 }
@@ -186,7 +193,7 @@
 }
 
 .btn.btnDark:hover {
-  background: #2c2a25;
+  background: #1f2a25;
 }
 
 .btn.btnSm {
@@ -208,7 +215,7 @@
   height: 38px;
   border-radius: 50%;
   background: var(--brand);
-  color: var(--ink);
+  color: var(--on-brand);
   display: grid;
   place-items: center;
   transition: transform 0.2s;
@@ -243,9 +250,9 @@
   transform: translateX(-50%);
   background: radial-gradient(
     closest-side,
-    rgba(252, 219, 2, 0.75),
-    rgba(252, 219, 2, 0.32) 45%,
-    rgba(252, 219, 2, 0) 100%
+    rgba(13, 153, 88, 0.32),
+    rgba(13, 153, 88, 0.12) 45%,
+    rgba(13, 153, 88, 0) 100%
   );
   pointer-events: none;
 }
@@ -267,7 +274,7 @@
   font-size: 13.5px;
   font-weight: 500;
   color: var(--ink-2);
-  box-shadow: 0 1px 2px rgba(20, 19, 15, 0.05);
+  box-shadow: 0 1px 2px rgba(15, 20, 18, 0.05);
 }
 
 .eyebrowIcon {
@@ -275,6 +282,7 @@
   height: 24px;
   border-radius: 50%;
   background: var(--brand);
+  color: var(--on-brand);
   display: grid;
   place-items: center;
 }
@@ -305,8 +313,8 @@
 .mark {
   background: linear-gradient(
     transparent 60%,
-    var(--brand) 60%,
-    var(--brand) 92%,
+    var(--brand-hl) 60%,
+    var(--brand-hl) 92%,
     transparent 92%
   );
   -webkit-box-decoration-break: clone;
@@ -393,7 +401,7 @@
 
 .floatBrand {
   background: var(--brand);
-  color: var(--ink);
+  color: var(--on-brand);
 }
 
 @keyframes bob {
@@ -468,7 +476,7 @@
 }
 
 .floatBrand .floatLabel {
-  color: var(--ink-2);
+  color: var(--on-brand-mu);
 }
 
 .floatBig {
@@ -523,7 +531,7 @@
   height: 20px;
   border-radius: 50%;
   background: var(--brand);
-  color: var(--ink);
+  color: var(--on-brand);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -578,11 +586,11 @@
 }
 
 .floatBrand .floatRow {
-  border-color: rgba(20, 19, 15, 0.16);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .floatBrand .floatRow span:first-child {
-  color: var(--ink-2);
+  color: var(--on-brand-mu);
 }
 
 .floatChip {
@@ -591,8 +599,8 @@
   gap: 6px;
   padding: 2px 9px;
   border-radius: 999px;
-  background: var(--brand-soft);
-  color: var(--brand-ink);
+  background: var(--warn-soft);
+  color: var(--warn-ink);
   font-size: 12px;
   font-weight: 600;
 }
@@ -624,7 +632,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--brand-ink);
+  color: var(--warn-ink);
 }
 
 .sparkline {
@@ -809,12 +817,11 @@
   display: block;
   width: 100%;
   border-radius: 4px 4px 2px 2px;
-  background: #e6e2d6;
+  background: #e3e8e5;
 }
 
 .bars .barHi i {
-  background: var(--brand);
-  box-shadow: inset 0 0 0 1.5px var(--ink);
+  background: var(--warn);
 }
 
 .threshold {
@@ -825,7 +832,7 @@
   gap: 8px;
   font-size: 13.5px;
   font-weight: 600;
-  color: var(--brand-ink);
+  color: var(--warn-ink);
 }
 
 .featureFoot {
@@ -868,6 +875,7 @@
   border-radius: 26px;
   padding: 26px;
   background: var(--brand);
+  color: var(--on-brand);
 }
 
 .tileBrand b {
@@ -882,7 +890,7 @@
 .tileBrand p {
   margin: 10px 0 0;
   font-size: 14.5px;
-  color: var(--ink-2);
+  color: var(--on-brand-mu);
 }
 
 .tilePlain {
@@ -961,8 +969,9 @@
 }
 
 .chipBrand {
-  background: var(--brand);
-  border-color: var(--brand);
+  background: var(--warn-soft);
+  border-color: var(--warn-soft);
+  color: var(--warn-ink);
   font-weight: 600;
 }
 
@@ -1044,8 +1053,8 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--brand);
-  color: var(--ink);
+  background: var(--warn-soft);
+  color: var(--warn-ink);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -1108,6 +1117,11 @@
 
 .tileScore {
   background: var(--brand);
+  color: var(--on-brand);
+}
+
+.tileScore li {
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .tileModel {
@@ -1165,7 +1179,7 @@
 
 .tile li {
   padding: 10px 0;
-  border-top: 1px solid rgba(20, 19, 15, 0.16);
+  border-top: 1px solid rgba(15, 20, 18, 0.16);
   display: flex;
   justify-content: space-between;
   gap: 12px;
@@ -1205,6 +1219,7 @@
   height: 42px;
   border-radius: 50%;
   background: var(--brand);
+  color: var(--on-brand);
   display: grid;
   place-items: center;
   font-weight: 800;
@@ -1285,6 +1300,7 @@
   border-radius: 40px;
   padding: 96px 40px;
   background: var(--brand);
+  color: var(--on-brand);
   text-align: center;
 }
 
@@ -1293,7 +1309,7 @@
   content: "";
   position: absolute;
   border-radius: 50%;
-  border: 1.5px solid rgba(20, 19, 15, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
   pointer-events: none;
 }
 
@@ -1332,19 +1348,21 @@
   margin: 22px auto 0;
   max-width: 46ch;
   font-size: 18px;
-  color: var(--ink-2);
+  color: var(--on-brand-mu);
 }
 
 .finalPanel .btn:not(.btnDark) {
-  border-color: rgba(20, 19, 15, 0.3);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: var(--on-brand);
 }
 
 .finalPanel .btn:not(.btnDark):hover {
-  border-color: var(--ink);
+  border-color: #fff;
 }
 
 .finalPanel .btnArrow {
   background: #fff;
+  color: var(--brand-ink);
 }
 
 /* --- Footer --- */

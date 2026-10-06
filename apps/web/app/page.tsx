@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   viewportFit: "cover",
-  themeColor: "#faf8f3",
+  themeColor: "#f7f9f8",
 };
 
 const NAV_LINKS = [
@@ -462,7 +462,7 @@ function Logo() {
     <Link className={styles.logo} href="/">
       <span className={styles.logoMark}>
         <svg width="18" height="18" viewBox="0 0 26 26" aria-hidden="true">
-          <path d="M2 10 10 2h6L2 16zM24 16l-8 8h-6l14-14z" fill="#fcdb02" />
+          <path d="M2 10 10 2h6L2 16zM24 16l-8 8h-6l14-14z" fill="#fff" />
         </svg>
       </span>
       UntoldMoney
