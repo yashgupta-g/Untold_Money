@@ -1,15 +1,26 @@
 """
 Application configuration using Pydantic Settings.
-Loads from environment variables and .env files with validation.
+
+Source priority (highest first):
+  1. AWS Secrets Manager — only when AWS_SECRETS_MANAGER_SECRET_ID is set
+  2. Environment variables
+  3. .env files (local development)
+  4. Defaults below
 """
 
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import model_validator
+from pydantic_settings import (
+    AWSSecretsManagerSettingsSource,
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+)
 
 
 class Settings(BaseSettings):
@@ -58,6 +69,36 @@ class Settings(BaseSettings):
     # --- Celery ---
     CELERY_BROKER_URL: str = "redis://localhost:6379/1"
     CELERY_RESULT_BACKEND: str = "redis://localhost:6379/2"
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """Put AWS Secrets Manager ahead of env vars when a secret ID is configured."""
+        sources: tuple[PydanticBaseSettingsSource, ...] = (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            file_secret_settings,
+        )
+        secret_id = os.getenv("AWS_SECRETS_MANAGER_SECRET_ID")
+        if secret_id:
+            # Secret must be a JSON object keyed by setting name, e.g.
+            # {"POSTGRES_PASSWORD": "...", "JWT_SECRET_KEY": "..."}.
+            # Region and credentials come from the standard AWS env vars / IAM role.
+            aws_source = AWSSecretsManagerSettingsSource(
+                settings_cls,
+                secret_id=secret_id,
+                region_name=os.getenv("AWS_REGION"),
+                case_sensitive=False,
+            )
+            sources = (init_settings, aws_source, *sources[1:])
+        return sources
 
     @model_validator(mode="after")
     def assemble_urls(self) -> "Settings":
