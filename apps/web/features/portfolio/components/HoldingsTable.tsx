@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, Trash2, PieChart } from "lucide-react";
+import { PencilSimple, Trash, ChartPieSlice } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,10 +27,10 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
 
   if (holdings.length === 0) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-16">
-          <div className="rounded-2xl bg-muted/50 p-4">
-            <PieChart className="h-10 w-10 text-muted-foreground/40" />
+          <div className="border border-border p-4">
+            <ChartPieSlice className="h-10 w-10 text-muted-foreground/40" />
           </div>
           <p className="mt-4 text-base font-medium">No holdings yet</p>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -43,7 +43,7 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
 
   return (
     <>
-      <Card className="border-border/50 bg-card/80 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden">
         <CardHeader className="pb-0 pt-5 px-5">
           <CardTitle className="text-base font-semibold">
             Holdings ({holdings.length})
@@ -122,10 +122,10 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
                         <Button
                           variant="ghost"
                           size="icon-sm"
-                          className="h-7 w-7 text-muted-foreground hover:text-primary"
+                          className="h-7 w-7 text-muted-foreground hover:text-primary-ink"
                           onClick={() => setEditHolding(h)}
                         >
-                          <Pencil className="h-3.5 w-3.5" />
+                          <PencilSimple className="h-3.5 w-3.5" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -133,7 +133,7 @@ export function HoldingsTable({ holdings, portfolioId }: HoldingsTableProps) {
                           className="h-7 w-7 text-muted-foreground hover:text-red-500"
                           onClick={() => setDeleteHolding(h)}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                     </TableCell>

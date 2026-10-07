@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, X, CalendarDays } from "lucide-react";
+import { MagnifyingGlass, X, CalendarDots } from "@phosphor-icons/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { TradeFilterParams } from "@/store/api/portfolioApi";
@@ -42,7 +42,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
       <div className="flex flex-wrap items-center gap-3">
         {/* Symbol Search */}
         <div className="relative w-48">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input
             placeholder="Search symbol..."
             value={filters.symbol ?? ""}
@@ -60,15 +60,15 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
         </div>
 
         {/* Status Filter */}
-        <div className="flex items-center rounded-lg border border-border/50 bg-card/80 p-0.5">
+        <div className="flex items-center border border-border/50 p-0.5">
           {STATUS_OPTIONS.map((opt) => (
             <button
               key={opt.label}
               onClick={() => update({ trade_status: opt.value })}
-              className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
+              className={`px-3 py-1 text-[11px] font-medium transition-colors ${
                 filters.trade_status === opt.value ||
                 (!filters.trade_status && opt.value === undefined)
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -78,15 +78,15 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
         </div>
 
         {/* Side Filter */}
-        <div className="flex items-center rounded-lg border border-border/50 bg-card/80 p-0.5">
+        <div className="flex items-center border border-border/50 p-0.5">
           {SIDE_OPTIONS.map((opt) => (
             <button
               key={opt.label}
               onClick={() => update({ trade_side: opt.value })}
-              className={`rounded-md px-3 py-1 text-[11px] font-medium transition-colors ${
+              className={`px-3 py-1 text-[11px] font-medium transition-colors ${
                 filters.trade_side === opt.value ||
                 (!filters.trade_side && opt.value === undefined)
-                  ? "bg-primary/10 text-primary"
+                  ? "bg-primary/10 text-primary-ink"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -107,7 +107,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
 
         {/* Date Range */}
         <div className="flex items-center gap-1.5">
-          <CalendarDays className="h-3.5 w-3.5 text-muted-foreground" />
+          <CalendarDots className="h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="date"
             value={filters.date_from?.split("T")[0] ?? ""}
@@ -118,7 +118,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
                   : undefined,
               })
             }
-            className="h-8 rounded-md border border-border/50 bg-muted/50 px-2 text-[11px] text-foreground outline-none focus:ring-1 focus:ring-primary/30"
+            className="h-8 border border-border/50 bg-muted/50 px-2 text-[11px] text-foreground outline-none focus:ring-1 focus:ring-primary/30"
           />
           <span className="text-[10px] text-muted-foreground">to</span>
           <input
@@ -131,7 +131,7 @@ export function TradeFilters({ filters, onFiltersChange }: TradeFiltersProps) {
                   : undefined,
               })
             }
-            className="h-8 rounded-md border border-border/50 bg-muted/50 px-2 text-[11px] text-foreground outline-none focus:ring-1 focus:ring-primary/30"
+            className="h-8 border border-border/50 bg-muted/50 px-2 text-[11px] text-foreground outline-none focus:ring-1 focus:ring-primary/30"
           />
         </div>
 

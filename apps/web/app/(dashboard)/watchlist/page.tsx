@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, Plus, TrendingUp, TrendingDown, MoreHorizontal } from "lucide-react";
+import { Eye, Plus, TrendUp, TrendDown, DotsThree } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,7 @@ export default function WatchlistPage() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {watchlistItems.map((item) => (
-          <Card key={item.symbol} className="group border-border/50 bg-card/80 transition-all hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5">
+          <Card key={item.symbol} className="group border-border/50 transition-all hover:border-primary/20">
             <CardContent className="p-4">
               <div className="flex items-start justify-between">
                 <div>
@@ -41,13 +41,13 @@ export default function WatchlistPage() {
                   <p className="mt-0.5 text-xs text-muted-foreground">{item.name}</p>
                 </div>
                 <button className="text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground">
-                  <MoreHorizontal className="h-4 w-4" />
+                  <DotsThree className="h-4 w-4" />
                 </button>
               </div>
               <div className="mt-3 flex items-end justify-between">
                 <p className="text-lg font-bold">₹{item.price.toLocaleString()}</p>
                 <div className={`flex items-center gap-1 text-sm font-medium ${item.change >= 0 ? "text-chart-2" : "text-destructive"}`}>
-                  {item.change >= 0 ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+                  {item.change >= 0 ? <TrendUp className="h-3.5 w-3.5" /> : <TrendDown className="h-3.5 w-3.5" />}
                   {item.change >= 0 ? "+" : ""}{item.change}%
                 </div>
               </div>

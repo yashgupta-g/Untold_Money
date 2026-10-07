@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, Trash2, ArrowLeftRight, ChevronDown, ChevronUp } from "lucide-react";
+import { PencilSimple, Trash, ArrowsLeftRight, CaretDown, CaretUp } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +37,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
 
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-20">
           <div className="h-10 w-10 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
           <p className="mt-4 text-sm text-muted-foreground">Loading trades...</p>
@@ -48,10 +48,10 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
 
   if (trades.length === 0) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-20">
-          <div className="rounded-2xl bg-muted/50 p-4">
-            <ArrowLeftRight className="h-10 w-10 text-muted-foreground/40" />
+          <div className="border border-border p-4">
+            <ArrowsLeftRight className="h-10 w-10 text-muted-foreground/40" />
           </div>
           <p className="mt-4 text-base font-medium">No trades found</p>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -64,7 +64,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
 
   return (
     <>
-      <Card className="border-border/50 bg-card/80 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden">
         <CardHeader className="pb-0 pt-5 px-5">
           <CardTitle className="text-base font-semibold">
             Trade Log ({trades.length})
@@ -100,9 +100,9 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                     >
                       <TableCell className="pl-5 w-8">
                         {isExpanded ? (
-                          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                          <CaretUp className="h-3.5 w-3.5 text-muted-foreground" />
                         ) : (
-                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                          <CaretDown className="h-3.5 w-3.5 text-muted-foreground" />
                         )}
                       </TableCell>
                       <TableCell>
@@ -161,7 +161,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                           variant="secondary"
                           className={`text-[10px] ${
                             trade.trade_status === "OPEN"
-                              ? "bg-primary/10 text-primary"
+                              ? "bg-primary/10 text-primary-ink"
                               : "bg-muted text-muted-foreground"
                           }`}
                         >
@@ -179,10 +179,10 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                           <Button
                             variant="ghost"
                             size="icon-sm"
-                            className="h-7 w-7 text-muted-foreground hover:text-primary"
+                            className="h-7 w-7 text-muted-foreground hover:text-primary-ink"
                             onClick={() => setEditTrade(trade)}
                           >
-                            <Pencil className="h-3.5 w-3.5" />
+                            <PencilSimple className="h-3.5 w-3.5" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -190,7 +190,7 @@ export function TradesTable({ trades, isLoading }: TradesTableProps) {
                             className="h-7 w-7 text-muted-foreground hover:text-red-500"
                             onClick={() => setDeleteTrade(trade)}
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Trash className="h-3.5 w-3.5" />
                           </Button>
                         </div>
                       </TableCell>

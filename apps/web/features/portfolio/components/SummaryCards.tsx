@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ArrowUpRight,
-  ArrowDownRight,
-  Wallet,
-  TrendingUp,
-  BarChart3,
-  Percent,
-} from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Wallet, TrendUp, ChartBar, Percent } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { PortfolioSummaryData } from "@/store/api/portfolioApi";
 
@@ -27,20 +20,18 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       label: "Total Invested",
       value: `₹${formatINR(summary.total_invested)}`,
       icon: Wallet,
-      color: "text-primary",
-      bg: "bg-primary/10",
+      color: "text-primary-ink",
     },
     {
       label: "Current Value",
       value: `₹${formatINR(summary.total_value)}`,
-      icon: TrendingUp,
+      icon: TrendUp,
       color: "text-chart-2",
-      bg: "bg-chart-2/10",
     },
     {
       label: "Unrealized P&L",
       value: `${isPositive ? "+" : ""}₹${formatINR(Math.abs(summary.unrealized_pnl))}`,
-      icon: BarChart3,
+      icon: ChartBar,
       color: isPositive ? "text-emerald-500" : "text-red-500",
       bg: isPositive ? "bg-emerald-500/10" : "bg-red-500/10",
     },
@@ -58,10 +49,10 @@ export function SummaryCards({ summary }: SummaryCardsProps) {
       {cards.map((card) => (
         <Card
           key={card.label}
-          className="border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5"
+          className="border-border/50 transition-all duration-300 hover:border-primary/20"
         >
           <CardContent className="flex items-center gap-4 p-5">
-            <div className={`rounded-xl ${card.bg} p-3 transition-colors`}>
+            <div className="border border-border p-3">
               <card.icon className={`h-5 w-5 ${card.color}`} />
             </div>
             <div className="min-w-0">

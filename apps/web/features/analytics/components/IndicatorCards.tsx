@@ -1,20 +1,14 @@
 "use client";
 
-import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  Loader2,
-  Info,
-} from "lucide-react";
+import { TrendUp, TrendDown, Minus, CircleNotch, Info } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 import type { IndicatorsData } from "@/store/api/marketApi";
 
 const SIGNAL_CONFIG = {
-  BULLISH: { color: "text-emerald-500", bg: "bg-emerald-500/10", icon: TrendingUp, label: "Bullish" },
-  BEARISH: { color: "text-red-500", bg: "bg-red-500/10", icon: TrendingDown, label: "Bearish" },
+  BULLISH: { color: "text-emerald-500", bg: "bg-emerald-500/10", icon: TrendUp, label: "Bullish" },
+  BEARISH: { color: "text-red-500", bg: "bg-red-500/10", icon: TrendDown, label: "Bearish" },
   NEUTRAL: { color: "text-amber-500", bg: "bg-amber-500/10", icon: Minus, label: "Neutral" },
 } as const;
 
@@ -46,9 +40,9 @@ interface IndicatorCardsProps {
 export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -56,7 +50,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
 
   if (!data || data.indicators.length === 0) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Info className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-3 text-sm font-medium">No indicator data available</p>
@@ -69,11 +63,11 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
   }
 
   return (
-    <Card className="border-border/50 bg-card/80">
+    <Card className="border-border/50">
       <CardHeader className="pb-3 pt-5 px-5">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-primary" />
+            <TrendUp className="h-4 w-4 text-primary-ink" />
             Technical Indicators
           </CardTitle>
           {data.computed_at && (
@@ -94,7 +88,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
             return (
               <div
                 key={indicator.name}
-                className="group relative rounded-xl border border-border/50 bg-card/60 p-4 transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+                className="group relative border border-border/50 p-4 transition-all duration-200 hover:border-primary/20"
                 title={indicator.description}
               >
                 <div className="flex items-center justify-between">
@@ -107,7 +101,7 @@ export function IndicatorCards({ data, isLoading }: IndicatorCardsProps) {
                   {formatValue(indicator.name, indicator.value)}
                 </p>
                 <div className="mt-2 flex items-center gap-1.5">
-                  <div className={`rounded-md p-1 ${signal.bg}`}>
+                  <div className="p-1">
                     <SignalIcon className={`h-3 w-3 ${signal.color}`} />
                   </div>
                   <Badge variant="secondary" className={`text-[10px] ${signal.bg} ${signal.color} border-0`}>

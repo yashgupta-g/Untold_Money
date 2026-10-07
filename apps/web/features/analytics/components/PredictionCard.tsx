@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Loader2,
-  Sparkles,
-  TrendingUp,
-  TrendingDown,
-  Target,
-  Brain,
-  ArrowUpRight,
-  ArrowDownRight,
-  Info,
-  BarChart3,
-} from "lucide-react";
+import { CircleNotch, Sparkle, TrendUp, TrendDown, Target, Brain, ArrowUpRight, ArrowDownRight, Info, ChartBar } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { PredictionData, TopSignal } from "@/store/api/marketApi";
@@ -51,9 +40,9 @@ function SignalBar({ signal }: { signal: TopSignal }) {
       <span className="text-muted-foreground">{featureLabel(signal.feature)}</span>
       <div className="flex items-center gap-2">
         <span className="font-mono tabular-nums">{signal.value.toFixed(2)}</span>
-        <div className="h-1.5 w-16 rounded-full bg-muted/50 overflow-hidden">
+        <div className="h-1.5 w-16 bg-muted/50 overflow-hidden">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
+            className="h-full bg-primary transition-all duration-500"
             style={{ width: `${Math.min(signal.importance * 100 * 4, 100)}%` }}
           />
         </div>
@@ -70,12 +59,12 @@ interface PredictionCardProps {
 export function PredictionCard({ data, isLoading }: PredictionCardProps) {
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex items-center justify-center py-12">
           <div className="flex flex-col items-center gap-3">
             <div className="relative">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              <Brain className="absolute -top-1 -right-1 h-3 w-3 text-primary animate-pulse" />
+              <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
+              <Brain className="absolute -top-1 -right-1 h-3 w-3 text-primary-ink animate-pulse" />
             </div>
             <p className="text-xs text-muted-foreground">Training ML model...</p>
           </div>
@@ -86,9 +75,9 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
 
   if (!data || (!data.direction && !data.price_target)) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <Sparkles className="h-8 w-8 text-muted-foreground/40" />
+          <Sparkle className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-3 text-sm font-medium">ML Prediction Unavailable</p>
           <p className="text-xs text-muted-foreground mt-1">
             Need at least 80 daily candles to train the model
@@ -117,20 +106,14 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
       : "text-red-400 bg-red-400/10";
 
   return (
-    <Card className="border-border/50 bg-card/80 overflow-hidden">
-      {/* Gradient accent bar */}
-      <div
-        className={`h-1 w-full ${
-          isUp
-            ? "bg-gradient-to-r from-emerald-500 to-emerald-300"
-            : "bg-gradient-to-r from-red-500 to-red-300"
-        }`}
-      />
+    <Card className="border-border/50 overflow-hidden">
+      {/* Direction accent rule */}
+      <div className={`h-0.5 w-full ${isUp ? "bg-primary" : "bg-destructive"}`} />
 
       <CardHeader className="pb-3 pt-5 px-5">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
-            <Brain className="h-4 w-4 text-primary" />
+            <Brain className="h-4 w-4 text-primary-ink" />
             AI Prediction
             <Badge variant="secondary" className="text-[9px] ml-1">
               {direction?.model_version ?? "v1.0"}
@@ -155,7 +138,7 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
           <div className="grid gap-4 sm:grid-cols-[1fr_1fr]">
             {/* Left: Direction + Confidence */}
             <div
-              className={`rounded-xl border border-border/50 p-4 ${dirBg}`}
+              className={`border border-border/50 p-4 ${dirBg}`}
             >
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {direction.horizon_days}-Day Direction
@@ -183,7 +166,7 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
             </div>
 
             {/* Right: Top Signals */}
-            <div className="rounded-xl border border-border/50 bg-card/60 p-4">
+            <div className="border border-border/50 p-4">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-3">
                 Top Signals
               </p>
@@ -198,9 +181,9 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
 
         {/* Price Target */}
         {priceTarget && (
-          <div className="rounded-xl border border-border/50 bg-card/60 p-4">
+          <div className="border border-border/50 p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Target className="h-3.5 w-3.5 text-primary" />
+              <Target className="h-3.5 w-3.5 text-primary-ink" />
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {priceTarget.horizon_days}-Day Price Target
               </p>
@@ -234,9 +217,9 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
               </div>
             </div>
 
-            <div className="mt-3 h-2 w-full rounded-full bg-muted/50 overflow-hidden relative">
+            <div className="mt-3 h-2 w-full bg-muted/50 overflow-hidden relative">
               <div
-                className="absolute h-full bg-gradient-to-r from-red-400 via-amber-400 to-emerald-400 rounded-full"
+                className="absolute h-full bg-gradient-to-r from-red-400 via-amber-400 to-emerald-400"
                 style={{ width: "100%" }}
               />
               {/* Current price marker */}
@@ -261,9 +244,9 @@ export function PredictionCard({ data, isLoading }: PredictionCardProps) {
 
         {/* Explanation */}
         {direction?.explanation && (
-          <div className="rounded-xl border border-dashed border-primary/20 bg-primary/5 p-4">
+          <div className="border border-border p-4">
             <div className="flex items-start gap-2">
-              <Info className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+              <Info className="h-3.5 w-3.5 text-primary-ink mt-0.5 shrink-0" />
               <p className="text-xs text-muted-foreground leading-relaxed">
                 {direction.explanation}
               </p>

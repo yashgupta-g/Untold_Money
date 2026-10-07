@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Plus, Check, X, Clock } from "lucide-react";
+import { Bell, Plus, Check, X, Clock } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,11 +29,11 @@ export default function AlertsPage() {
 
       <div className="space-y-3">
         {mockAlerts.map((alert) => (
-          <Card key={alert.id} className="border-border/50 bg-card/80 transition-all hover:border-border">
+          <Card key={alert.id} className="border-border/50 transition-all hover:border-border">
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <div className={`rounded-lg p-2 ${alert.status === "triggered" ? "bg-chart-2/10" : alert.status === "expired" ? "bg-muted" : "bg-primary/10"}`}>
-                  <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary"}`} />
+                <div className="border border-border p-2">
+                  <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary-ink"}`} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -49,7 +49,7 @@ export default function AlertsPage() {
                 <Badge
                   variant="secondary"
                   className={`text-[10px] ${
-                    alert.status === "active" ? "bg-primary/10 text-primary" :
+                    alert.status === "active" ? "bg-primary/10 text-primary-ink" :
                     alert.status === "triggered" ? "bg-chart-2/10 text-chart-2" :
                     "bg-muted text-muted-foreground"
                   }`}

@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  ArrowLeftRight,
-  Target,
-  TrendingUp,
-  Activity,
-  BarChart3,
-  Zap,
-  Award,
-  AlertCircle,
-} from "lucide-react";
+import { ArrowsLeftRight, Target, TrendUp, Pulse, ChartBar, Lightning, Medal, WarningCircle } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { TradeAnalytics } from "@/store/api/portfolioApi";
@@ -30,9 +21,8 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       label: "Total Trades",
       value: analytics.total_trades.toString(),
       sub: `${analytics.open_trades} open · ${analytics.closed_trades} closed`,
-      icon: ArrowLeftRight,
-      color: "text-primary",
-      bg: "bg-primary/10",
+      icon: ArrowsLeftRight,
+      color: "text-primary-ink",
     },
     {
       label: "Win Rate",
@@ -46,7 +36,7 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       label: "Total P&L",
       value: `${isPnlPositive ? "+" : "-"}₹${formatINR(analytics.total_pnl)}`,
       sub: `Best: +₹${formatINR(analytics.best_trade_pnl)} · Worst: ₹${formatINR(analytics.worst_trade_pnl)}`,
-      icon: TrendingUp,
+      icon: TrendUp,
       color: isPnlPositive ? "text-emerald-500" : "text-red-500",
       bg: isPnlPositive ? "bg-emerald-500/10" : "bg-red-500/10",
     },
@@ -54,15 +44,14 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       label: "Open Trades",
       value: analytics.open_trades.toString(),
       sub: "Currently active",
-      icon: Activity,
+      icon: Pulse,
       color: "text-chart-2",
-      bg: "bg-chart-2/10",
     },
     {
       label: "Profit Factor",
       value: analytics.profit_factor > 0 ? analytics.profit_factor.toFixed(2) : "—",
       sub: "Gross wins / gross losses",
-      icon: BarChart3,
+      icon: ChartBar,
       color: analytics.profit_factor >= 1.5 ? "text-emerald-500" : analytics.profit_factor >= 1 ? "text-amber-500" : "text-red-500",
       bg: analytics.profit_factor >= 1.5 ? "bg-emerald-500/10" : analytics.profit_factor >= 1 ? "bg-amber-500/10" : "bg-red-500/10",
     },
@@ -70,7 +59,7 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       label: "Expectancy",
       value: analytics.expectancy !== 0 ? `₹${formatINR(analytics.expectancy)}` : "—",
       sub: "Expected P&L per trade",
-      icon: Zap,
+      icon: Lightning,
       color: analytics.expectancy >= 0 ? "text-emerald-500" : "text-red-500",
       bg: analytics.expectancy >= 0 ? "bg-emerald-500/10" : "bg-red-500/10",
     },
@@ -78,17 +67,15 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
       label: "Avg Win",
       value: analytics.avg_win > 0 ? `+₹${formatINR(analytics.avg_win)}` : "—",
       sub: `Avg Loss: ₹${formatINR(analytics.avg_loss)}`,
-      icon: Award,
+      icon: Medal,
       color: "text-emerald-500",
-      bg: "bg-emerald-500/10",
     },
     {
       label: "Closed Trades",
       value: analytics.closed_trades.toString(),
       sub: "Completed trades",
-      icon: AlertCircle,
+      icon: WarningCircle,
       color: "text-muted-foreground",
-      bg: "bg-muted/50",
     },
   ];
 
@@ -99,11 +86,11 @@ export function TradeAnalyticsCards({ analytics }: AnalyticsCardsProps) {
         {cards.map((card) => (
           <Card
             key={card.label}
-            className="border-border/50 bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5"
+            className="border-border/50 transition-all duration-300 hover:border-primary/20"
           >
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className={`rounded-xl ${card.bg} p-2.5 transition-colors`}>
+                <div className="border border-border p-2.5">
                   <card.icon className={`h-4 w-4 ${card.color}`} />
                 </div>
                 <div className="min-w-0 flex-1">

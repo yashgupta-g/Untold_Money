@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, AlertTriangle } from "lucide-react";
+import { CircleNotch, Warning } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,15 +8,17 @@ import {
 } from "recharts";
 import type { PortfolioAllocationData } from "@/store/api/portfolioApi";
 
+// Colorblind-safe categorical order for the light surface. Keep the order:
+// it's what keeps adjacent slices distinguishable.
 const COLORS = [
-  "oklch(0.65 0.20 260)",   // primary blue
-  "oklch(0.72 0.19 142)",   // green
-  "oklch(0.80 0.18 85)",    // yellow
-  "oklch(0.70 0.18 320)",   // purple
-  "oklch(0.63 0.24 25)",    // red
-  "oklch(0.68 0.16 200)",   // teal
-  "oklch(0.75 0.14 50)",    // orange
-  "oklch(0.60 0.22 280)",   // indigo
+  "#2a78d6", // blue
+  "#eb6834", // orange
+  "#1baf7a", // aqua
+  "#eda100", // yellow
+  "#e87ba4", // magenta
+  "#008300", // green
+  "#4a3aa7", // violet
+  "#e34948", // red
 ];
 
 function formatINR(v: number) {
@@ -32,7 +34,7 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   if (!active || !payload?.length) return null;
   const item = payload[0];
   return (
-    <div className="rounded-lg border border-border/60 bg-popover px-3 py-2 shadow-xl">
+    <div className="border border-border/60 bg-popover px-3 py-2">
       <p className="text-sm font-semibold">{item.name}</p>
       <p className="text-xs text-muted-foreground">
         ₹{formatINR(item.value)} ({item.payload.allocation_percent}%)
@@ -49,9 +51,9 @@ interface AllocationChartProps {
 export function AllocationChart({ allocation, isLoading }: AllocationChartProps) {
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -74,7 +76,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       {/* Holdings Allocation Donut */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-2 pt-5 px-5">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold">
@@ -85,7 +87,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
                 variant="destructive"
                 className="gap-1 text-[10px] font-medium"
               >
-                <AlertTriangle className="h-3 w-3" />
+                <Warning className="h-3 w-3" />
                 Concentration Risk
               </Badge>
             )}
@@ -129,7 +131,7 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
       </Card>
 
       {/* Sector Breakdown */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-2 pt-5 px-5">
           <CardTitle className="text-base font-semibold">
             Sector Allocation
@@ -145,9 +147,9 @@ export function AllocationChart({ allocation, isLoading }: AllocationChartProps)
                     {s.allocation_percent}%
                   </span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden">
+                <div className="h-2 w-full bg-muted/50 overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-500"
+                    className="h-full transition-all duration-500"
                     style={{
                       width: `${s.allocation_percent}%`,
                       backgroundColor: COLORS[i % COLORS.length],

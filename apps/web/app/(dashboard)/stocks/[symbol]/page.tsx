@@ -3,19 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight,
-  Loader2,
-  Activity,
-  BarChart3,
-  Globe,
-  Building2,
-  Layers,
-} from "lucide-react";
+import { ArrowLeft, TrendUp, TrendDown, ArrowUpRight, ArrowDownRight, CircleNotch, Pulse, ChartBar, Globe, Buildings, Stack } from "@phosphor-icons/react";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -67,7 +55,7 @@ function PriceChart({
   if (isLoading) {
     return (
       <div className="flex h-72 items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
       </div>
     );
   }
@@ -75,7 +63,7 @@ function PriceChart({
   if (candles.length === 0) {
     return (
       <div className="flex h-72 flex-col items-center justify-center text-muted-foreground">
-        <BarChart3 className="h-10 w-10 opacity-30" />
+        <ChartBar className="h-10 w-10 opacity-30" />
         <p className="mt-2 text-sm">No candle data available</p>
       </div>
     );
@@ -109,17 +97,17 @@ function PriceChart({
             <stop offset="95%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
         <XAxis
           dataKey="time"
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
           axisLine={false}
           tickLine={false}
           interval="preserveStartEnd"
         />
         <YAxis
           domain={["auto", "auto"]}
-          tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v: number) => `₹${v.toLocaleString("en-IN")}`}
@@ -127,12 +115,12 @@ function PriceChart({
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "hsl(var(--card))",
-            border: "1px solid hsl(var(--border))",
+            backgroundColor: "var(--card)",
+            border: "1px solid var(--border)",
             borderRadius: "8px",
             fontSize: "12px",
           }}
-          formatter={(value: number | string | undefined) => [`₹${Number(value ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`, "Price"]}
+          formatter={(value) => [`₹${Number(value ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`, "Price"]}
         />
         <Area
           type="monotone"
@@ -175,7 +163,7 @@ export default function StockDetailPage() {
   if (instrumentLoading) {
     return (
       <div className="flex h-[60vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <CircleNotch className="h-8 w-8 animate-spin text-primary-ink" />
       </div>
     );
   }
@@ -183,7 +171,7 @@ export default function StockDetailPage() {
   if (!instrument) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center">
-        <BarChart3 className="h-12 w-12 text-muted-foreground/30" />
+        <ChartBar className="h-12 w-12 text-muted-foreground/30" />
         <p className="mt-3 text-lg font-medium">Instrument not found</p>
         <Link href="/stocks">
           <Button variant="outline" className="mt-4 gap-2">
@@ -204,12 +192,12 @@ export default function StockDetailPage() {
       </Link>
 
       {/* Header Card */}
-      <Card className="border-border/50 bg-card/80 overflow-hidden">
+      <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-6">
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             {/* Left — Symbol Info */}
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-lg font-bold text-primary">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-border text-lg font-bold text-primary-ink">
                 {symbol.slice(0, 2)}
               </div>
               <div>
@@ -226,12 +214,12 @@ export default function StockDetailPage() {
                 <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
                   {instrument.sector && (
                     <span className="flex items-center gap-1">
-                      <Building2 className="h-3 w-3" /> {instrument.sector}
+                      <Buildings className="h-3 w-3" /> {instrument.sector}
                     </span>
                   )}
                   {instrument.industry && (
                     <span className="flex items-center gap-1">
-                      <Layers className="h-3 w-3" /> {instrument.industry}
+                      <Stack className="h-3 w-3" /> {instrument.industry}
                     </span>
                   )}
                   <span className="flex items-center gap-1">
@@ -245,8 +233,8 @@ export default function StockDetailPage() {
             <div className="text-right">
               {quoteLoading ? (
                 <div className="space-y-2">
-                  <div className="ml-auto h-8 w-32 animate-pulse rounded bg-muted" />
-                  <div className="ml-auto h-4 w-24 animate-pulse rounded bg-muted" />
+                  <div className="ml-auto h-8 w-32 animate-pulse bg-muted" />
+                  <div className="ml-auto h-4 w-24 animate-pulse bg-muted" />
                 </div>
               ) : quote ? (
                 <>
@@ -275,7 +263,7 @@ export default function StockDetailPage() {
             { label: "Low", value: `₹${quote.low.toLocaleString("en-IN", { minimumFractionDigits: 2 })}` },
             { label: "Volume", value: `${(quote.volume / 100000).toFixed(1)}L` },
           ].map((stat) => (
-            <Card key={stat.label} className="border-border/50 bg-card/80">
+            <Card key={stat.label} className="border-border/50">
               <CardContent className="p-4">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{stat.label}</p>
                 <p className="mt-1 text-lg font-bold tabular-nums">{stat.value}</p>
@@ -286,11 +274,11 @@ export default function StockDetailPage() {
       )}
 
       {/* Chart Card */}
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Activity className="h-4 w-4 text-primary" />
+              <Pulse className="h-4 w-4 text-primary-ink" />
               Price Chart
             </CardTitle>
             <div className="flex gap-1">
@@ -298,9 +286,9 @@ export default function StockDetailPage() {
                 <button
                   key={opt.value}
                   onClick={() => setSelectedInterval(opt)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
                     selectedInterval.value === opt.value
-                      ? "bg-primary/10 text-primary"
+                      ? "bg-primary/10 text-primary-ink"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >

@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Gauge, TrendingUp, Zap, Shield, BarChart3 } from "lucide-react";
+import { CircleNotch, Gauge, TrendUp, Lightning, ShieldCheck, ChartBar } from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { StockScoreData } from "@/store/api/marketApi";
@@ -29,9 +29,9 @@ function ScoreBar({ label, value, icon: Icon }: { label: string; value: number; 
         </div>
         <span className="text-xs font-bold tabular-nums">{value}/100</span>
       </div>
-      <div className="h-2 w-full rounded-full bg-muted/50 overflow-hidden">
+      <div className="h-2 w-full bg-muted/50 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all duration-700 ${color}`}
+          className={`h-full transition-all duration-700 ${color}`}
           style={{ width: `${value}%` }}
         />
       </div>
@@ -47,9 +47,9 @@ interface StockScoreCardProps {
 export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
   if (isLoading) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex items-center justify-center py-12">
-          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
         </CardContent>
       </Card>
     );
@@ -57,7 +57,7 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
 
   if (!data) {
     return (
-      <Card className="border-border/50 bg-card/80">
+      <Card className="border-border/50">
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Gauge className="h-8 w-8 text-muted-foreground/40" />
           <p className="mt-3 text-sm font-medium">Score not available</p>
@@ -76,10 +76,10 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
     data.final_score >= 40 ? "text-amber-500" : "text-red-500";
 
   return (
-    <Card className="border-border/50 bg-card/80">
+    <Card className="border-border/50">
       <CardHeader className="pb-3 pt-5 px-5">
         <CardTitle className="text-base font-semibold flex items-center gap-2">
-          <Gauge className="h-4 w-4 text-primary" />
+          <Gauge className="h-4 w-4 text-primary-ink" />
           Stock Score
         </CardTitle>
       </CardHeader>
@@ -87,9 +87,8 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
         <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
           {/* Score Circle */}
           <div className="flex flex-col items-center justify-center">
-            <div className="relative flex h-32 w-32 items-center justify-center rounded-full border-4 border-border/30">
-              <div className={`absolute inset-1 rounded-full ${signalConfig.bg}`} />
-              <div className="relative text-center">
+            <div className="flex h-32 w-32 items-center justify-center border border-border">
+              <div className="text-center">
                 <p className={`text-3xl font-black tabular-nums ${scoreColor}`}>
                   {data.final_score}
                 </p>
@@ -110,10 +109,10 @@ export function StockScoreCard({ data, isLoading }: StockScoreCardProps) {
 
           {/* Sub-scores */}
           <div className="space-y-4">
-            <ScoreBar label="Trend" value={data.trend_score} icon={TrendingUp} />
-            <ScoreBar label="Momentum" value={data.momentum_score} icon={Zap} />
-            <ScoreBar label="Volatility" value={data.volatility_score} icon={Shield} />
-            <ScoreBar label="Volume" value={data.volume_score} icon={BarChart3} />
+            <ScoreBar label="Trend" value={data.trend_score} icon={TrendUp} />
+            <ScoreBar label="Momentum" value={data.momentum_score} icon={Lightning} />
+            <ScoreBar label="Volatility" value={data.volatility_score} icon={ShieldCheck} />
+            <ScoreBar label="Volume" value={data.volume_score} icon={ChartBar} />
           </div>
         </div>
       </CardContent>

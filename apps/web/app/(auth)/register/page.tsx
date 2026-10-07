@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { TrendingUp, Eye, EyeOff, Loader2, Check } from "lucide-react";
+import { TrendUp, Eye, EyeSlash, CircleNotch, Check } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,20 +68,14 @@ export default function RegisterPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-12">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute -left-40 bottom-1/4 h-[500px] w-[500px] rounded-full bg-chart-2/5 blur-[120px]" />
-      </div>
-
-      <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/80 backdrop-blur-xl">
+      <Card className="relative z-10 w-full max-w-md border-border/50">
         <CardHeader className="space-y-4 text-center">
           <Link href="/" className="mx-auto flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center bg-primary">
+              <TrendUp className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold tracking-tight">
-              Untold<span className="text-primary">Money</span>
+              Untold<span className="text-primary-ink">Money</span>
             </span>
           </Link>
           <div>
@@ -100,7 +94,7 @@ export default function RegisterPage() {
                 id="full_name"
                 placeholder="John Doe"
                 {...register("full_name")}
-                className="bg-muted/50"
+               
               />
               {errors.full_name && (
                 <p className="text-xs text-destructive">{errors.full_name.message}</p>
@@ -114,7 +108,7 @@ export default function RegisterPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...register("email")}
-                className="bg-muted/50"
+               
               />
               {errors.email && (
                 <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -128,7 +122,7 @@ export default function RegisterPage() {
                 type="tel"
                 placeholder="+91 98765 43210"
                 {...register("phone")}
-                className="bg-muted/50"
+               
               />
             </div>
 
@@ -140,7 +134,7 @@ export default function RegisterPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
                   {...register("password")}
-                  className="bg-muted/50 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"
@@ -148,7 +142,7 @@ export default function RegisterPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   tabIndex={-1}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeSlash className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {errors.password && (
@@ -182,11 +176,11 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   {...register("accept_terms")}
-                  className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                  className="mt-0.5 h-4 w-4 border-border accent-primary"
                 />
                 <span className="text-muted-foreground">
                   I accept the{" "}
-                  <span className="text-primary hover:underline cursor-pointer">Terms of Service</span>
+                  <span className="text-primary-ink hover:underline cursor-pointer">Terms of Service</span>
                 </span>
               </label>
               {errors.accept_terms && (
@@ -197,11 +191,11 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   {...register("accept_privacy")}
-                  className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                  className="mt-0.5 h-4 w-4 border-border accent-primary"
                 />
                 <span className="text-muted-foreground">
                   I accept the{" "}
-                  <span className="text-primary hover:underline cursor-pointer">Privacy Policy</span>
+                  <span className="text-primary-ink hover:underline cursor-pointer">Privacy Policy</span>
                 </span>
               </label>
               {errors.accept_privacy && (
@@ -217,7 +211,7 @@ export default function RegisterPage() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
                   Creating account...
                 </>
               ) : (
@@ -228,7 +222,7 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-primary hover:underline">
+            <Link href="/login" className="font-medium text-primary-ink hover:underline">
               Sign in
             </Link>
           </p>

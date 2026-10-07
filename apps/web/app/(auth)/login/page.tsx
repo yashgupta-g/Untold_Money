@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { TrendingUp, Eye, EyeOff, Loader2 } from "lucide-react";
+import { TrendUp, Eye, EyeSlash, CircleNotch } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,20 +54,14 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute -right-40 bottom-1/4 h-[500px] w-[500px] rounded-full bg-chart-5/5 blur-[120px]" />
-      </div>
-
-      <Card className="relative z-10 w-full max-w-md border-border/50 bg-card/80 backdrop-blur-xl">
+      <Card className="relative z-10 w-full max-w-md border-border/50">
         <CardHeader className="space-y-4 text-center">
           <Link href="/" className="mx-auto flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center bg-primary">
+              <TrendUp className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold tracking-tight">
-              Untold<span className="text-primary">Money</span>
+              Untold<span className="text-primary-ink">Money</span>
             </span>
           </Link>
           <div>
@@ -87,7 +81,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@example.com"
                 {...register("email")}
-                className="bg-muted/50"
+               
               />
               {errors.email && (
                 <p className="text-xs text-destructive">{errors.email.message}</p>
@@ -102,7 +96,7 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   {...register("password")}
-                  className="bg-muted/50 pr-10"
+                  className="pr-10"
                 />
                 <button
                   type="button"
@@ -110,7 +104,7 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   tabIndex={-1}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeSlash className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
               {errors.password && (
@@ -126,7 +120,7 @@ export default function LoginPage() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
                   Signing in...
                 </>
               ) : (
@@ -137,7 +131,7 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
-            <Link href="/register" className="font-medium text-primary hover:underline">
+            <Link href="/register" className="font-medium text-primary-ink hover:underline">
               Create one
             </Link>
           </p>

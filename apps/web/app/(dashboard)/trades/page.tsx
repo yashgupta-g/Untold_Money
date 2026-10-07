@@ -1,12 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  ArrowLeftRight,
-  Plus,
-  Loader2,
-  RefreshCw,
-} from "lucide-react";
+import { ArrowsLeftRight, Plus, CircleNotch, ArrowsClockwise } from "@phosphor-icons/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,13 +47,13 @@ export default function TradesPage() {
           </p>
         </div>
         <div className="flex h-[40vh] flex-col items-center justify-center">
-          <div className="rounded-2xl bg-red-500/10 p-4 mb-4">
-            <ArrowLeftRight className="h-10 w-10 text-red-500/60" />
+          <div className="border border-destructive/30 p-4 mb-4">
+            <ArrowsLeftRight className="h-10 w-10 text-red-500/60" />
           </div>
           <p className="text-lg font-medium">Failed to load trades</p>
           <p className="mt-1 text-sm text-muted-foreground">Something went wrong. Please try again.</p>
           <Button onClick={() => refetchTrades()} variant="outline" className="mt-4 gap-2" size="sm">
-            <RefreshCw className="h-3.5 w-3.5" />
+            <ArrowsClockwise className="h-3.5 w-3.5" />
             Retry
           </Button>
         </div>
@@ -93,13 +88,13 @@ export default function TradesPage() {
       {analyticsLoading && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[...Array(4)].map((_, i) => (
-            <Card key={i} className="border-border/50 bg-card/80 animate-pulse">
+            <Card key={i} className="border-border/50 animate-pulse">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-muted/50" />
+                  <div className="h-9 w-9 bg-muted/50" />
                   <div className="space-y-2 flex-1">
-                    <div className="h-3 w-16 rounded bg-muted/50" />
-                    <div className="h-5 w-24 rounded bg-muted/50" />
+                    <div className="h-3 w-16 bg-muted/50" />
+                    <div className="h-5 w-24 bg-muted/50" />
                   </div>
                 </div>
               </CardContent>
