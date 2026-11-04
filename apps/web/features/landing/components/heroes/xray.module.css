@@ -1,0 +1,536 @@
+.hero {
+  padding: 12px 12px 0;
+}
+
+.panel {
+  --lx: 72%;
+  --ly: 68%;
+  --mx: 72%;
+  --my: 50%;
+  --lr: clamp(110px, 12vw, 150px);
+  position: relative;
+  isolation: isolate;
+  min-height: max(740px, min(calc(100svh - 12px), 960px));
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  color: var(--ink);
+  cursor: crosshair;
+}
+
+/* ---------- the bright city and its x-ray ---------- */
+.photo,
+.negative img {
+  object-fit: cover;
+  object-position: 50% 78%;
+}
+
+.photo {
+  z-index: -3;
+}
+
+/* Same photo, inverted and pushed to cobalt, shown only inside the lens. */
+.negative {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  mask-image: radial-gradient(
+    circle var(--lr) at var(--lx) var(--ly),
+    var(--ink) calc(var(--lr) - 1px),
+    transparent var(--lr)
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--lr) at var(--lx) var(--ly),
+    var(--ink) calc(var(--lr) - 1px),
+    transparent var(--lr)
+  );
+  pointer-events: none;
+}
+
+.negative img {
+  filter: grayscale(1) invert(1) brightness(0.9) contrast(1.3);
+}
+
+.negative::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--xr-tint);
+  mix-blend-mode: color;
+}
+
+/* Morning light from the left keeps the copy crisp. */
+.wash {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: radial-gradient(60% 70% at 0% 20%, var(--xr-wash), transparent 70%),
+    linear-gradient(90deg, var(--xr-wash) 0%, var(--xr-wash-soft) 34%, transparent 58%);
+}
+
+/* ---------- copy ---------- */
+.copy {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: start;
+  gap: 22px;
+  max-width: 40rem;
+  padding: clamp(116px, 15vh, 156px) 0 0 clamp(24px, 6vw, 96px);
+  animation: xr-rise 800ms var(--ease-reveal) both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--glass-card-line);
+  border-radius: var(--r-pill);
+  background: var(--glass-card);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.hint i {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-light);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(44px, 5.8vw, 92px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.lede {
+  margin: 0;
+  max-width: 32rem;
+  color: var(--ink-2);
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+}
+
+/* ---------- floating insight cards ---------- */
+.insights {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.insight {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 280px;
+  padding: 10px 16px 10px 10px;
+  border: 1px solid var(--glass-card-line);
+  border-radius: 18px;
+  background: var(--glass-card);
+  box-shadow: 0 24px 50px -24px var(--card-shadow-cool);
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.4;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  animation:
+    xr-card-in 900ms var(--ease-out-expo) calc(500ms + var(--i) * 150ms) both,
+    xr-bob calc(6s + var(--i) * 1s) ease-in-out calc(1.5s + var(--i) * 0.4s) infinite;
+}
+
+.insight b {
+  display: block;
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.insight:nth-child(1) {
+  top: 15%;
+  left: 54%;
+}
+
+.insight:nth-child(2) {
+  top: 24%;
+  right: 3%;
+}
+
+.insight:nth-child(3) {
+  top: 31%;
+  left: 60%;
+}
+
+@keyframes xr-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+}
+
+@keyframes xr-bob {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ---------- chart layers ---------- */
+/* The chart fades out under the copy on the left. */
+.plot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 60%;
+  mask-image: linear-gradient(90deg, transparent 38%, var(--ink) 62%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 38%, var(--ink) 62%);
+  pointer-events: none;
+}
+
+.chart {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* The surface hides inside the lens; the skeleton shows only there. */
+.surface {
+  mask-image: radial-gradient(
+    circle var(--lr) at var(--mx) var(--my),
+    transparent calc(var(--lr) - 1px),
+    var(--ink) var(--lr)
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--lr) at var(--mx) var(--my),
+    transparent calc(var(--lr) - 1px),
+    var(--ink) var(--lr)
+  );
+  animation: xr-fade 1200ms ease 200ms both;
+}
+
+.skeleton {
+  mask-image: radial-gradient(
+    circle var(--lr) at var(--mx) var(--my),
+    var(--ink) calc(var(--lr) - 1px),
+    transparent var(--lr)
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--lr) at var(--mx) var(--my),
+    var(--ink) calc(var(--lr) - 1px),
+    transparent var(--lr)
+  );
+}
+
+.areaTop {
+  stop-color: var(--on-ink);
+  stop-opacity: 0.45;
+}
+
+.areaBottom {
+  stop-color: var(--on-ink);
+  stop-opacity: 0;
+}
+
+.surfaceLine {
+  fill: none;
+  stroke: var(--on-ink);
+  stroke-width: 3;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 6px var(--ribbon-shadow));
+}
+
+.grid {
+  stroke: var(--xr-line);
+  stroke-dasharray: 2 5;
+}
+
+.axis {
+  fill: var(--xr-text-2);
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  text-anchor: end;
+}
+
+.rsi + .axis {
+  text-anchor: start;
+}
+
+.up line,
+.down line {
+  stroke-width: 1.3;
+}
+
+.up line {
+  stroke: var(--gain-dk);
+}
+
+.up rect {
+  fill: var(--gain-dk);
+}
+
+.down line {
+  stroke: var(--loss-dk);
+}
+
+.down rect {
+  fill: var(--loss-dk);
+}
+
+.sma20,
+.sma50,
+.rsi {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.sma20 {
+  stroke: var(--on-ink);
+  filter: drop-shadow(0 0 4px var(--accent-light));
+}
+
+.sma50 {
+  stroke: var(--xr-cyan);
+  stroke-dasharray: 6 6;
+}
+
+.vol {
+  fill: var(--xr-line);
+}
+
+.volPeak {
+  fill: var(--xr-cyan);
+}
+
+.rsiBand {
+  fill: var(--xr-band);
+}
+
+.rsi {
+  stroke: var(--xr-cyan);
+}
+
+.note circle {
+  fill: var(--accent);
+  stroke: var(--on-ink);
+  stroke-width: 2;
+}
+
+.note path {
+  fill: none;
+  stroke: var(--on-ink);
+  stroke-width: 1;
+}
+
+.note text {
+  fill: var(--on-ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 14px;
+  paint-order: stroke;
+  stroke: var(--xr-ink);
+  stroke-width: 4px;
+}
+
+/* ---------- the lens: a polished loupe ---------- */
+.lens {
+  position: absolute;
+  left: var(--lx);
+  top: var(--ly);
+  z-index: 4;
+  width: calc(var(--lr) * 2);
+  height: calc(var(--lr) * 2);
+  border-radius: 50%;
+  background: radial-gradient(55% 35% at 32% 16%, var(--xr-glare), transparent 70%);
+  translate: -50% -50%;
+  box-shadow:
+    0 30px 60px -20px var(--xr-ink),
+    inset 0 0 40px var(--accent-fade);
+  pointer-events: none;
+  animation: xr-fade 800ms ease 600ms both;
+}
+
+/* Chrome rim: a conic sheen cut down to a ring, so the glass stays clear. */
+.rim {
+  position: absolute;
+  inset: -8px;
+  padding: 8px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 200deg,
+    var(--xr-chrome-1),
+    var(--on-ink),
+    var(--xr-chrome-2),
+    var(--on-ink),
+    var(--xr-chrome-1)
+  );
+  box-shadow: 0 0 0 1px var(--xr-chrome-2);
+  mask:
+    linear-gradient(var(--ink) 0 0) content-box exclude,
+    linear-gradient(var(--ink) 0 0);
+  -webkit-mask:
+    linear-gradient(var(--ink) 0 0) content-box,
+    linear-gradient(var(--ink) 0 0);
+  -webkit-mask-composite: xor;
+}
+
+/* Crosshair ticks inside the glass. */
+.lens::before,
+.lens::after {
+  content: "";
+  position: absolute;
+  background: var(--on-ink);
+  opacity: 0.8;
+}
+
+.lens::before {
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  mask-image: linear-gradient(
+    var(--ink) 14px,
+    transparent 14px,
+    transparent calc(100% - 14px),
+    var(--ink) calc(100% - 14px)
+  );
+  -webkit-mask-image: linear-gradient(
+    var(--ink) 14px,
+    transparent 14px,
+    transparent calc(100% - 14px),
+    var(--ink) calc(100% - 14px)
+  );
+}
+
+.lens::after {
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  mask-image: linear-gradient(
+    90deg,
+    var(--ink) 14px,
+    transparent 14px,
+    transparent calc(100% - 14px),
+    var(--ink) calc(100% - 14px)
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    var(--ink) 14px,
+    transparent 14px,
+    transparent calc(100% - 14px),
+    var(--ink) calc(100% - 14px)
+  );
+}
+
+.lensTag {
+  position: absolute;
+  left: 50%;
+  top: -16px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  box-shadow: 0 6px 16px -6px var(--glow);
+  color: var(--on-ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  translate: -50% -50%;
+}
+
+@keyframes xr-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes xr-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .insight:nth-child(3) {
+    display: none;
+  }
+
+  .insight:nth-child(1) {
+    left: 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  .insights {
+    display: none;
+  }
+
+  .panel {
+    --lr: 96px;
+    min-height: 820px;
+  }
+
+  .copy {
+    padding: 112px 20px 0;
+  }
+
+  .wash {
+    background: linear-gradient(
+      180deg,
+      var(--xr-wash) 0%,
+      var(--xr-wash-soft) 45%,
+      transparent 62%
+    );
+  }
+
+  .hint {
+    display: none;
+  }
+
+  .plot {
+    height: 44%;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copy,
+  .surface,
+  .lens,
+  .insight {
+    animation: none;
+  }
+}

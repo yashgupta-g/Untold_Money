@@ -1,0 +1,224 @@
+/*
+ * Landing page design tokens: the only place raw colour values live.
+ *
+ * Scoped to the page root (`.theme`) rather than :root because the app's
+ * shadcn theme in globals.css already defines --accent and friends; a global
+ * override would recolour the dashboard after client-side navigation.
+ */
+
+.theme {
+  /* surfaces */
+  --bg: #ffffff; /* page background */
+  --bg-elev: #ffffff; /* floating panels */
+  --bg-subtle: #f5f5f7; /* cards and banded sections on white */
+  --bg-muted: #ebebef; /* chips, segmented controls, tracks */
+
+  /* ink */
+  --ink: #0b0b0c; /* headings, primary buttons */
+  --ink-2: #3b3b40; /* body */
+  --ink-3: #68686f; /* labels: 5.5:1 on white, 5.0:1 on --bg-subtle */
+  --ink-4: #a6a6ad; /* placeholders, disabled */
+  --on-ink: #ffffff; /* text and icons on --ink fills */
+  --on-photo: #ffffff; /* text over photography */
+  --on-photo-2: rgba(255, 255, 255, 0.84);
+  --scrim: rgba(8, 18, 40, 0.42); /* darkens photos behind text */
+  --line: rgba(11, 11, 12, 0.08);
+  --line-strong: rgba(11, 11, 12, 0.14);
+
+  /* single brand accent: cobalt, used sparingly */
+  --accent: #2e4bf5;
+  --accent-soft: #e9edff;
+
+  /* data semantics: market data only, never decoration */
+  --gain: #0f9d6b;
+  --gain-soft: #e3f4ec;
+  --gain-ink: #0b7a53; /* gain as text: 5.3:1 on white */
+  --loss: #e0484d;
+  --loss-soft: #fcebec;
+  --loss-ink: #b42a30; /* loss text on --loss-soft: 5.5:1 */
+  --warn: #d9772e;
+  --warn-soft: #fbefe4;
+  --warn-ink: #9a4a12; /* warning text on --warn-soft: 5.5:1 */
+
+  /* media */
+  --media-dark: #050812; /* video letterbox */
+
+  /* dark panels (glow sections) */
+  --dk-bg: #08090d;
+  --dk-surface: #0f1116;
+  --dk-surface-2: #161920;
+  --dk-line: rgba(255, 255, 255, 0.08);
+  --dk-line-strong: rgba(255, 255, 255, 0.14);
+  --dk-text: #f3f4f7;
+  --dk-text-2: #a9adbd;
+  --dk-text-3: #808497; /* 4.8:1 on --dk-surface */
+  --glow: rgba(46, 75, 245, 0.55); /* cobalt under-glow */
+  --glow-soft: rgba(46, 75, 245, 0.22);
+  --glow-bright: rgba(140, 165, 255, 0.95); /* hot core of a glowing bar */
+  --glow-cool: rgba(110, 140, 255, 0.35);
+  --accent-light: #5a73ff; /* top stop of cobalt gradients */
+  --accent-fade: rgba(46, 75, 245, 0.15);
+  --accent-faint: rgba(46, 75, 245, 0.04);
+  --accent-bar: rgba(110, 140, 255, 0.26);
+  --accent-rim: rgba(160, 180, 255, 0.55);
+  --accent-rim-soft: rgba(160, 180, 255, 0.3);
+  --dk-chip: rgba(255, 255, 255, 0.04);
+  --dk-chip-strong: rgba(255, 255, 255, 0.14);
+  --dk-highlight: rgba(255, 255, 255, 0.06); /* inner top edge on dark cards */
+  --dk-highlight-strong: rgba(255, 255, 255, 0.08);
+  --dk-glass: rgba(15, 17, 22, 0.75);
+  --dk-scrim: rgba(8, 9, 13, 0.85);
+  --dk-well: rgba(0, 0, 0, 0.25);
+  /* market colours on dark panels (text 7:1 or better on --dk-bg) */
+  --gain-dk: #4fd6a0;
+  --gain-dk-soft: rgba(15, 157, 107, 0.18);
+  --loss-dk: #ff8085;
+  --loss-dk-soft: rgba(224, 72, 77, 0.18);
+  --warn-dk: #f4a261;
+  --warn-dk-soft: rgba(217, 119, 46, 0.16);
+  /* 3D brand coin */
+  --coin-hi: #e4e9ff;
+  --coin-light: #7d91ff;
+  --coin-deep: #1a2cc4;
+  --coin-shadow: #0b1466;
+  --coin-edge: #2a40e0;
+  --coin-ring: rgba(255, 255, 255, 0.24);
+  --coin-groove: rgba(6, 12, 64, 0.55);
+  --coin-sheen: rgba(255, 255, 255, 0.42);
+  --orb-1: #2a3a9a;
+  --orb-2: #0e1442;
+  --glass: rgba(255, 255, 255, 0.16);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-line: rgba(255, 255, 255, 0.36);
+  --glass-dark: rgba(12, 22, 44, 0.3); /* glass that keeps white text legible on pale photos */
+  --glass-card: rgba(255, 255, 255, 0.8); /* frosted cards with ink text */
+  --glass-card-line: rgba(255, 255, 255, 0.7);
+  --scrim-strong: rgba(8, 18, 40, 0.6);
+  --nav-over-photo: rgba(14, 26, 52, 0.82); /* nav bar while scrolling over the hero photo */
+  --trace-glow-color: rgba(110, 140, 255, 0.55); /* soft halo under data traces */
+  --hand-shadow: rgba(8, 18, 40, 0.28);
+  --ribbon-end: #6f88ff; /* light trails cool to this cobalt */
+  --ribbon-shadow: rgba(46, 75, 245, 0.55);
+  --card-shadow-cool: rgba(20, 40, 120, 0.42);
+  --hero-sun: rgba(255, 248, 228, 0.55);
+  --hero-warn-light: #ffb26b;
+  --hero-mint-light: #4fd6a0;
+
+  /* ---------- hero design options (preview) ---------- */
+  /* Anthropomorphic: the crew */
+  --crew-bg: #f6f7fc;
+  --crew-dot: rgba(46, 75, 245, 0.12);
+  --crew-glow: rgba(46, 75, 245, 0.1);
+  --crew-cobalt-light: #7d91ff;
+  --crew-cobalt: #2e4bf5;
+  --crew-cobalt-deep: #1a2cc4;
+  --crew-mint-light: #6ff0bf;
+  --crew-mint: #1fbf86;
+  --crew-mint-deep: #119565;
+  --crew-sky-light: #c3ceff;
+  --crew-sky: #8ea2ff;
+  --crew-sky-deep: #6378e8;
+  --crew-sun-light: #ffe08a;
+  --crew-sun: #ffc53d;
+  --crew-sun-deep: #e2a514;
+  --crew-coral-light: #ffb39c;
+  --crew-coral: #ff7a59;
+  --crew-coral-deep: #e0573a;
+  --crew-sun-glow: rgba(255, 246, 214, 0.85);
+  --crew-ray: rgba(255, 252, 236, 0.32);
+  --crew-cloud: rgba(255, 255, 255, 0.85);
+  --crew-gloss: rgba(255, 255, 255, 0.4);
+  --crew-shadow-grass: rgba(20, 60, 10, 0.35);
+  --crew-tag: rgba(255, 255, 255, 0.86);
+  --crew-soon-fill: rgba(255, 255, 255, 0.28);
+  --crew-blush: rgba(255, 122, 89, 0.45);
+  --crew-gauge-track: rgba(255, 255, 255, 0.3);
+  --crew-shadow: rgba(11, 11, 12, 0.18);
+  /* Exploded view: blueprint */
+  --blue-major: rgba(46, 75, 245, 0.09);
+  --blue-minor: rgba(46, 75, 245, 0.045);
+  --blue-edge: rgba(46, 75, 245, 0.3);
+  --blue-glass: rgba(255, 255, 255, 0.64);
+  --blue-glass-hi: rgba(255, 255, 255, 0.9);
+  --blue-haze: rgba(255, 255, 255, 0.55);
+  --blue-wash: rgba(255, 255, 255, 0.85);
+  --blue-beam: rgba(140, 165, 255, 0.35);
+  --blue-chip: rgba(255, 255, 255, 0.78);
+  /* X-ray over a bright city */
+  --xr-wash: rgba(255, 255, 255, 0.9);
+  --xr-wash-soft: rgba(255, 255, 255, 0.55);
+  --xr-tint: #1f3fe0;
+  --xr-ink: #0a1440;
+  --xr-line: rgba(255, 255, 255, 0.3);
+  --xr-text-2: rgba(255, 255, 255, 0.75);
+  --xr-cyan: #8fe3ff;
+  --xr-band: rgba(143, 227, 255, 0.14);
+  --xr-glare: rgba(255, 255, 255, 0.35);
+  --xr-chrome-1: #c9d2e6;
+  --xr-chrome-2: #8b97b4;
+  /* Platform map (isometric) */
+  --pf-slab-top: #f4f6ff;
+  --pf-slab-left: #e3e8fb;
+  --pf-slab-right: #d3daf7;
+  --pf-grid: rgba(46, 75, 245, 0.1);
+  --pf-edge: rgba(46, 75, 245, 0.18);
+  --pf-live-left: #eef1ff;
+  --pf-live-right: #dde3fd;
+  --pf-soon-fill: rgba(46, 75, 245, 0.04);
+  --pf-soon-top: rgba(255, 255, 255, 0.6);
+  --pf-soon-icon: rgba(46, 75, 245, 0.55);
+  --pf-soon-line: rgba(46, 75, 245, 0.4);
+  --pf-core-shade: #1a2cc4;
+  --pf-core-glow: rgba(46, 75, 245, 0.35);
+  --pf-block-shadow: rgba(30, 50, 140, 0.14);
+
+  /* radius */
+  --r-xl: 32px;
+  --r-lg: 24px;
+  --r-md: 16px;
+  --r-sm: 10px;
+  --r-pill: 999px;
+
+  /* shadows: layered, neutral, never coloured */
+  --shadow-sm: 0 1px 2px rgba(11, 11, 12, 0.04), 0 2px 8px -2px rgba(11, 11, 12, 0.06);
+  --shadow-md: 0 1px 2px rgba(11, 11, 12, 0.04), 0 12px 32px -12px rgba(11, 11, 12, 0.12);
+  --shadow-lg: 0 2px 4px rgba(11, 11, 12, 0.04), 0 24px 48px -16px rgba(11, 11, 12, 0.14),
+    0 64px 96px -32px rgba(11, 11, 12, 0.16);
+  --contact-shadow: rgba(11, 11, 12, 0.18);
+  /* Product photo floating over the sky: glass rim plus a deep, cool shadow. */
+  --shadow-frame: 0 0 0 1px rgba(255, 255, 255, 0.36), 0 2px 4px rgba(8, 18, 40, 0.08),
+    0 40px 90px -30px rgba(8, 18, 40, 0.55);
+
+  /* type families. SF Pro Display comes from the visitor's own Apple system
+     (Apple's licence doesn't allow serving it as a web font); Inter, loaded
+     in app/page.tsx, is the fallback everywhere else. */
+  --font-ui: "SF Pro Display", -apple-system, BlinkMacSystemFont, var(--font-inter),
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  /* type scale */
+  --fs-hero: clamp(48px, 6.6vw, 104px);
+  --fs-h2: clamp(36px, 4.6vw, 64px);
+  --fs-card: clamp(22px, 1.2rem + 0.4vw, 26px);
+  --fs-body-lg: clamp(18px, 1.05rem + 0.15vw, 19px);
+  --fs-body: 16px;
+  --fs-small: 15px;
+  --fs-label: 13px;
+  --measure: 60ch;
+
+  /* layout */
+  --gutter: clamp(16px, 4vw, 40px);
+  --maxw: 1240px;
+  --section: clamp(7.5rem, 4.5rem + 9vw, 12.5rem);
+
+  /* motion */
+  --ease-reveal: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-micro: 200ms;
+  --dur-ui: 600ms;
+}
+
+:global(html):has(.theme) {
+  background: #ffffff;
+  color-scheme: light;
+}

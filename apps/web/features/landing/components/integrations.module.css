@@ -1,0 +1,298 @@
+/* A deeper cobalt wash than the other dark panels, pooled behind the rows.
+   (:is(div) lifts specificity above the shared .darkPanel background.) */
+.panel:is(div) {
+  background: radial-gradient(60% 55% at 50% 62%, var(--glow-soft), transparent 75%),
+    radial-gradient(40% 30% at 50% 0%, var(--accent-fade), transparent 70%), var(--dk-bg);
+}
+
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.inkTop {
+  stop-color: var(--glow-bright);
+}
+
+.inkBottom {
+  stop-color: var(--accent-light);
+}
+
+.head {
+  max-width: 48rem;
+}
+
+/* Two-tone heading: the setup is muted, the payoff is bright. */
+.title > span {
+  display: block;
+}
+
+.title > span:first-child {
+  color: var(--dk-text-2);
+}
+
+/* ---------- rows ---------- */
+.universe {
+  position: relative;
+  margin-top: clamp(64px, 8vw, 96px);
+}
+
+.rows {
+  display: grid;
+  gap: 16px;
+}
+
+/* Fades the tiles out toward both edges. */
+.viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ink) 22%,
+    var(--ink) 78%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ink) 22%,
+    var(--ink) 78%,
+    transparent 100%
+  );
+}
+
+.track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  margin: 0;
+  padding: 10px 0;
+  list-style: none;
+  animation: logos 120s linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+  animation-duration: 150s;
+}
+
+.viewport:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes logos {
+  to {
+    transform: translateX(calc(-50% - 8px));
+  }
+}
+
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  flex: none;
+  border: 1px solid var(--dk-line);
+  border-radius: 20px;
+  background: linear-gradient(160deg, var(--dk-surface-2), var(--dk-bg));
+  box-shadow: inset 0 1px 0 var(--dk-highlight);
+  transition:
+    transform var(--dur-micro) var(--ease-reveal),
+    border-color var(--dur-micro) ease,
+    box-shadow var(--dur-micro) ease;
+}
+
+.mark {
+  width: 34px;
+  height: 34px;
+  fill: url(#brand-ink);
+  filter: drop-shadow(0 0 10px var(--glow-cool));
+}
+
+.tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-rim-soft);
+  box-shadow:
+    inset 0 1px 0 var(--dk-highlight-strong),
+    0 14px 34px -12px var(--glow);
+}
+
+/* Name appears under the tile on hover. */
+.name {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  translate: -50% 0;
+  color: var(--dk-text-2);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--dur-micro) ease;
+  pointer-events: none;
+}
+
+.tile:hover .name {
+  opacity: 1;
+}
+
+/* ---------- 3D brand coin ---------- */
+.coinWrap {
+  --coin: 176px;
+  --depth: 1.3px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  width: var(--coin);
+  height: var(--coin);
+  translate: -50% -50%;
+  perspective: 1000px;
+  pointer-events: none;
+}
+
+/* Light pooled under the coin, spilling over the tiles behind it. */
+.coinGlow {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  z-index: -1;
+  width: 300%;
+  height: 190%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow), var(--glow-soft) 45%, transparent);
+}
+
+.coinDrop,
+.coin {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.coin {
+  transform: rotateX(12deg) rotateY(-30deg);
+  animation: coin-sway 7s ease-in-out infinite;
+}
+
+@keyframes coin-sway {
+  50% {
+    transform: translateY(-8px) rotateX(8deg) rotateY(-16deg);
+  }
+}
+
+.coinEdge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    100deg,
+    var(--coin-shadow),
+    var(--coin-edge) 40%,
+    var(--coin-light) 55%,
+    var(--coin-shadow)
+  );
+  transform: translateZ(calc(var(--z) * var(--depth) * -1));
+}
+
+.coinFace {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 32% 26%,
+    var(--coin-hi) 0%,
+    var(--coin-light) 22%,
+    var(--accent) 52%,
+    var(--coin-deep) 80%,
+    var(--coin-shadow) 100%
+  );
+  box-shadow:
+    inset 0 0 0 8px var(--coin-ring),
+    inset 0 0 0 10px var(--coin-groove),
+    inset 0 -14px 28px var(--coin-groove),
+    inset 0 10px 22px var(--coin-ring);
+  transform: translateZ(1px);
+  backface-visibility: hidden;
+}
+
+.coinBack {
+  transform: translateZ(calc(var(--depth) * -14)) rotateY(180deg);
+}
+
+.coinFace svg {
+  width: 40%;
+  height: 40%;
+  fill: var(--on-ink);
+  filter: drop-shadow(0 2px 0 var(--coin-groove)) drop-shadow(0 0 14px var(--glow-bright));
+}
+
+/* A slow sheen sweeping across the face. */
+.coinFace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 38%, var(--coin-sheen) 50%, transparent 62%) 0 0 /
+    300% 100%;
+  animation: coin-sheen 6s ease-in-out infinite;
+}
+
+@keyframes coin-sheen {
+  0%,
+  55% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+.cta {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(40px, 5vw, 56px);
+}
+
+.button {
+  background: linear-gradient(180deg, var(--accent-light), var(--accent));
+  color: var(--on-ink);
+  box-shadow:
+    inset 0 1px 0 var(--dk-chip-strong),
+    0 12px 32px -10px var(--glow);
+}
+
+@media (max-width: 767px) {
+  .tile {
+    width: 68px;
+    height: 68px;
+    border-radius: 16px;
+  }
+
+  .mark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .coinWrap {
+    --coin: 124px;
+    --depth: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .coin,
+  .coinFace::after {
+    animation: none;
+  }
+
+  .viewport {
+    overflow-x: auto;
+  }
+}

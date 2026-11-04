@@ -79,3 +79,5 @@ class Instrument(UUIDPrimaryKeyMixin, Base):
 
     def __repr__(self) -> str:
         return f"<Instrument {self.symbol}>"
+
+        

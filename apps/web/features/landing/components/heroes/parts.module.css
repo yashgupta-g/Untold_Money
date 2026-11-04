@@ -1,0 +1,61 @@
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.primary {
+  padding-right: 10px;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.arrow svg {
+  transition: transform var(--dur-micro) var(--ease-reveal);
+}
+
+.primary:hover .arrow svg {
+  transform: translate(2px, -2px);
+}
+
+/* On light surfaces: ink button, hairline secondary. */
+.ctas[data-tone="ink"] .primary {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.ctas[data-tone="ink"] .arrow {
+  background: var(--bg-elev);
+  color: var(--ink);
+}
+
+.ctas[data-tone="ink"] .secondary {
+  border-color: var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+}
+
+/* On dark surfaces: white button, glass secondary. */
+.ctas[data-tone="light"] .primary {
+  background: var(--on-ink);
+  color: var(--ink);
+}
+
+.ctas[data-tone="light"] .arrow {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.ctas[data-tone="light"] .secondary {
+  border-color: var(--glass-line);
+  background: var(--glass);
+  color: var(--on-photo);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}

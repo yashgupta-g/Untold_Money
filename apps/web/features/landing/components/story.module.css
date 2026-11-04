@@ -1,0 +1,199 @@
+.story {
+  position: relative;
+  padding-block: var(--section);
+}
+
+.pin {
+  margin-top: clamp(72px, 10vw, 128px);
+}
+
+/* ---------- default: steps stack (mobile, reduced motion, no JS) ---------- */
+.stage {
+  display: grid;
+  gap: clamp(96px, 14vw, 160px);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+}
+
+.text {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  max-width: 30rem;
+}
+
+.count {
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: 0.04em;
+}
+
+.count span {
+  color: var(--ink-3);
+}
+
+.question {
+  margin: 8px 0 0;
+  color: var(--accent);
+  font-size: var(--fs-small);
+}
+
+.title {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: clamp(2rem, 1.3rem + 2.4vw, 3.5rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.body {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.device {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 480px);
+}
+
+/* Hand-held phone photography, one per step. */
+.shot {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-xl);
+}
+
+.callout {
+  position: absolute;
+  z-index: 2;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.calloutA {
+  left: -12%;
+  top: 30%;
+}
+
+.calloutB {
+  right: -10%;
+  top: 62%;
+}
+
+.callout::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+.progress {
+  display: none;
+}
+
+/* ---------- pinned: one stage, layers stacked in shared grid areas ---------- */
+.story[data-pinned="true"] .pin {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.story[data-pinned="true"] .stage {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "text device"
+    "progress device";
+  gap: 0 64px;
+  height: 100%;
+  padding-block: 64px;
+  align-items: center;
+}
+
+.story[data-pinned="true"] .step {
+  display: contents;
+}
+
+.story[data-pinned="true"] .text {
+  grid-area: text;
+}
+
+.story[data-pinned="true"] .device {
+  grid-area: device;
+  width: auto;
+  height: min(78vh, 720px);
+  aspect-ratio: 1400 / 1575;
+}
+
+.story[data-pinned="true"] .progress {
+  grid-area: progress;
+  display: flex;
+  gap: 8px;
+  width: min(100%, 30rem);
+}
+
+.progress i {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.progress b {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+@media (max-width: 767px) {
+  .step {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 56px;
+  }
+
+  .device {
+    width: 100%;
+  }
+
+  .callout {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .calloutA {
+    left: 12px;
+  }
+
+  .calloutB {
+    right: 12px;
+  }
+}

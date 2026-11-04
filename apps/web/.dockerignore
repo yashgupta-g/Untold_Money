@@ -1,0 +1,8 @@
+# The image installs its own dependencies (npm ci) and the container keeps
+# node_modules and .next in volumes, so neither belongs in the build context.
+node_modules
+.next
+npm-debug.log*
+.DS_Store
+.env*.local
+tsconfig.tsbuildinfo

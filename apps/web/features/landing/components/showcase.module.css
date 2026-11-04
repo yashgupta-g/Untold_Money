@@ -1,0 +1,42 @@
+.frame {
+  position: relative;
+  margin-top: clamp(40px, 5vw, 64px);
+  border-radius: var(--r-xl);
+  background: var(--media-dark);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.control {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--glass-line);
+  border-radius: 50%;
+  background: var(--glass);
+  color: var(--on-photo);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: transform var(--dur-micro) var(--ease-reveal);
+}
+
+.control:hover {
+  transform: scale(1.06);
+}
+
+.control:active {
+  transform: scale(0.97);
+}

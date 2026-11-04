@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Middleware for route protection.
+ * Proxy (formerly middleware) for route protection.
  * In production, this will validate JWT tokens.
  * Currently a placeholder that allows all requests through.
  */
@@ -20,7 +20,7 @@ const protectedPaths = [
 
 const authPaths = ["/login", "/register"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Placeholder: In production, check for valid session/token

@@ -1,0 +1,137 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding-top: 12px;
+  transition: transform 500ms var(--ease-reveal);
+}
+
+.header[data-hidden="true"] {
+  transform: translateY(-110%);
+}
+
+/* Frosted white once the page leaves the hero photo; only opacity animates. */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-reveal);
+}
+
+.header[data-on-photo="false"]::before {
+  opacity: 1;
+}
+
+/* Still over the photo but scrolled: a dark frosted bar so copy passing
+   underneath doesn't show through the links. */
+.header[data-on-photo="true"][data-scrolled="true"]::before {
+  border-bottom-color: var(--glass-line);
+  background: var(--nav-over-photo);
+  opacity: 1;
+}
+
+.header[data-on-photo="true"][data-scrolled="true"] .links {
+  border-color: transparent;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  max-width: calc(var(--maxw) + var(--gutter) * 2 + 24px);
+  height: 64px;
+  margin-inline: auto;
+  padding-inline: calc(var(--gutter) + 12px);
+}
+
+/* Centre pill of links. */
+.links {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg-subtle);
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+
+.links a,
+.login {
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    color var(--dur-micro) ease,
+    background-color var(--dur-micro) ease;
+}
+
+.links a:hover,
+.login:hover {
+  color: var(--ink);
+  background: var(--bg-elev);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* Over the photo: glass pill, white text. */
+.header[data-on-photo="true"] .links {
+  border-color: var(--glass-line);
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.header[data-on-photo="true"] .links a,
+.header[data-on-photo="true"] .login {
+  color: var(--on-photo);
+}
+
+.header[data-on-photo="true"] .links a:hover,
+.header[data-on-photo="true"] .login:hover {
+  background: var(--glass);
+}
+
+@media (max-width: 900px) {
+  .bar {
+    grid-template-columns: 1fr auto;
+  }
+
+  .links {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .bar {
+    height: 56px;
+    gap: 8px;
+    padding-inline: 20px;
+  }
+
+  .login {
+    display: none;
+  }
+}

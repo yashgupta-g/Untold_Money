@@ -218,6 +218,9 @@ class PortfolioService:
             name=data.name,
             base_currency=data.base_currency.upper(),
         )
+
+
+        
         portfolio = await self.repo.create_portfolio(portfolio)
 
         # Audit log

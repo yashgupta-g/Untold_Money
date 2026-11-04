@@ -1,0 +1,251 @@
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(56px, 7vw, 88px);
+}
+
+.areaIndicators {
+  grid-column: span 4;
+  grid-row: span 2;
+}
+
+.areaParams,
+.areaModel {
+  grid-column: span 2;
+}
+
+.areaLimits {
+  grid-column: span 6;
+}
+
+.areaIndicators > .tile,
+.areaParams > .tile,
+.areaModel > .tile {
+  height: 100%;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(24px, 3vw, 36px);
+  border-radius: var(--r-xl);
+  background: var(--bg-subtle);
+  overflow: hidden;
+}
+
+.tileAccent {
+  background: var(--bg-subtle);
+}
+
+.tileSub {
+  margin: 0 0 12px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+}
+
+/* ---------- indicators table ---------- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+}
+
+.table th {
+  padding: 0 0 12px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 400;
+  text-align: left;
+}
+
+.table td {
+  padding: 15px 16px 15px 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.table td:first-child {
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.table .right {
+  padding-right: 0;
+  text-align: right;
+}
+
+/* ---------- sample RSI chart ---------- */
+.chart {
+  margin: 28px 0 0;
+}
+
+.chart figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+}
+
+.chart figcaption span:first-child {
+  color: var(--ink-2);
+}
+
+.chartBox {
+  position: relative;
+  height: 140px;
+  margin-left: 28px;
+}
+
+.chartBox svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.level {
+  position: absolute;
+  left: -28px;
+  translate: 0 -50%;
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.endDot {
+  position: absolute;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  translate: 0 -50%;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--bg-elev);
+}
+
+.note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: auto 0 0;
+  padding-top: 20px;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  line-height: 1.5;
+}
+
+.note svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--accent);
+}
+
+/* ---------- parameters / model ---------- */
+.list {
+  display: grid;
+  margin: auto 0 0;
+  padding: 12px 0 0;
+  list-style: none;
+  font-size: var(--fs-small);
+}
+
+.list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-top: 1px solid var(--line);
+}
+
+.list li span:first-child {
+  color: var(--ink-3);
+}
+
+.list li span:last-child {
+  color: var(--ink);
+}
+
+.list li span:last-child {
+  text-align: right;
+}
+
+/* ---------- limits ---------- */
+.limits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.limits li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  line-height: 1.55;
+}
+
+.limits b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.limitIcon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 6px;
+  border-radius: var(--r-sm);
+  background: var(--bg-elev);
+  color: var(--ink);
+}
+
+@media (max-width: 1023px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .areaIndicators,
+  .areaLimits {
+    grid-column: span 2;
+    grid-row: auto;
+  }
+
+  .areaParams,
+  .areaModel {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 680px) {
+  .bento {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .areaIndicators,
+  .areaLimits,
+  .areaParams,
+  .areaModel {
+    grid-column: auto;
+  }
+
+  .limits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .table td:nth-child(2) {
+    font-size: var(--fs-label);
+  }
+}

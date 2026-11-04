@@ -1,0 +1,116 @@
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(48px, 8vw, 128px);
+  align-items: start;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.item {
+  border-bottom: 1px solid var(--line);
+}
+
+.question {
+  margin: 0;
+}
+
+.question button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  padding: 26px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-ui);
+  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  color: var(--ink-3);
+  transition:
+    transform var(--dur-ui) var(--ease-reveal),
+    background-color var(--dur-micro) ease,
+    color var(--dur-micro) ease,
+    border-color var(--dur-micro) ease;
+}
+
+.question button:hover .icon {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+
+.item[data-open="true"] .icon {
+  transform: rotate(45deg);
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+/* Height animates via grid rows; the content itself only fades. */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-ui) var(--ease-reveal);
+}
+
+.item[data-open="true"] .panel {
+  grid-template-rows: 1fr;
+}
+
+.panel > div {
+  overflow: hidden;
+}
+
+.panel p {
+  margin: 0;
+  padding: 0 64px 28px 0;
+  max-width: var(--measure);
+  color: var(--ink-2);
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  opacity: 0;
+  transition: opacity var(--dur-ui) var(--ease-reveal);
+}
+
+.item[data-open="true"] .panel p {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel p {
+    padding-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .panel p,
+  .icon {
+    transition: none;
+  }
+}

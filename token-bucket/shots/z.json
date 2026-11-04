@@ -1,0 +1,1 @@
+[["wait",400],["key","ArrowUp"],["wait",300],["slow",0.04],["key"," "],["wait",1800],["shot","shots/z-stroke.png",null,4,[230,180,190,140]],["slow",1],["wait",2500],["shot","shots/z-top.png",null,4,[200,70,220,130]],["shot","shots/z-right.png",null,4,[380,170,200,170]],["shot","shots/z-left.png",null,4,[90,170,220,170]]]

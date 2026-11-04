@@ -1,0 +1,61 @@
+.tile {
+  display: block;
+  flex: none;
+  overflow: visible;
+  filter: drop-shadow(0 8px 10px var(--pf-block-shadow));
+}
+
+/* cobalt: the brand block, white icon */
+.tile[data-tone="cobalt"] .top {
+  fill: var(--accent-light);
+}
+
+.tile[data-tone="cobalt"] .left {
+  fill: var(--accent);
+}
+
+.tile[data-tone="cobalt"] .right {
+  fill: var(--pf-core-shade);
+}
+
+.tile[data-tone="cobalt"] .glyph {
+  color: var(--on-ink);
+}
+
+/* light: white block, cobalt icon */
+.tile[data-tone="light"] .top {
+  fill: var(--bg-elev);
+  stroke: var(--pf-edge);
+}
+
+.tile[data-tone="light"] .left {
+  fill: var(--pf-live-left);
+  stroke: var(--pf-edge);
+}
+
+.tile[data-tone="light"] .right {
+  fill: var(--pf-live-right);
+  stroke: var(--pf-edge);
+}
+
+.tile[data-tone="light"] .glyph {
+  color: var(--accent);
+}
+
+/* soon: a dashed outline of a block not built yet */
+.tile[data-tone="soon"] .top,
+.tile[data-tone="soon"] .left,
+.tile[data-tone="soon"] .right {
+  fill: var(--pf-soon-top);
+  stroke: var(--accent);
+  stroke-dasharray: 3 3;
+  stroke-opacity: 0.6;
+}
+
+.tile[data-tone="soon"] .glyph {
+  color: var(--pf-soon-icon);
+}
+
+.tile[data-tone="soon"] {
+  filter: none;
+}

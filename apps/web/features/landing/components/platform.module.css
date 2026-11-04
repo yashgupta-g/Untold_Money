@@ -1,0 +1,386 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+/* ---------- the isometric map ---------- */
+.map {
+  position: relative;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Faces: top lightest, right darkest, so light falls from the upper left. */
+.slabTop {
+  fill: var(--pf-slab-top);
+}
+
+.slabLeft {
+  fill: var(--pf-slab-left);
+}
+
+.slabRight {
+  fill: var(--pf-slab-right);
+}
+
+.grid path {
+  fill: none;
+  stroke: var(--pf-grid);
+  stroke-width: 1;
+}
+
+.glowStopA {
+  stop-color: var(--accent);
+  stop-opacity: 0.16;
+}
+
+.glowStopB {
+  stop-color: var(--accent);
+  stop-opacity: 0;
+}
+
+.liveTop {
+  fill: var(--bg-elev);
+  stroke: var(--pf-edge);
+  stroke-width: 1;
+}
+
+.liveLeft {
+  fill: var(--pf-live-left);
+  stroke: var(--pf-edge);
+  stroke-width: 1;
+}
+
+.liveRight {
+  fill: var(--pf-live-right);
+  stroke: var(--pf-edge);
+  stroke-width: 1;
+}
+
+.soonTop,
+.soonLeft,
+.soonRight {
+  fill: var(--pf-soon-fill);
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 5;
+  stroke-opacity: 0.55;
+  animation: pf-march 1.6s linear infinite;
+}
+
+.soonTop {
+  fill: var(--pf-soon-top);
+}
+
+.coreTop {
+  fill: var(--accent-light);
+}
+
+.coreLeft {
+  fill: var(--accent);
+}
+
+.coreRight {
+  fill: var(--pf-core-shade);
+}
+
+.coreMark {
+  fill: var(--on-ink);
+}
+
+.core {
+  filter: drop-shadow(0 18px 24px var(--pf-core-glow));
+}
+
+.topIcon {
+  color: var(--accent);
+}
+
+.block[data-status="soon"] .topIcon {
+  color: var(--pf-soon-icon);
+}
+
+/* Blocks rise into place when the section first appears. */
+.block,
+.core {
+  transition:
+    transform 700ms var(--ease-out-expo),
+    filter 300ms ease;
+}
+
+.block {
+  filter: drop-shadow(0 10px 14px var(--pf-block-shadow));
+}
+
+.block[data-on] {
+  transform: translateY(-10px);
+  filter: drop-shadow(0 18px 22px var(--pf-core-glow));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  section:not([data-shown]) .block,
+  section:not([data-shown]) .core {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  section[data-shown] .block {
+    animation: pf-rise 900ms var(--ease-out-expo) calc(var(--i) * 70ms) both;
+  }
+
+  section[data-shown] .core {
+    animation:
+      pf-rise 900ms var(--ease-out-expo) both,
+      pf-hover 5s ease-in-out 1s infinite;
+  }
+}
+
+/* Data lines and the packets travelling along them. */
+.link path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-opacity: 0.35;
+  stroke-linecap: round;
+}
+
+.linkSoon path {
+  stroke-dasharray: 4 7;
+  stroke-opacity: 0.3;
+}
+
+.link[data-on] path {
+  stroke-opacity: 0.9;
+  stroke-width: 3;
+}
+
+.packet {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 4px var(--accent-light));
+}
+
+/* ---------- labels on the blocks ---------- */
+.tag {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--glass-card);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  translate: -50% calc(-100% - 14px);
+  pointer-events: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition:
+    translate 700ms var(--ease-out-expo),
+    box-shadow 300ms ease;
+}
+
+.tag svg {
+  color: var(--accent);
+}
+
+.tag[data-status="soon"] {
+  border-style: dashed;
+  border-color: var(--pf-soon-line);
+  color: var(--ink-2);
+}
+
+.tag em {
+  padding: 1px 6px;
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 10.5px;
+  font-style: normal;
+}
+
+.tag[data-on] {
+  translate: -50% calc(-100% - 24px);
+  box-shadow: var(--shadow-md);
+}
+
+.coreTag {
+  border-color: transparent;
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  section:not([data-shown]) .tag {
+    opacity: 0;
+  }
+
+  section[data-shown] .tag {
+    animation: pf-fade 500ms ease 700ms both;
+  }
+}
+
+/* ---------- legend ---------- */
+.legend {
+  display: grid;
+  gap: 28px;
+}
+
+.group {
+  display: grid;
+  gap: 10px;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+}
+
+.groupTitle i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gain);
+  box-shadow: 0 0 0 4px var(--gain-soft);
+}
+
+.groupTitle i[data-status="soon"] {
+  background: transparent;
+  border: 1.5px dashed var(--accent);
+  box-shadow: none;
+}
+
+.list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition:
+    background-color var(--dur-micro) ease,
+    border-color var(--dur-micro) ease;
+}
+
+.item[data-on] {
+  border-color: var(--line);
+  background: var(--bg-subtle);
+}
+
+.itemIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.item[data-status="soon"] .itemIcon {
+  border: 1.5px dashed var(--pf-soon-line);
+  background: transparent;
+}
+
+.itemText {
+  display: grid;
+  gap: 2px;
+}
+
+.itemText b {
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.itemText small {
+  color: var(--ink-3);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+@keyframes pf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+
+@keyframes pf-hover {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pf-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pf-march {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+@media (max-width: 1023px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .legend {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* On phones the legend below names every block; labels would only crowd it. */
+@media (max-width: 600px) {
+  .tag:not(.coreTag) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soonTop,
+  .soonLeft,
+  .soonRight,
+  .packet {
+    animation: none;
+  }
+
+  .packet {
+    display: none;
+  }
+}

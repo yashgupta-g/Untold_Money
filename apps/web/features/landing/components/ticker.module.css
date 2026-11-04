@@ -1,0 +1,195 @@
+.ticker {
+  position: relative;
+  padding-block: clamp(40px, 5vw, 64px) 8px;
+}
+
+.caption {
+  margin: 0 0 22px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.rows {
+  display: grid;
+  gap: 14px;
+}
+
+/* Fades tiles out toward both edges, like the logo carousel. */
+.viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ink) 14%,
+    var(--ink) 86%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--ink) 14%,
+    var(--ink) 86%,
+    transparent 100%
+  );
+}
+
+.track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  margin: 0;
+  padding: 8px 0 12px;
+  list-style: none;
+  animation: ticker 90s linear infinite;
+}
+
+.reverse {
+  animation-direction: reverse;
+  animation-duration: 104s;
+}
+
+.viewport:hover .track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  to {
+    transform: translateX(calc(-50% - 7px));
+  }
+}
+
+/* ---------- tile ---------- */
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  padding: 12px 14px 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur-micro) var(--ease-reveal),
+    box-shadow var(--dur-micro) var(--ease-reveal),
+    border-color var(--dur-micro) ease;
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-rim-soft);
+  box-shadow: var(--shadow-md);
+}
+
+/* Cobalt monogram, the same gradient as the dark sections' accents. */
+.badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, var(--accent-light), var(--accent));
+  box-shadow:
+    inset 0 1px 0 var(--dk-chip-strong),
+    0 6px 16px -6px var(--glow);
+  color: var(--on-ink);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Tiles size to their content; long company names truncate. */
+.info {
+  display: grid;
+  min-width: 84px;
+  max-width: 132px;
+}
+
+.info b,
+.info small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info b {
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.info small {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+/* Mini sparkline: the last few sessions. */
+.spark {
+  flex: none;
+  width: 56px;
+  height: 24px;
+  overflow: visible;
+}
+
+.spark path {
+  fill: none;
+  stroke: var(--gain);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.spark path[data-down] {
+  stroke: var(--loss);
+}
+
+.price {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+}
+
+.price b {
+  color: var(--ink);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+
+.change {
+  flex: none;
+  padding: 3px 7px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.gain {
+  background: var(--gain-soft);
+  color: var(--gain-ink);
+}
+
+.loss {
+  background: var(--loss-soft);
+  color: var(--loss-ink);
+}
+
+@media (max-width: 767px) {
+  .info small {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+
+  .viewport {
+    overflow-x: auto;
+  }
+}

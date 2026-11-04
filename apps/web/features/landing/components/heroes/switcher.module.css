@@ -1,0 +1,159 @@
+/* Keeps the page from collapsing while an option's code loads. */
+.placeholder {
+  min-height: 100svh;
+}
+
+/* ---------- design picker dock ---------- */
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100vw - 24px);
+  padding: 6px;
+  border: 1px solid var(--dk-line-strong);
+  border-radius: 18px;
+  background: var(--dk-bg);
+  box-shadow:
+    inset 0 1px 0 var(--dk-highlight-strong),
+    0 24px 60px -20px var(--hand-shadow);
+  color: var(--dk-text);
+  font-family: var(--font-ui);
+  translate: -50% 0;
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.title {
+  padding: 0 8px 0 10px;
+  color: var(--dk-text-2);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.list {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.option,
+.icon,
+.collapsed {
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.option {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background-color var(--dur-micro) ease;
+}
+
+.option:hover {
+  background: var(--dk-chip-strong);
+}
+
+.option[aria-checked="true"] {
+  background: var(--on-ink);
+  color: var(--ink);
+}
+
+.num {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--dk-chip-strong);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.option[aria-checked="true"] .num {
+  background: var(--accent);
+  color: var(--on-ink);
+}
+
+.optionText {
+  display: grid;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.optionText small {
+  color: var(--dk-text-2);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.option[aria-checked="true"] small {
+  color: var(--ink-3);
+}
+
+.icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+}
+
+.icon:hover {
+  background: var(--dk-chip-strong);
+}
+
+.collapsed {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.count {
+  padding: 3px 7px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--on-ink);
+  font-size: 11px;
+}
+
+.dock :focus-visible {
+  outline: 2px solid var(--accent-light);
+  outline-offset: 1px;
+}
+
+@media (max-width: 767px) {
+  .title {
+    display: none;
+  }
+
+  .optionText small {
+    display: none;
+  }
+}

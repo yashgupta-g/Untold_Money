@@ -1,0 +1,106 @@
+.final {
+  padding: var(--section) 12px 12px;
+}
+
+.panel {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: clamp(560px, 80vh, 760px);
+  padding: clamp(48px, 8vw, 120px) var(--gutter);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  text-align: center;
+}
+
+.photo {
+  position: absolute;
+  inset: -8% 0;
+  z-index: -2;
+}
+
+.photoImg {
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse 55% 45% at 50% 55%, var(--scrim), transparent 75%),
+    linear-gradient(180deg, var(--scrim) 0%, transparent 60%, var(--scrim) 100%);
+}
+
+.copy {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  max-width: 44rem;
+  color: var(--on-photo);
+  text-shadow: 0 1px 24px var(--scrim);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px 0 12px;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--r-pill);
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: var(--fs-label);
+  font-weight: 500;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--on-photo);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(44px, 6vw, 88px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.lede {
+  margin: 0;
+  max-width: 34rem;
+  color: var(--on-photo-2);
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+}
+
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btnGlass {
+  border-color: var(--glass-line);
+  background: var(--glass-dark);
+  color: var(--on-photo);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@media (max-width: 767px) {
+  .final {
+    padding-inline: 8px;
+    padding-bottom: 8px;
+  }
+}

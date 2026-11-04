@@ -1,0 +1,714 @@
+.hero {
+  --px: 0;
+  padding: 12px 12px 0;
+  font-family: var(--font-bricolage), var(--font-ui);
+}
+
+.panel {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-content: space-between;
+  min-height: max(780px, min(calc(100svh - 12px), 1000px));
+  padding: clamp(112px, 14vh, 140px) var(--gutter) clamp(48px, 9vh, 96px);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.photo {
+  z-index: -3;
+  object-fit: cover;
+  object-position: 50% 62%;
+}
+
+/* ---------- light and air ---------- */
+.sun {
+  position: absolute;
+  top: -22%;
+  right: -10%;
+  z-index: -2;
+  width: 62%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--crew-sun-glow), transparent 72%);
+  animation: crew-breathe 8s ease-in-out infinite;
+}
+
+.rays {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: repeating-conic-gradient(
+    from 200deg at 88% -8%,
+    var(--crew-ray) 0deg 4deg,
+    transparent 4deg 13deg
+  );
+  mask-image: radial-gradient(70% 80% at 88% 0%, var(--ink), transparent 75%);
+  -webkit-mask-image: radial-gradient(70% 80% at 88% 0%, var(--ink), transparent 75%);
+  mix-blend-mode: screen;
+  opacity: 0.8;
+}
+
+.clouds {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.clouds i {
+  position: absolute;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--crew-cloud);
+  filter: blur(14px);
+  translate: calc(var(--px) * -30px) 0;
+  transition: translate 1200ms var(--ease-out-expo);
+}
+
+.clouds i:nth-child(1) {
+  left: 4%;
+  top: 30%;
+  width: 260px;
+  animation: crew-drift 26s linear infinite alternate;
+}
+
+.clouds i:nth-child(2) {
+  right: 8%;
+  top: 22%;
+  width: 200px;
+  animation: crew-drift 32s linear infinite alternate-reverse;
+}
+
+.clouds i:nth-child(3) {
+  left: 42%;
+  top: 46%;
+  width: 320px;
+  opacity: 0.6;
+  animation: crew-drift 40s linear infinite alternate;
+}
+
+/* ---------- copy ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--crew-tag);
+  border-radius: var(--r-pill);
+  background: var(--crew-tag);
+  box-shadow: 0 10px 24px -16px var(--crew-shadow-grass);
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.copy {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+  max-width: 56rem;
+  margin-inline: auto;
+  text-align: center;
+  animation: crew-rise 800ms var(--ease-reveal) both;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(44px, 5.8vw, 92px);
+  font-weight: 700;
+  font-variation-settings: "opsz" 96;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px var(--crew-cloud);
+}
+
+.lede {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--ink-2);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body-lg);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.ctas {
+  justify-content: center;
+  font-family: var(--font-ui);
+}
+
+/* ---------- twinkles ---------- */
+.sparks svg {
+  position: absolute;
+  width: 18px;
+  fill: var(--on-ink);
+  filter: drop-shadow(0 0 6px var(--crew-sun-glow));
+  animation: crew-twinkle 2.6s ease-in-out calc(var(--i) * 0.45s) infinite;
+}
+
+/* ---------- the crew ---------- */
+.stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(8px, 2.6vw, 44px);
+  margin: 0;
+  padding: 104px 0 0;
+  list-style: none;
+}
+
+.member {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: clamp(110px, 11vw, 156px);
+}
+
+.character {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  animation: crew-in 1000ms cubic-bezier(0.2, 0.9, 0.3, 1.15) calc(300ms + var(--i) * 120ms) both;
+}
+
+.art {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  animation: crew-bob calc(3.2s + var(--i) * 0.35s) ease-in-out calc(1.4s + var(--i) * 0.2s)
+    infinite;
+}
+
+.character:hover .art,
+.character:focus-visible .art {
+  animation: crew-hop 600ms cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.character:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+  border-radius: 20px;
+}
+
+/* Contact shadow pressed into the grass. */
+.shadow {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: -8px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--crew-shadow-grass), transparent);
+}
+
+/* Cartoon speed lines trailing each character as it runs in. */
+.zoom {
+  position: absolute;
+  top: 30%;
+  bottom: 30%;
+  left: 50%;
+  display: grid;
+  align-content: space-around;
+  width: 70%;
+  translate: calc(var(--dir) * 70%) 0;
+  opacity: 0;
+  animation: crew-lines 1000ms ease-out calc(300ms + var(--i) * 120ms) both;
+}
+
+.zoom i {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--on-ink);
+  box-shadow: 0 0 6px var(--crew-cloud);
+}
+
+.zoom i:nth-child(2) {
+  width: 70%;
+  justify-self: center;
+}
+
+/* Isometric pedestal under the feet; its top-face centre meets the shoes. */
+.pedestal {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: -33.5%;
+  overflow: visible;
+  filter: drop-shadow(0 14px 14px var(--crew-shadow-grass));
+  animation: crew-rise 700ms var(--ease-out-expo) calc(200ms + var(--i) * 120ms) both;
+}
+
+.pedTop {
+  fill: var(--ped-top);
+  stroke: var(--crew-tag);
+  stroke-width: 1;
+}
+
+.pedLeft {
+  fill: var(--ped-side);
+}
+
+.pedRight {
+  fill: var(--ped-dark);
+}
+
+/* Not built yet: an outline waiting to be filled. */
+.pedSoon {
+  fill: var(--crew-soon-fill);
+  stroke: var(--on-ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+}
+
+/* Name tag on the grass. */
+.name {
+  display: grid;
+  justify-items: center;
+  padding: 6px 14px 7px;
+  border-radius: 14px;
+  background: var(--crew-tag);
+  box-shadow: 0 10px 24px -14px var(--crew-shadow-grass);
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: crew-rise 600ms ease calc(900ms + var(--i) * 120ms) both;
+}
+
+.name b {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.name em {
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--on-ink);
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.name small {
+  color: var(--ink-3);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+/* Speech bubble above whoever is talking. */
+.bubble {
+  position: absolute;
+  bottom: calc(100% - 14px);
+  left: 50%;
+  z-index: 3;
+  width: max-content;
+  max-width: 230px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--bg-elev);
+  box-shadow: 4px 4px 0 var(--ink);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: left;
+  translate: -50% 10px;
+  scale: 0.9;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 220ms ease,
+    translate 380ms cubic-bezier(0.3, 1.5, 0.5, 1),
+    scale 380ms cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  background: var(--bg-elev);
+  translate: -50% -7px;
+  rotate: 45deg;
+}
+
+.member:first-child .bubble {
+  left: 0;
+  translate: 0 10px;
+}
+
+.member:first-child .bubble::after {
+  left: 30%;
+}
+
+.member:last-child .bubble {
+  left: auto;
+  right: 0;
+  translate: 0 10px;
+}
+
+.member:last-child .bubble::after {
+  left: 70%;
+}
+
+.member[data-active] .bubble {
+  opacity: 1;
+  scale: 1;
+  translate: -50% 0;
+}
+
+.member:first-child[data-active] .bubble,
+.member:last-child[data-active] .bubble {
+  translate: 0 0;
+}
+
+/* ---------- character parts ---------- */
+.white {
+  fill: var(--on-ink);
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.pupil,
+.glint {
+  transform: translate(var(--ex, 0), var(--ey, 0));
+  transition: transform 160ms ease-out;
+}
+
+.pupil {
+  fill: var(--ink);
+}
+
+.glint {
+  fill: var(--on-ink);
+}
+
+.lid {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  animation: crew-blink 5.2s linear calc(var(--i) * 0.9s + 2s) infinite;
+}
+
+.limbs path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.shoe,
+.hand {
+  fill: var(--ink);
+}
+
+/* The speaker waves. */
+.wave {
+  transform-box: view-box;
+}
+
+.member[data-active] .wave {
+  animation: crew-wave 900ms ease-in-out infinite;
+}
+
+.closed,
+.open {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.closed {
+  fill: none;
+}
+
+.open {
+  fill: var(--ink);
+  opacity: 0;
+}
+
+.member[data-active] .closed {
+  opacity: 0;
+}
+
+.member[data-active] .open {
+  opacity: 1;
+}
+
+.gloss {
+  fill: var(--crew-gloss);
+}
+
+.spark {
+  fill: var(--crew-sun);
+  filter: drop-shadow(0 0 6px var(--crew-sun));
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: crew-spin 6s linear infinite;
+}
+
+.screen {
+  fill: var(--on-ink);
+  opacity: 0.92;
+}
+
+.screenLine {
+  fill: none;
+  stroke: var(--crew-cobalt);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bars rect {
+  fill: var(--on-ink);
+  opacity: 0.9;
+}
+
+.hat {
+  fill: var(--crew-sun);
+  stroke: var(--crew-sun-deep);
+  stroke-width: 1.5;
+}
+
+.flap {
+  fill: var(--crew-coral-deep);
+  opacity: 0.55;
+}
+
+.clasp {
+  fill: var(--crew-sun);
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.wick {
+  stroke: var(--ink);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.slice {
+  fill: var(--crew-coral);
+  transform: translate(7px, -5px);
+  animation: crew-slice 2.6s ease-in-out infinite;
+}
+
+.goggle {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.goggleBridge {
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.spine {
+  fill: var(--crew-sun-deep);
+}
+
+.ruled {
+  stroke: var(--crew-sun-deep);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* ---------- motion ---------- */
+@keyframes crew-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes crew-in {
+  0% {
+    opacity: 0;
+    transform: translateX(calc(var(--dir) * 60vw)) skewX(calc(var(--dir) * 14deg));
+    filter: blur(6px);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(calc(var(--dir) * -12px)) skewX(calc(var(--dir) * -6deg));
+  }
+  75% {
+    transform: translateX(0) scale(1.06, 0.92);
+  }
+}
+
+@keyframes crew-lines {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    translate: calc(var(--dir) * 160%) 0;
+  }
+}
+
+@keyframes crew-bob {
+  50% {
+    transform: translateY(-5px) scale(1.01, 0.99);
+  }
+}
+
+@keyframes crew-hop {
+  30% {
+    transform: translateY(-22px) scale(0.96, 1.05);
+  }
+  60% {
+    transform: translateY(0) scale(1.06, 0.92);
+  }
+}
+
+@keyframes crew-blink {
+  0%,
+  95%,
+  100% {
+    transform: scaleY(0);
+  }
+  97% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes crew-wave {
+  50% {
+    transform: rotate(-22deg);
+  }
+}
+
+@keyframes crew-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes crew-slice {
+  50% {
+    transform: translate(11px, -8px);
+  }
+}
+
+@keyframes crew-breathe {
+  50% {
+    transform: scale(1.06);
+    opacity: 0.85;
+  }
+}
+
+@keyframes crew-drift {
+  to {
+    transform: translateX(80px);
+  }
+}
+
+@keyframes crew-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.5) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(45deg);
+  }
+}
+
+@media (max-width: 767px) {
+  .panel {
+    padding-top: 108px;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: center;
+    row-gap: 136px;
+    padding-top: 128px;
+  }
+
+  .member {
+    width: min(100%, 112px);
+  }
+
+  .name small {
+    display: none;
+  }
+
+  .bubble {
+    max-width: 200px;
+    font-size: 13px;
+  }
+
+  .member:nth-child(3n + 1) .bubble {
+    left: 0;
+    translate: 0 10px;
+  }
+
+  .member:nth-child(3n) .bubble {
+    left: auto;
+    right: 0;
+    translate: 0 10px;
+  }
+
+  .member:nth-child(3n + 1)[data-active] .bubble,
+  .member:nth-child(3n)[data-active] .bubble {
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero *,
+  .hero svg * {
+    animation: none !important;
+  }
+
+  .zoom {
+    display: none;
+  }
+}
