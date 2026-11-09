@@ -60,6 +60,27 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # --- Rate limiting (Redis token buckets, per client IP) ---
+    RATE_LIMIT_ENABLED: bool = True
+    RATE_LIMIT_PER_MINUTE: int = 300  # general API traffic
+    RATE_LIMIT_AUTH_PER_MINUTE: int = 10  # login, register, refresh
+
+    # --- MCP (AI agent tools at /mcp) ---
+    # Off outside local unless a key is set; with a key, clients must send
+    # `Authorization: Bearer <MCP_API_KEY>`.
+    MCP_API_KEY: str = ""
+
+    # --- Brokers (read-only connections) ---
+    # Public URL of this API, used to build broker redirect URIs:
+    # {API_PUBLIC_URL}/api/v1/brokers/{broker}/callback must be registered
+    # in each broker's developer app.
+    API_PUBLIC_URL: str = "http://localhost:8000"
+    BROKER_TOKEN_KEY: str = ""  # Fernet key; required outside local
+    BROKER_EGRESS_IP: str = ""  # the server's static IP, sent to brokers that ask
+    ANGELONE_API_KEY: str = ""
+    FYERS_APP_ID: str = ""  # e.g. "ABCD1234-100"
+    FYERS_SECRET_ID: str = ""
+
     # --- CORS ---
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000"]
 

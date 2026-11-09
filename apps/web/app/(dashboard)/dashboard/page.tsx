@@ -1,245 +1,356 @@
 "use client";
 
-import { TrendUp, TrendDown, ChartBar, ChartPieSlice, Pulse, ArrowUpRight, ArrowDownRight, Wallet, Target, Lightning } from "@phosphor-icons/react";
+import Link from "next/link";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  ChartLineUp,
+  Pulse,
+  Target,
+  TrendUp,
+  Wallet,
+  type Icon,
+} from "@phosphor-icons/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useGetQuotesQuery, type QuoteData } from "@/store/api/marketApi";
+import { ConnectBrokerPrompt } from "@/components/market/ConnectBrokerPrompt";
+import { SourceLabel } from "@/components/market/SourceLabel";
+import { useBrokerStatus } from "@/hooks/useBrokerStatus";
+import { useLivePrices } from "@/hooks/useLivePrices";
+import type { LiveTick } from "@/lib/liveFeed";
 
-const statsCards = [
-  {
-    title: "Portfolio Value",
-    value: "₹12,45,680",
-    change: "+2.34%",
-    trend: "up" as const,
-    icon: Wallet,
-    description: "Across 3 portfolios",
-  },
-  {
-    title: "Today's P&L",
-    value: "+₹8,420",
-    change: "+0.68%",
-    trend: "up" as const,
-    icon: TrendUp,
-    description: "15 holdings active",
-  },
-  {
-    title: "Win Rate",
-    value: "68.5%",
-    change: "+3.2%",
-    trend: "up" as const,
-    icon: Target,
-    description: "Last 30 days",
-  },
-  {
-    title: "Open Trades",
-    value: "7",
-    change: "3 profitable",
-    trend: "up" as const,
-    icon: Pulse,
-    description: "₹2.1L deployed",
-  },
+// The two main indices and a few of the most traded stocks.
+const MARKET = [
+  { symbol: "NIFTY50", name: "Nifty 50" },
+  { symbol: "NIFTYBANK", name: "Nifty Bank" },
+  { symbol: "RELIANCE", name: "Reliance Industries" },
+  { symbol: "HDFCBANK", name: "HDFC Bank" },
+  { symbol: "TCS", name: "Tata Consultancy Services" },
+  { symbol: "INFY", name: "Infosys" },
 ];
+const MARKET_SYMBOLS = MARKET.map((m) => m.symbol).sort();
+import {
+  useGetPortfoliosQuery,
+  useGetTradeStatsQuery,
+  useGetTradesQuery,
+} from "@/store/api/portfolioApi";
+import { percent, rupees, signedRupees } from "@/lib/format";
 
-const recentTrades = [
-  { symbol: "RELIANCE", side: "BUY", qty: 10, price: 2480.5, pnl: "+₹1,250", status: "OPEN" },
-  { symbol: "TCS", side: "SELL", qty: 5, price: 3650.0, pnl: "+₹3,420", status: "CLOSED" },
-  { symbol: "HDFCBANK", side: "BUY", qty: 20, price: 1580.0, pnl: "-₹640", status: "OPEN" },
-  { symbol: "INFY", side: "BUY", qty: 15, price: 1420.75, pnl: "+₹890", status: "OPEN" },
-  { symbol: "WIPRO", side: "SELL", qty: 25, price: 445.0, pnl: "+₹2,100", status: "CLOSED" },
-];
+function Skeleton({ className }: { className: string }) {
+  return <div className={`animate-pulse rounded-md bg-muted ${className}`} />;
+}
 
-const topMovers = [
-  { symbol: "TATAMOTORS", price: "₹685.40", change: "+4.21%", trend: "up" },
-  { symbol: "ADANIENT", price: "₹2,450.00", change: "+3.85%", trend: "up" },
-  { symbol: "BAJFINANCE", price: "₹6,780.25", change: "-2.14%", trend: "down" },
-  { symbol: "SBIN", price: "₹625.80", change: "+1.92%", trend: "up" },
-  { symbol: "SUNPHARMA", price: "₹1,120.50", change: "-1.05%", trend: "down" },
-];
+function StatCard({
+  title,
+  value,
+  icon: StatIcon,
+  change,
+  up,
+  description,
+  loading,
+}: {
+  title: string;
+  value: string;
+  icon: Icon;
+  change?: string;
+  up?: boolean;
+  description: string;
+  loading: boolean;
+}) {
+  return (
+    <Card className="group transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5 hover:shadow-md">
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <p className="text-[13px] font-medium text-muted-foreground">{title}</p>
+            {loading ? (
+              <Skeleton className="h-8 w-28" />
+            ) : (
+              <p className="text-2xl font-semibold tracking-[-0.02em]">{value}</p>
+            )}
+          </div>
+          <StatIcon className="h-4 w-4 shrink-0 text-primary-ink" />
+        </div>
+        <div className="mt-3 flex items-center gap-2">
+          {change && !loading && (
+            <span
+              className={`flex items-center gap-0.5 text-xs font-medium ${
+                up ? "text-profit" : "text-loss"
+              }`}
+            >
+              {up ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+              {change}
+            </span>
+          )}
+          <span className="text-xs text-muted-foreground">{description}</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** One row per stock; each fetches its own quote. */
+function MarketRow({
+  symbol,
+  name,
+  quote: apiQuote,
+  tick,
+  isLoading,
+}: {
+  symbol: string;
+  name: string;
+  quote?: QuoteData;
+  tick?: LiveTick;
+  isLoading: boolean;
+}) {
+  const quote = apiQuote && tick ? { ...apiQuote, price: tick.ltp, change_percent: tick.chp } : apiQuote;
+  const up = (quote?.change_percent ?? 0) >= 0;
+
+  return (
+    <Link
+      href={`/stocks/${symbol}`}
+      className="flex items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-muted/60"
+    >
+      <div className="min-w-0">
+        <p className="text-sm font-medium">{symbol}</p>
+        <p className="truncate text-xs text-muted-foreground">{name}</p>
+      </div>
+      {isLoading ? (
+        <Skeleton className="h-4 w-20" />
+      ) : !quote ? (
+        <span className="text-sm text-muted-foreground">—</span>
+      ) : (
+        <div className="text-right">
+          <p className="text-sm font-medium tabular-nums">{rupees(quote.price, 2)}</p>
+          <p className={`text-xs font-medium tabular-nums ${up ? "text-profit" : "text-loss"}`}>
+            {percent(quote.change_percent)}
+          </p>
+        </div>
+      )}
+    </Link>
+  );
+}
+
+function EmptyState({ text, href, cta }: { text: string; href: string; cta: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-foreground/10 px-6 py-10 text-center">
+      <p className="text-sm text-muted-foreground">{text}</p>
+      <Button variant="outline" size="sm" render={<Link href={href} />}>
+        {cta}
+      </Button>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
+  const portfolios = useGetPortfoliosQuery();
+  const stats = useGetTradeStatsQuery();
+  const trades = useGetTradesQuery({ limit: 5 });
+  const broker = useBrokerStatus();
+  const quotes = useGetQuotesQuery(MARKET_SYMBOLS, { skip: !broker.connected });
+  const { prices } = useLivePrices(broker.connected ? MARKET_SYMBOLS : []);
+
+  const list = portfolios.data?.data ?? [];
+  const totalValue = list.reduce((sum, p) => sum + (p.total_value ?? 0), 0);
+  const totalInvested = list.reduce((sum, p) => sum + (p.total_invested ?? 0), 0);
+  const totalPnl = list.reduce((sum, p) => sum + (p.total_pnl ?? 0), 0);
+  const pnlPercent = totalInvested > 0 ? (totalPnl / totalInvested) * 100 : 0;
+  const holdings = list.reduce((sum, p) => sum + (p.holdings_count ?? 0), 0);
+  const tradeStats = stats.data?.data;
+  const recentTrades = trades.data?.data ?? [];
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          Overview of your portfolio, trades, and market insights
+          Your portfolios, trades and the market, at a glance.
         </p>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statsCards.map((stat) => (
-          <Card
-            key={stat.title}
-            className="group border-border/50 transition-all duration-300 hover:border-primary/20"
-          >
-            <CardContent className="p-5">
-              <div className="flex items-start justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    {stat.title}
-                  </p>
-                  <p className="text-2xl font-bold tracking-tight">{stat.value}</p>
-                </div>
-                <div className="border border-border p-2">
-                  <stat.icon className="h-4 w-4 text-primary-ink" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center gap-2">
-                <div
-                  className={`flex items-center gap-0.5 text-xs font-medium ${
-                    stat.trend === "up" ? "text-chart-2" : "text-destructive"
-                  }`}
-                >
-                  {stat.trend === "up" ? (
-                    <ArrowUpRight className="h-3 w-3" />
-                  ) : (
-                    <ArrowDownRight className="h-3 w-3" />
-                  )}
-                  {stat.change}
-                </div>
-                <span className="text-xs text-muted-foreground">{stat.description}</span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <StatCard
+          title="Portfolio value"
+          value={rupees(totalValue)}
+          icon={Wallet}
+          description={`Across ${list.length} ${list.length === 1 ? "portfolio" : "portfolios"}`}
+          loading={portfolios.isLoading}
+        />
+        <StatCard
+          title="Unrealised P&L"
+          value={signedRupees(totalPnl)}
+          icon={TrendUp}
+          change={totalInvested > 0 ? percent(pnlPercent) : undefined}
+          up={totalPnl >= 0}
+          description={`${holdings} ${holdings === 1 ? "holding" : "holdings"}`}
+          loading={portfolios.isLoading}
+        />
+        <StatCard
+          title="Win rate"
+          value={tradeStats && tradeStats.closed_trades > 0 ? `${tradeStats.win_rate.toFixed(1)}%` : "—"}
+          icon={Target}
+          description={
+            tradeStats ? `${tradeStats.closed_trades} closed trades` : "No closed trades yet"
+          }
+          loading={stats.isLoading}
+        />
+        <StatCard
+          title="Open trades"
+          value={String(tradeStats?.open_trades ?? 0)}
+          icon={Pulse}
+          description={tradeStats ? `Realised P&L ${signedRupees(tradeStats.total_pnl)}` : "—"}
+          loading={stats.isLoading}
+        />
       </div>
 
-      {/* Content Grid */}
+      {/* Content */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Recent Trades */}
-        <Card className="lg:col-span-2 border-border/50">
+        {/* Recent trades */}
+        <Card className="lg:col-span-2">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-semibold">Recent Trades</CardTitle>
-              <Badge variant="secondary" className="text-xs">
-                <Lightning className="mr-1 h-3 w-3" />
-                Live
-              </Badge>
+              <CardTitle className="text-base font-semibold">Recent trades</CardTitle>
+              <Link href="/trades" className="text-[13px] font-medium text-primary-ink hover:underline">
+                View journal
+              </Link>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-1">
-              {/* Table header */}
-              <div className="grid grid-cols-6 gap-4 border-b border-border/50 pb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                <span>Symbol</span>
-                <span>Side</span>
-                <span className="text-right">Qty</span>
-                <span className="text-right">Price</span>
-                <span className="text-right">P&L</span>
-                <span className="text-right">Status</span>
+            {trades.isLoading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-8 w-full" />
+                ))}
               </div>
-              {recentTrades.map((trade, i) => (
-                <div
-                  key={i}
-                  className="grid grid-cols-6 gap-4 py-2.5 text-sm transition-colors hover:bg-muted/30"
-                >
-                  <span className="font-medium">{trade.symbol}</span>
-                  <span>
-                    <Badge
-                      variant="outline"
-                      className={`text-[10px] ${
-                        trade.side === "BUY"
-                          ? "border-chart-2/30 text-chart-2"
-                          : "border-destructive/30 text-destructive"
-                      }`}
+            ) : recentTrades.length === 0 ? (
+              <EmptyState
+                text="No trades yet. Log your first one to start building your journal."
+                href="/trades"
+                cta="Log a trade"
+              />
+            ) : (
+              <div className="overflow-x-auto">
+                <div className="min-w-[520px] space-y-1">
+                  <div className="grid grid-cols-6 gap-4 border-b border-border/50 pb-2 text-[13px] font-medium text-muted-foreground">
+                    <span>Symbol</span>
+                    <span>Side</span>
+                    <span className="text-right">Qty</span>
+                    <span className="text-right">Entry</span>
+                    <span className="text-right">P&L</span>
+                    <span className="text-right">Status</span>
+                  </div>
+                  {recentTrades.map((trade) => (
+                    <div
+                      key={trade.id}
+                      className="grid grid-cols-6 items-center gap-4 rounded-lg py-2.5 text-sm transition-colors hover:bg-muted/60"
                     >
-                      {trade.side}
-                    </Badge>
-                  </span>
-                  <span className="text-right text-muted-foreground">{trade.qty}</span>
-                  <span className="text-right">₹{trade.price.toLocaleString()}</span>
-                  <span
-                    className={`text-right font-medium ${
-                      trade.pnl.startsWith("+") ? "text-chart-2" : "text-destructive"
-                    }`}
-                  >
-                    {trade.pnl}
-                  </span>
-                  <span className="text-right">
-                    <Badge
-                      variant="secondary"
-                      className={`text-[10px] ${
-                        trade.status === "OPEN" ? "bg-primary/10 text-primary-ink" : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {trade.status}
-                    </Badge>
-                  </span>
+                      <span className="font-medium">{trade.symbol ?? "—"}</span>
+                      <span>
+                        <Badge variant="outline" className="text-[10px]">
+                          {trade.trade_side}
+                        </Badge>
+                      </span>
+                      <span className="text-right text-muted-foreground tabular-nums">
+                        {trade.quantity}
+                      </span>
+                      <span className="text-right tabular-nums">{rupees(trade.entry_price, 2)}</span>
+                      <span
+                        className={`text-right font-medium tabular-nums ${
+                          trade.pnl == null
+                            ? "text-muted-foreground"
+                            : trade.pnl >= 0
+                              ? "text-profit"
+                              : "text-loss"
+                        }`}
+                      >
+                        {trade.pnl == null ? "—" : signedRupees(trade.pnl)}
+                      </span>
+                      <span className="text-right">
+                        <Badge
+                          variant="secondary"
+                          className={`text-[10px] ${
+                            trade.trade_status === "OPEN"
+                              ? "bg-accent text-accent-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {trade.trade_status === "OPEN" ? "Open" : "Closed"}
+                        </Badge>
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Top Movers */}
-        <Card className="border-border/50">
+        {/* Market */}
+        <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-semibold">Top Movers</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-base font-semibold">Market</CardTitle>
+              <Link href="/stocks" className="text-[13px] font-medium text-primary-ink hover:underline">
+                All stocks
+              </Link>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {topMovers.map((mover) => (
-                <div
-                  key={mover.symbol}
-                  className="flex items-center justify-between p-2.5 transition-colors hover:bg-muted/30"
-                >
-                  <div>
-                    <p className="text-sm font-medium">{mover.symbol}</p>
-                    <p className="text-xs text-muted-foreground">{mover.price}</p>
-                  </div>
-                  <div
-                    className={`flex items-center gap-1 text-sm font-medium ${
-                      mover.trend === "up" ? "text-chart-2" : "text-destructive"
-                    }`}
-                  >
-                    {mover.trend === "up" ? (
-                      <TrendUp className="h-3.5 w-3.5" />
-                    ) : (
-                      <TrendDown className="h-3.5 w-3.5" />
-                    )}
-                    {mover.change}
-                  </div>
+            {broker.loading ? (
+              <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Skeleton key={i} className="h-10 w-full" />
+                ))}
+              </div>
+            ) : !broker.connected ? (
+              <ConnectBrokerPrompt compact expired={broker.expired} className="py-6 text-center" />
+            ) : (
+              <>
+                <div className="space-y-1">
+                  {MARKET.map((m) => (
+                    <MarketRow
+                      key={m.symbol}
+                      symbol={m.symbol}
+                      name={m.name}
+                      quote={quotes.data?.data[m.symbol]}
+                      tick={prices[m.symbol]}
+                      isLoading={quotes.isLoading}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
+                <div className="mt-3 flex justify-end">
+                  <SourceLabel provider={Object.values(quotes.data?.data ?? {})[0]?.provider} />
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
 
-      {/* Chart placeholder */}
-      <Card className="border-border/50">
+      {/* Performance */}
+      <Card>
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-semibold">Portfolio Performance</CardTitle>
-            <div className="flex gap-1">
-              {["1W", "1M", "3M", "6M", "1Y"].map((period) => (
-                <button
-                  key={period}
-                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
-                    period === "1M"
-                      ? "bg-primary/10 text-primary-ink"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {period}
-                </button>
-              ))}
-            </div>
-          </div>
+          <CardTitle className="text-base font-semibold">Portfolio performance</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex h-64 items-center justify-center border border-dashed border-border/50 bg-muted/20">
-            <div className="text-center">
-              <ChartBar className="mx-auto h-10 w-10 text-muted-foreground/40" />
-              <p className="mt-2 text-sm text-muted-foreground">
-                Portfolio performance chart coming soon
-              </p>
-              <p className="text-xs text-muted-foreground/60">
-                Will use Recharts / TradingView Lightweight Charts
+          {list.length === 0 && !portfolios.isLoading ? (
+            <EmptyState
+              text="Create a portfolio and add holdings to see how it performs."
+              href="/portfolio"
+              cta="Create a portfolio"
+            />
+          ) : (
+            <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-foreground/10 text-center">
+              <ChartLineUp className="h-8 w-8 text-muted-foreground/50" />
+              <p className="text-sm text-muted-foreground">
+                Performance over time arrives with daily portfolio snapshots.
               </p>
             </div>
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -1,18 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserResponse } from "@/types";
-import { clearTokens, setTokens } from "@/lib/auth";
+import { markSignedIn, markSignedOut } from "@/lib/auth";
 
 interface AuthState {
   user: UserResponse | null;
+  /** In memory only; the refresh token is an httpOnly cookie the API manages. */
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
   accessToken: null,
-  refreshToken: null,
   isAuthenticated: false,
 };
 
@@ -22,21 +21,18 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (
       state,
-      action: PayloadAction<{ user: UserResponse; accessToken: string; refreshToken: string }>
+      action: PayloadAction<{ user: UserResponse; accessToken: string }>
     ) => {
-      const { user, accessToken, refreshToken } = action.payload;
-      state.user = user;
-      state.accessToken = accessToken;
-      state.refreshToken = refreshToken;
+      state.user = action.payload.user;
+      state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
-      setTokens(accessToken, refreshToken);
+      markSignedIn();
     },
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
-      state.refreshToken = null;
       state.isAuthenticated = false;
-      clearTokens();
+      markSignedOut();
     },
     updateUser: (state, action: PayloadAction<UserResponse>) => {
       state.user = action.payload;

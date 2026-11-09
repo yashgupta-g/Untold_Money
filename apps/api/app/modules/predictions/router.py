@@ -34,7 +34,7 @@ async def get_prediction(
     Predictions are cached for 12 hours. First request takes ~2-3 seconds
     (model training), subsequent requests are instant.
     """
-    service = PredictionService(session)
+    service = PredictionService(session, user_id)
     result = await service.get_full_prediction(symbol)
     return {
         "success": True,
@@ -59,7 +59,7 @@ async def get_direction_prediction(
     Uses XGBoost classifier trained on the stock's own historical patterns.
     Returns prediction direction, confidence %, top signals, and explanation.
     """
-    service = PredictionService(session)
+    service = PredictionService(session, user_id)
     result = await service.predict_direction(symbol, horizon=horizon)
 
     if result is None:
@@ -92,7 +92,7 @@ async def get_price_target(
     Uses GradientBoostingRegressor trained on historical % changes.
     Returns expected price high/low bounds with confidence interval.
     """
-    service = PredictionService(session)
+    service = PredictionService(session, user_id)
     result = await service.predict_price_target(symbol, horizon=horizon)
 
     if result is None:

@@ -1,60 +1,112 @@
 "use client";
 
-import { Eye, Plus, TrendUp, TrendDown, DotsThree } from "@phosphor-icons/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+import { ArrowDownRight, ArrowUpRight, Plus } from "@phosphor-icons/react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ConnectBrokerPrompt } from "@/components/market/ConnectBrokerPrompt";
+import { SourceLabel } from "@/components/market/SourceLabel";
+import { useBrokerStatus } from "@/hooks/useBrokerStatus";
+import { useLivePrices } from "@/hooks/useLivePrices";
+import type { LiveTick } from "@/lib/liveFeed";
+import { rupees } from "@/lib/format";
+import { cn } from "@/lib/utils";
+import { useGetQuotesQuery, type QuoteData } from "@/store/api/marketApi";
 
-const watchlistItems = [
-  { symbol: "RELIANCE", name: "Reliance Industries", price: 2480.5, change: 1.25, alert: "Near 52W High" },
-  { symbol: "TATAMOTORS", name: "Tata Motors", price: 685.4, change: 4.21, alert: "Breakout" },
-  { symbol: "ADANIENT", name: "Adani Enterprises", price: 2450.0, change: 3.85, alert: null },
-  { symbol: "ITC", name: "ITC Limited", price: 438.2, change: -0.45, alert: "Support Level" },
-  { symbol: "BAJFINANCE", name: "Bajaj Finance", price: 6780.25, change: -2.14, alert: "Below SMA 50" },
-  { symbol: "MARUTI", name: "Maruti Suzuki", price: 12450.0, change: 0.92, alert: null },
+// A starter list until saved watchlists ship.
+const STARTER = [
+  { symbol: "RELIANCE", name: "Reliance Industries" },
+  { symbol: "TCS", name: "Tata Consultancy Services" },
+  { symbol: "HDFCBANK", name: "HDFC Bank" },
+  { symbol: "INFY", name: "Infosys" },
+  { symbol: "ITC", name: "ITC" },
+  { symbol: "MARUTI", name: "Maruti Suzuki" },
 ];
 
+const STARTER_SYMBOLS = STARTER.map((s) => s.symbol).sort();
+
+function WatchItem({
+  symbol,
+  name,
+  quote,
+  tick,
+  isLoading,
+}: {
+  symbol: string;
+  name: string;
+  quote?: QuoteData;
+  tick?: LiveTick;
+  isLoading: boolean;
+}) {
+  const price = tick?.ltp ?? quote?.price;
+  const changePercent = tick?.chp ?? quote?.change_percent ?? 0;
+  const up = changePercent >= 0;
+
+  return (
+    <Link href={`/stocks/${symbol}`} className="block">
+      <Card className="transition-all hover:-translate-y-0.5 hover:shadow-md">
+        <CardContent className="p-4">
+          <p className="font-medium tracking-[-0.01em]">{symbol}</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">{name}</p>
+          <div className="mt-3 flex items-end justify-between gap-2">
+            {isLoading && price == null ? (
+              <div className="h-6 w-24 animate-pulse rounded-md bg-muted" />
+            ) : (
+              <p className="text-lg font-medium tracking-[-0.01em] tabular-nums">
+                {price != null ? rupees(price, 2) : "—"}
+              </p>
+            )}
+            {price != null && (
+              <span className={cn("flex items-center gap-1 text-sm font-medium tabular-nums", up ? "text-profit" : "text-loss")}>
+                {up ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
+                {up ? "+" : "−"}
+                {Math.abs(changePercent).toFixed(2)}%
+              </span>
+            )}
+          </div>
+          {price != null && (
+            <SourceLabel className="mt-2" provider={tick ? tick.provider : quote?.provider} live={!!tick} />
+          )}
+        </CardContent>
+      </Card>
+    </Link>
+  );
+}
+
 export default function WatchlistPage() {
+  const broker = useBrokerStatus();
+  const quotes = useGetQuotesQuery(STARTER_SYMBOLS, { skip: !broker.connected });
+  const { prices } = useLivePrices(broker.connected ? STARTER_SYMBOLS : []);
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Watchlist</h1>
-          <p className="text-sm text-muted-foreground">Track stocks you&apos;re interested in</p>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Watchlist</h1>
+          <p className="text-sm text-muted-foreground">
+            A starter list for now. Saved watchlists are coming soon.
+          </p>
         </div>
-        <Button size="sm" className="gap-1.5" id="add-watchlist-btn">
+        <Button size="sm" className="gap-1.5" disabled title="Coming soon">
           <Plus className="h-4 w-4" />
-          Add Stock
+          Add stock
         </Button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {watchlistItems.map((item) => (
-          <Card key={item.symbol} className="group border-border/50 transition-all hover:border-primary/20">
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold">{item.symbol}</p>
-                    {item.alert && <Badge variant="outline" className="text-[10px] border-chart-4/30 text-chart-4">{item.alert}</Badge>}
-                  </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{item.name}</p>
-                </div>
-                <button className="text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground">
-                  <DotsThree className="h-4 w-4" />
-                </button>
-              </div>
-              <div className="mt-3 flex items-end justify-between">
-                <p className="text-lg font-bold">₹{item.price.toLocaleString()}</p>
-                <div className={`flex items-center gap-1 text-sm font-medium ${item.change >= 0 ? "text-chart-2" : "text-destructive"}`}>
-                  {item.change >= 0 ? <TrendUp className="h-3.5 w-3.5" /> : <TrendDown className="h-3.5 w-3.5" />}
-                  {item.change >= 0 ? "+" : ""}{item.change}%
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {!broker.loading && !broker.connected ? (
+        <ConnectBrokerPrompt expired={broker.expired} />
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {STARTER.map((item) => (
+            <WatchItem
+              key={item.symbol}
+              {...item}
+              quote={quotes.data?.data[item.symbol]}
+              tick={prices[item.symbol]}
+              isLoading={broker.loading || quotes.isLoading}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

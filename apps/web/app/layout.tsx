@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Roboto_Mono } from "next/font/google";
+import { Inter, Roboto_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const geistSans = Geist({
+// Inter is the landing page's fallback face; SF Pro Display leads where the
+// visitor has it (see globals.css).
+const geistSans = Inter({
   variable: "--font-sans",
   subsets: ["latin"],
 });
@@ -28,7 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${robotoMonoCondensed.variable}`}>
+    // Browser extensions stamp attributes on <html> before React hydrates.
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${robotoMonoCondensed.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
         <Providers>
           {children}

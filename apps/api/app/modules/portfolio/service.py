@@ -1,7 +1,8 @@
 """
 Portfolio service — business logic for portfolio and holding management.
-Includes PnL enrichment using real candle data with Yahoo Finance fallback,
-summary/allocation analytics, and audit logging.
+Includes PnL enrichment with live prices from the user's own broker
+connection (none without one), summary/allocation analytics, and audit
+logging.
 """
 
 from __future__ import annotations
@@ -17,7 +18,6 @@ from app.core.logging import get_logger
 from app.modules.audit.service import AuditService
 from app.modules.instruments.models import Instrument
 from app.modules.instruments.repository import InstrumentRepository
-from app.modules.market_data.providers.yahoo_provider import YahooFinanceProvider
 from app.modules.portfolio.models import Holding, Portfolio
 from app.modules.portfolio.repository import PortfolioRepository
 from app.modules.portfolio.schemas import (
@@ -49,53 +49,26 @@ class PortfolioService:
         self.session = session
         self.repo = PortfolioRepository(session)
         self.instrument_repo = InstrumentRepository(session)
-        self.provider = YahooFinanceProvider()
         self.audit = AuditService(session)
 
     # ---------- Price helpers ----------
 
-    async def _get_current_price(self, instrument: Instrument) -> Optional[float]:
-        """
-        Get current price for an instrument.
-        Priority: stored candle close → Yahoo Finance provider fallback.
-        """
-        # Try DB candle first
-        price = await self.repo.get_latest_candle_price(instrument.id)
-        if price is not None:
-            return price
-
-        # Fallback to Yahoo Finance provider
-        try:
-            quote = await self.provider.get_quote(instrument.symbol)
-            return quote.price
-        except Exception:
-            return None
-
     async def _get_current_prices_batch(
-        self, instruments: dict[uuid.UUID, Instrument]
+        self, instruments: dict[uuid.UUID, Instrument], user_id: Optional[uuid.UUID] = None
     ) -> dict[uuid.UUID, float]:
         """
-        Batch-fetch current prices for multiple instruments.
-        Uses DB candles first, falls back to Yahoo Finance for any missing.
+        Live prices from the user's broker connection, in one batched call.
+        Empty without a connection: holdings then show cost only.
         """
-        instrument_ids = list(instruments.keys())
-        prices = await self.repo.get_latest_candle_prices(instrument_ids)
+        from app.modules.brokers.market import broker_quotes
 
-        # Fill missing with Yahoo Finance provider
-        for iid, inst in instruments.items():
-            if iid not in prices:
-                try:
-                    quote = await self.provider.get_quote(inst.symbol)
-                    prices[iid] = quote.price
-                except Exception:
-                    pass
-
-        return prices
+        live = await broker_quotes(self.session, user_id, list(instruments.values()))
+        return {iid: q.price for iid, q in live.items()}
 
     # ---------- Enrichment ----------
 
     async def _enrich_holdings(
-        self, holdings: list[Holding]
+        self, holdings: list[Holding], user_id: Optional[uuid.UUID] = None
     ) -> tuple[list[HoldingResponse], float, float]:
         """
         Enrich holdings with instrument info and current prices.
@@ -113,7 +86,7 @@ class PortfolioService:
                     instruments[h.instrument_id] = inst
 
         # Batch-fetch prices
-        prices = await self._get_current_prices_batch(instruments)
+        prices = await self._get_current_prices_batch(instruments, user_id)
 
         enriched: list[HoldingResponse] = []
         total_invested = 0.0
@@ -163,7 +136,7 @@ class PortfolioService:
             resp.holdings_count = len(p.holdings)
 
             if p.holdings:
-                _, total_invested, total_value = await self._enrich_holdings(p.holdings)
+                _, total_invested, total_value = await self._enrich_holdings(p.holdings, user_id)
                 resp.total_invested = round(total_invested, 2)
                 resp.total_value = round(total_value, 2)
                 resp.total_pnl = round(total_value - total_invested, 2)
@@ -191,7 +164,7 @@ class PortfolioService:
         resp = PortfolioDetailResponse.model_validate(portfolio)
         resp.holdings_count = len(portfolio.holdings)
 
-        enriched, total_invested, total_value = await self._enrich_holdings(portfolio.holdings)
+        enriched, total_invested, total_value = await self._enrich_holdings(portfolio.holdings, user_id)
 
         resp.holdings = enriched
         resp.total_invested = round(total_invested, 2)
@@ -399,7 +372,7 @@ class PortfolioService:
         if not portfolio:
             raise NotFoundException("Portfolio not found")
 
-        enriched, total_invested, total_value = await self._enrich_holdings(portfolio.holdings)
+        enriched, total_invested, total_value = await self._enrich_holdings(portfolio.holdings, user_id)
 
         unrealized_pnl = total_value - total_invested
         unrealized_pnl_percent = (
@@ -448,7 +421,7 @@ class PortfolioService:
         if not portfolio:
             raise NotFoundException("Portfolio not found")
 
-        enriched, _, total_value = await self._enrich_holdings(portfolio.holdings)
+        enriched, _, total_value = await self._enrich_holdings(portfolio.holdings, user_id)
 
         # Build instrument lookup for sector info
         instruments: dict[uuid.UUID, Instrument] = {}

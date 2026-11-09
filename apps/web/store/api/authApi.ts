@@ -1,9 +1,11 @@
 import { baseApi } from "./baseApi";
-import { AuthResponse, ApiResponse } from "@/types";
+import { AuthResponse, ApiResponse, UserResponse } from "@/types";
 import { RegisterFormData, LoginFormData } from "@/lib/validations";
 
 /**
- * Auth API endpoints for registration, login, and profile management.
+ * Auth API endpoints. The API sets and clears the httpOnly refresh cookie
+ * on register, login, refresh and logout; responses carry only the access
+ * token.
  */
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,11 +23,14 @@ export const authApi = baseApi.injectEndpoints({
         body: credentials,
       }),
     }),
-    getMe: builder.query<ApiResponse<AuthResponse>, void>({
+    logout: builder.mutation<ApiResponse<null>, void>({
+      query: () => ({ url: "/auth/logout", method: "POST" }),
+    }),
+    getMe: builder.query<ApiResponse<UserResponse>, void>({
       query: () => "/auth/me",
       providesTags: ["User"],
     }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetMeQuery } = authApi;
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useGetMeQuery } = authApi;

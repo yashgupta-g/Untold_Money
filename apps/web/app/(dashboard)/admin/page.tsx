@@ -8,7 +8,7 @@ export default function AdminPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Admin Panel</h1>
+        <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Admin Panel</h1>
         <p className="text-sm text-muted-foreground">System monitoring and management</p>
       </div>
 
@@ -23,11 +23,11 @@ export default function AdminPage() {
             <CardContent className="p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{s.title}</p>
-                  <p className="mt-1 text-2xl font-bold">{s.value}</p>
+                  <p className="text-[13px] font-medium text-muted-foreground">{s.title}</p>
+                  <p className="mt-1 text-2xl font-semibold tracking-[-0.02em]">{s.value}</p>
                   <p className="text-xs text-muted-foreground">{s.sub}</p>
                 </div>
-                <div className="border border-border p-2">
+                <div className="shrink-0">
                   <s.icon className="h-4 w-4 text-primary-ink" />
                 </div>
               </div>
@@ -48,7 +48,7 @@ export default function AdminPage() {
               { action: "user.logged_out", user: "trader@test.com", time: "1 hour ago" },
               { action: "user.login_failed", user: "unknown@test.com", time: "2 hours ago" },
             ].map((log, i) => (
-              <div key={i} className="flex items-center justify-between p-3 hover:bg-muted/30">
+              <div key={i} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/60">
                 <div className="flex items-center gap-3">
                   <Badge variant="outline" className="text-[10px] font-mono">{log.action}</Badge>
                   <span className="text-sm">{log.user}</span>

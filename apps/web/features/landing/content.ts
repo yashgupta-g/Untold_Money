@@ -37,7 +37,7 @@ export const NAV_LINKS = [
 /** What UntoldMoney is, in one line, everywhere it needs saying. */
 export const POSITIONING = {
   eyebrow: "AI-powered personal finance",
-  line: "Market data, AI stock analysis, capital allocation, broker trading, backtesting, an AI analyst and your trade journal in one workspace.",
+  line: "Market data, AI stock analysis, capital allocation and your trade journal in one workspace, with alerts, broker trading, backtesting and an AI analyst on the way.",
 };
 
 /**
@@ -89,25 +89,25 @@ export const PLATFORM: PlatformModule[] = [
     id: "alerts",
     name: "Alerts",
     body: "Price and indicator rules that reach you in the app and by email.",
-    status: "live",
+    status: "soon",
   },
   {
     id: "trading",
     name: "Broker trading",
     body: "Connect your broker account and place orders from your workspace.",
-    status: "live",
+    status: "soon",
   },
   {
     id: "analyst",
     name: "AI analyst chat",
     body: "Ask about a stock or your portfolio and get answers in plain language.",
-    status: "live",
+    status: "soon",
   },
   {
     id: "backtest",
     name: "Backtesting",
     body: "Test a strategy against years of history before you risk money on it.",
-    status: "live",
+    status: "soon",
   },
 ];
 
@@ -240,8 +240,8 @@ export const TOOLS: Tool[] = [
   {
     id: "market",
     name: "Market data",
-    body: "Prices, candles, volume and company details for every stock you follow.",
-    meta: "Daily data from Yahoo Finance",
+    body: "Live prices, intraday to weekly candles and volume for every NSE stock and index.",
+    meta: "Live from your own broker account",
   },
   {
     id: "ml",
@@ -287,16 +287,16 @@ export const PARAMETERS = [
 
 export const LIMITS = [
   {
-    title: "Market data comes from Yahoo Finance",
-    body: "It can be delayed or missing for a symbol. When it is, the app says so instead of estimating.",
+    title: "Market data needs your broker",
+    body: "Prices and charts come from your own Fyers account. Brokers end API sessions daily, so you reconnect each morning.",
   },
   {
     title: "Predictions are statistical",
     body: "They describe historical patterns and carry no guarantee.",
   },
   {
-    title: "Orders go through your broker",
-    body: "UntoldMoney sends the orders you place to your connected broker account. Every order is yours to confirm.",
+    title: "Your money stays with your broker",
+    body: "When broker trading arrives, orders will go to your own broker account and every one will be yours to confirm. UntoldMoney never holds your funds.",
   },
 ];
 
@@ -528,7 +528,7 @@ export const FAQS = [
   },
   {
     q: "Where does the market data come from?",
-    a: "Daily price data comes from Yahoo Finance. It can be delayed or missing for a symbol, and when that happens the app says so instead of filling the gap with an estimate.",
+    a: "From your own broker. Connect Fyers and prices, charts and analysis come live from your account, shown only to you. Without a connection, market screens ask you to connect instead of showing stale data.",
   },
   {
     q: "How are ML predictions validated?",
@@ -536,11 +536,11 @@ export const FAQS = [
   },
   {
     q: "Can I trade from UntoldMoney?",
-    a: "Yes. Connect your broker account and place orders from your workspace. Filled trades land in your journal, ready to review.",
+    a: "Not yet. Broker trading is coming: you'll connect your own broker account, confirm each order from your workspace, and see filled trades land in your journal. Your money always stays with your broker.",
   },
   {
     q: "What else can I do besides analysis?",
-    a: "Trade through your broker, ask the AI analyst about your stocks and portfolio in plain language, and backtest a strategy against years of history before you risk money on it.",
+    a: "Today: track your portfolio and allocation, and journal every trade with its strategy, mistake and emotion. Coming next: alerts, broker trading, an AI analyst you can ask in plain language, and backtesting against years of history.",
   },
   {
     q: "Which markets are covered?",

@@ -3,7 +3,7 @@ Prediction service — orchestrates ML predictions.
 
 Flow for each prediction request:
   1. Check cache (DB) — return if fresh prediction exists (<24h old)
-  2. Fetch candle data from market_candles table
+  2. Fetch daily candles from the user's broker connection
   3. Run feature engineering (FeatureEngine)
   4. Train model + predict (MLEngine)
   5. Store prediction in DB
@@ -24,7 +24,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.exceptions import NotFoundException
 from app.core.logging import get_logger
 from app.modules.instruments.repository import InstrumentRepository
-from app.modules.market_data.repository import MarketDataRepository
 from app.modules.predictions.ml_engine import MLEngine
 from app.modules.predictions.models import Prediction
 from app.modules.predictions.repository import PredictionRepository
@@ -41,24 +40,29 @@ logger = get_logger(__name__)
 class PredictionService:
     """Orchestrates ML predictions for stocks."""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession, user_id: Optional[uuid.UUID] = None):
         self.session = session
         self.repo = PredictionRepository(session)
         self.instrument_repo = InstrumentRepository(session)
-        self.market_repo = MarketDataRepository(session)
+        # Candles come from this user's broker connection (required).
+        self.user_id = user_id
 
     async def _resolve_instrument(self, symbol: str):
         """Look up instrument by symbol, raise 404 if not found."""
+        from app.modules.brokers.market import ensure_market_data
+
+        # Predictions are built on market data, which needs the user's broker.
+        await ensure_market_data(self.session, self.user_id)
         instrument = await self.instrument_repo.get_instrument_by_symbol(symbol)
         if not instrument:
             raise NotFoundException(f"Instrument '{symbol}' not found")
         return instrument
 
-    async def _fetch_candle_data(self, instrument_id: uuid.UUID) -> tuple:
-        """Fetch and extract OHLCV arrays from candle data."""
-        candles = await self.market_repo.get_candles(
-            instrument_id=instrument_id, interval="1d", limit=200
-        )
+    async def _fetch_candle_data(self, instrument) -> tuple:
+        """Fetch and extract OHLCV arrays from the user's broker candles."""
+        from app.modules.brokers.market import daily_candles
+
+        candles = await daily_candles(self.session, self.user_id, instrument, 200)
         if len(candles) < 80:
             return [], [], [], [], len(candles)
 
@@ -107,7 +111,7 @@ class PredictionService:
             )
 
         # Compute fresh prediction
-        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument.id)
+        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument)
         if not closes:
             return None
 
@@ -185,7 +189,7 @@ class PredictionService:
                 predicted_at=cached.predicted_at,
             )
 
-        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument.id)
+        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument)
         if not closes:
             return None
 
@@ -237,7 +241,7 @@ class PredictionService:
         and is called separately.
         """
         instrument = await self._resolve_instrument(symbol)
-        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument.id)
+        closes, highs, lows, volumes, count = await self._fetch_candle_data(instrument)
 
         response = PredictionResponse(
             symbol=symbol.upper(),

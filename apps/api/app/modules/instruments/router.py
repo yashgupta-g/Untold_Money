@@ -8,7 +8,7 @@ import uuid
 
 from fastapi import APIRouter, Query
 
-from app.core.dependencies import AsyncSessionDep, CurrentUserIdDep
+from app.core.dependencies import AdminUserIdDep, AsyncSessionDep
 from app.modules.instruments.schemas import (
     ExchangeCreateRequest,
     InstrumentCreateRequest,
@@ -94,7 +94,7 @@ admin_router = APIRouter(prefix="/admin/instruments", tags=["Admin — Instrumen
 async def create_instrument(
     data: InstrumentCreateRequest,
     session: AsyncSessionDep,
-    user_id: CurrentUserIdDep,
+    user_id: AdminUserIdDep,
 ) -> dict:
     service = InstrumentService(session)
     instrument = await service.create_instrument(data, actor_user_id=user_id)
@@ -110,7 +110,7 @@ async def update_instrument(
     instrument_id: uuid.UUID,
     data: InstrumentUpdateRequest,
     session: AsyncSessionDep,
-    user_id: CurrentUserIdDep,
+    user_id: AdminUserIdDep,
 ) -> dict:
     service = InstrumentService(session)
     instrument = await service.update_instrument(instrument_id, data, actor_user_id=user_id)
@@ -125,7 +125,7 @@ async def update_instrument(
 async def create_exchange(
     data: ExchangeCreateRequest,
     session: AsyncSessionDep,
-    user_id: CurrentUserIdDep,
+    user_id: AdminUserIdDep,
 ) -> dict:
     service = InstrumentService(session)
     exchange = await service.create_exchange(data, actor_user_id=user_id)

@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.core.dependencies import AsyncSessionDep, CurrentUserIdDep, OptionalUserIdDep
+from app.core.dependencies import AdminUserIdDep, AsyncSessionDep, OptionalUserIdDep
 from app.modules.analytics.service import AnalyticsService
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
@@ -20,7 +20,7 @@ async def get_indicators(
     session: AsyncSessionDep,
     user_id: OptionalUserIdDep,
 ) -> dict:
-    service = AnalyticsService(session)
+    service = AnalyticsService(session, user_id)
     result = await service.get_indicators(symbol)
     return {
         "success": True,
@@ -35,7 +35,7 @@ async def get_score(
     session: AsyncSessionDep,
     user_id: OptionalUserIdDep,
 ) -> dict:
-    service = AnalyticsService(session)
+    service = AnalyticsService(session, user_id)
     result = await service.get_score(symbol)
     return {
         "success": True,
@@ -48,9 +48,9 @@ async def get_score(
 async def recalculate(
     symbol: str,
     session: AsyncSessionDep,
-    user_id: CurrentUserIdDep,
+    user_id: AdminUserIdDep,
 ) -> dict:
-    service = AnalyticsService(session)
+    service = AnalyticsService(session, user_id)
     result = await service.recalculate(symbol)
     return {
         "success": True,

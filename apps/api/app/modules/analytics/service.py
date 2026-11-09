@@ -12,7 +12,7 @@ Scores:
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -28,7 +28,6 @@ from app.modules.analytics.schemas import (
     StockScoreResponse,
 )
 from app.modules.instruments.repository import InstrumentRepository
-from app.modules.market_data.repository import MarketDataRepository
 
 logger = get_logger(__name__)
 
@@ -55,14 +54,28 @@ DESCRIPTIONS = {
 }
 
 
+# Cached indicators and scores are reused this long, then recomputed from
+# the user's live candles.
+CACHE_MAX_AGE = timedelta(minutes=15)
+
+
+def _fresh(computed_at: Optional[datetime]) -> bool:
+    if computed_at is None:
+        return False
+    if computed_at.tzinfo is None:
+        computed_at = computed_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) - computed_at < CACHE_MAX_AGE
+
+
 class AnalyticsService:
     """Technical indicators and stock scoring engine."""
 
-    def __init__(self, session: AsyncSession):
+    def __init__(self, session: AsyncSession, user_id: Optional[uuid.UUID] = None):
         self.session = session
         self.repo = AnalyticsRepository(session)
         self.instrument_repo = InstrumentRepository(session)
-        self.market_repo = MarketDataRepository(session)
+        # Candles come from this user's broker connection (required).
+        self.user_id = user_id
 
     # ================================================================
     # INDICATOR CALCULATIONS (pure math, no DB)
@@ -164,10 +177,19 @@ class AnalyticsService:
     # ================================================================
 
     async def _resolve_instrument(self, symbol: str):
+        from app.modules.brokers.market import ensure_market_data
+
+        # Analysis is built on market data, which needs the user's broker.
+        await ensure_market_data(self.session, self.user_id)
         instrument = await self.instrument_repo.get_instrument_by_symbol(symbol)
         if not instrument:
             raise NotFoundException(f"Instrument '{symbol}' not found")
         return instrument
+
+    async def _daily_candles(self, instrument, limit: int = 200):
+        from app.modules.brokers.market import daily_candles
+
+        return await daily_candles(self.session, self.user_id, instrument, limit)
 
     async def compute_indicators(
         self, symbol: str
@@ -175,9 +197,7 @@ class AnalyticsService:
         """Calculate all indicators from candle data."""
         instrument = await self._resolve_instrument(symbol)
 
-        candles = await self.market_repo.get_candles(
-            instrument_id=instrument.id, interval="1d", limit=200
-        )
+        candles = await self._daily_candles(instrument, 200)
 
         resp = IndicatorsResponse(
             symbol=symbol.upper(),
@@ -261,9 +281,7 @@ class AnalyticsService:
         """Compute composite score from indicators."""
         instrument = await self._resolve_instrument(symbol)
 
-        candles = await self.market_repo.get_candles(
-            instrument_id=instrument.id, interval="1d", limit=200
-        )
+        candles = await self._daily_candles(instrument, 200)
 
         if len(candles) < 20:
             raise NotFoundException(
@@ -396,10 +414,10 @@ class AnalyticsService:
     # ================================================================
 
     async def get_indicators(self, symbol: str) -> IndicatorsResponse:
-        """Return cached indicators; if none, compute fresh."""
+        """Return recent cached indicators; otherwise compute fresh."""
         instrument = await self._resolve_instrument(symbol)
         cached = await self.repo.get_indicators(instrument.id)
-        if cached:
+        if cached and _fresh(cached[0].computed_at):
             return IndicatorsResponse(
                 symbol=symbol.upper(),
                 instrument_id=instrument.id,
@@ -419,10 +437,10 @@ class AnalyticsService:
         return await self.compute_indicators(symbol)
 
     async def get_score(self, symbol: str) -> StockScoreResponse:
-        """Return cached score; if none, compute fresh."""
+        """Return a recent cached score; otherwise compute fresh."""
         instrument = await self._resolve_instrument(symbol)
         cached = await self.repo.get_score(instrument.id)
-        if cached:
+        if cached and _fresh(cached.computed_at):
             return StockScoreResponse(
                 symbol=symbol.upper(),
                 instrument_id=instrument.id,

@@ -1,18 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, TrendUp, TrendDown, ArrowUpRight, ArrowDownRight, CircleNotch, Pulse, ChartBar, Globe, Buildings, Stack } from "@phosphor-icons/react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import { ArrowLeft, ArrowUpRight, ArrowDownRight, CircleNotch, Pulse, ChartBar, Globe, Buildings, Stack } from "@phosphor-icons/react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import {
   useGetInstrumentBySymbolQuery,
   useGetQuoteQuery,
-  useGetCandlesQuery,
   useGetIndicatorsQuery,
   useGetStockScoreQuery,
   useGetPredictionQuery,
@@ -28,137 +17,43 @@ import {
 import { IndicatorCards } from "@/features/analytics/components/IndicatorCards";
 import { StockScoreCard } from "@/features/analytics/components/StockScoreCard";
 import { PredictionCard } from "@/features/analytics/components/PredictionCard";
-
-const INTERVAL_OPTIONS = [
-  { label: "1D", value: "1d", limit: 30 },
-  { label: "1W", value: "1w", limit: 52 },
-  { label: "1H", value: "1h", limit: 200 },
-  { label: "15M", value: "15m", limit: 200 },
-];
-
-function PriceChart({
-  symbol,
-  interval,
-  limit,
-}: {
-  symbol: string;
-  interval: string;
-  limit: number;
-}) {
-  const { data: candlesRes, isLoading } = useGetCandlesQuery({
-    symbol,
-    interval,
-    limit,
-  });
-  const candles = candlesRes?.data ?? [];
-
-  if (isLoading) {
-    return (
-      <div className="flex h-72 items-center justify-center">
-        <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
-      </div>
-    );
-  }
-
-  if (candles.length === 0) {
-    return (
-      <div className="flex h-72 flex-col items-center justify-center text-muted-foreground">
-        <ChartBar className="h-10 w-10 opacity-30" />
-        <p className="mt-2 text-sm">No candle data available</p>
-      </div>
-    );
-  }
-
-  const chartData = candles.map((c) => ({
-    time: new Date(c.candle_time).toLocaleDateString("en-IN", {
-      day: "numeric",
-      month: "short",
-    }),
-    close: c.close,
-    high: c.high,
-    low: c.low,
-    open: c.open,
-    volume: c.volume,
-  }));
-
-  const isPositive =
-    candles.length >= 2
-      ? candles[candles.length - 1].close >= candles[0].close
-      : true;
-
-  const color = isPositive ? "#10b981" : "#ef4444";
-
-  return (
-    <ResponsiveContainer width="100%" height={320}>
-      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-        <defs>
-          <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor={color} stopOpacity={0.2} />
-            <stop offset="95%" stopColor={color} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-        <XAxis
-          dataKey="time"
-          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-          axisLine={false}
-          tickLine={false}
-          interval="preserveStartEnd"
-        />
-        <YAxis
-          domain={["auto", "auto"]}
-          tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-          axisLine={false}
-          tickLine={false}
-          tickFormatter={(v: number) => `₹${v.toLocaleString("en-IN")}`}
-          width={80}
-        />
-        <Tooltip
-          contentStyle={{
-            backgroundColor: "var(--card)",
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            fontSize: "12px",
-          }}
-          formatter={(value) => [`₹${Number(value ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`, "Price"]}
-        />
-        <Area
-          type="monotone"
-          dataKey="close"
-          stroke={color}
-          strokeWidth={2}
-          fill="url(#priceGradient)"
-          dot={false}
-          animationDuration={800}
-        />
-      </AreaChart>
-    </ResponsiveContainer>
-  );
-}
+import { SourceLabel } from "@/components/market/SourceLabel";
+import { ConnectBrokerPrompt } from "@/components/market/ConnectBrokerPrompt";
+import { TradingViewChart } from "@/components/charts/tradingview/TradingViewChart";
+import { useBrokerStatus } from "@/hooks/useBrokerStatus";
+import { useLivePrices } from "@/hooks/useLivePrices";
 
 export default function StockDetailPage() {
   const params = useParams();
   const symbol = (params.symbol as string)?.toUpperCase() ?? "";
-  const [selectedInterval, setSelectedInterval] = useState(INTERVAL_OPTIONS[0]);
+  // Market data and analysis need the user's own broker connection.
+  const broker = useBrokerStatus();
+  const skipMarket = !symbol || !broker.connected;
 
   const { data: instrumentRes, isLoading: instrumentLoading } =
     useGetInstrumentBySymbolQuery(symbol, { skip: !symbol });
   const { data: quoteRes, isLoading: quoteLoading } = useGetQuoteQuery(symbol, {
-    skip: !symbol,
+    skip: skipMarket,
   });
   const { data: indicatorsRes, isLoading: indicatorsLoading } =
-    useGetIndicatorsQuery(symbol, { skip: !symbol });
+    useGetIndicatorsQuery(symbol, { skip: skipMarket });
   const { data: scoreRes, isLoading: scoreLoading } =
-    useGetStockScoreQuery(symbol, { skip: !symbol });
+    useGetStockScoreQuery(symbol, { skip: skipMarket });
   const { data: predictionRes, isLoading: predictionLoading } =
-    useGetPredictionQuery(symbol, { skip: !symbol });
+    useGetPredictionQuery(symbol, { skip: skipMarket });
 
   const instrument = instrumentRes?.data;
   const quote = quoteRes?.data;
   const indicators = indicatorsRes?.data;
   const score = scoreRes?.data;
   const prediction = predictionRes?.data;
-  const isPositive = quote ? quote.change >= 0 : true;
+  const { prices } = useLivePrices(symbol && broker.connected ? [symbol] : []);
+  const tick = prices[symbol];
+  // A live tick from the user's broker beats the API quote.
+  const price = tick?.ltp ?? quote?.price;
+  const change = tick?.ch ?? quote?.change ?? 0;
+  const changePercent = tick?.chp ?? quote?.change_percent ?? 0;
+  const isPositive = change >= 0;
 
   if (instrumentLoading) {
     return (
@@ -197,12 +92,12 @@ export default function StockDetailPage() {
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             {/* Left — Symbol Info */}
             <div className="flex items-start gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-border text-lg font-bold text-primary-ink">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accent text-lg font-semibold text-accent-foreground">
                 {symbol.slice(0, 2)}
               </div>
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-2xl font-bold">{symbol}</h1>
+                  <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">{symbol}</h1>
                   <Badge variant="secondary" className="text-xs">
                     {instrument.exchange?.code ?? "NSE"}
                   </Badge>
@@ -231,22 +126,29 @@ export default function StockDetailPage() {
 
             {/* Right — Price & Quote */}
             <div className="text-right">
-              {quoteLoading ? (
+              {!broker.connected ? (
+                broker.loading ? null : <ConnectBrokerPrompt compact expired={broker.expired} />
+              ) : quoteLoading ? (
                 <div className="space-y-2">
-                  <div className="ml-auto h-8 w-32 animate-pulse bg-muted" />
-                  <div className="ml-auto h-4 w-24 animate-pulse bg-muted" />
+                  <div className="ml-auto h-8 w-32 animate-pulse rounded-lg bg-muted" />
+                  <div className="ml-auto h-4 w-24 animate-pulse rounded-md bg-muted" />
                 </div>
-              ) : quote ? (
+              ) : price != null ? (
                 <>
-                  <p className="text-3xl font-bold tabular-nums">
-                    ₹{quote.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  <p className="text-3xl font-semibold tracking-[-0.03em] tabular-nums">
+                    ₹{price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </p>
-                  <div className={`mt-1 flex items-center justify-end gap-2 text-sm font-medium ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+                  <div className={`mt-1 flex items-center justify-end gap-2 text-sm font-medium ${isPositive ? "text-profit" : "text-loss"}`}>
                     {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
                     <span className="tabular-nums">
-                      {isPositive ? "+" : ""}₹{quote.change.toFixed(2)} ({isPositive ? "+" : ""}{quote.change_percent.toFixed(2)}%)
+                      {isPositive ? "+" : "−"}₹{Math.abs(change).toFixed(2)} ({isPositive ? "+" : "−"}{Math.abs(changePercent).toFixed(2)}%)
                     </span>
                   </div>
+                  <SourceLabel
+                    className="mt-1.5 justify-end"
+                    provider={tick ? tick.provider : quote?.provider}
+                    live={!!tick}
+                  />
                 </>
               ) : null}
             </div>
@@ -265,56 +167,41 @@ export default function StockDetailPage() {
           ].map((stat) => (
             <Card key={stat.label} className="border-border/50">
               <CardContent className="p-4">
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{stat.label}</p>
-                <p className="mt-1 text-lg font-bold tabular-nums">{stat.value}</p>
+                <p className="text-[13px] font-medium text-muted-foreground">{stat.label}</p>
+                <p className="mt-1 text-lg font-semibold tracking-[-0.01em] tabular-nums">{stat.value}</p>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
 
-      {/* Chart Card */}
+      {/* Chart: TradingView Advanced Charts on the user's broker data */}
       <Card className="border-border/50">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
-              <Pulse className="h-4 w-4 text-primary-ink" />
-              Price Chart
-            </CardTitle>
-            <div className="flex gap-1">
-              {INTERVAL_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setSelectedInterval(opt)}
-                  className={`px-2.5 py-1 text-xs font-medium transition-colors ${
-                    selectedInterval.value === opt.value
-                      ? "bg-primary/10 text-primary-ink"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          <CardTitle className="flex items-center gap-2 text-base font-medium">
+            <Pulse className="h-4 w-4 text-primary-ink" />
+            Chart
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <PriceChart
-            symbol={symbol}
-            interval={selectedInterval.value}
-            limit={selectedInterval.limit}
-          />
+          {broker.loading ? (
+            <div className="flex h-[360px] items-center justify-center">
+              <CircleNotch className="h-6 w-6 animate-spin text-primary-ink" />
+            </div>
+          ) : (
+            <TradingViewChart symbol={symbol} connected={broker.connected} expired={broker.expired} />
+          )}
         </CardContent>
       </Card>
 
-      {/* Technical Indicators */}
-      <IndicatorCards data={indicators} isLoading={indicatorsLoading} />
-
-      {/* Stock Score */}
-      <StockScoreCard data={score} isLoading={scoreLoading} />
-
-      {/* AI Prediction */}
-      <PredictionCard data={prediction} isLoading={predictionLoading} />
+      {/* Analysis is computed from the user's broker candles */}
+      {broker.connected && (
+        <>
+          <IndicatorCards data={indicators} isLoading={indicatorsLoading} />
+          <StockScoreCard data={score} isLoading={scoreLoading} />
+          <PredictionCard data={prediction} isLoading={predictionLoading} />
+        </>
+      )}
     </div>
   );
 }

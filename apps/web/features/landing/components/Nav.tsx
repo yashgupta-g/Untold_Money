@@ -63,7 +63,7 @@ export function Nav() {
           ))}
         </nav>
         <div className={styles.actions}>
-          <Link className={styles.login} href="/login">
+          <Link className={cn(shared.btn, shared.btnSecondary, shared.btnSm, styles.login)} href="/login">
             Log in
           </Link>
           <Magnetic strength={0.25}>

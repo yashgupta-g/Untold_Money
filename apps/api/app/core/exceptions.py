@@ -78,6 +78,21 @@ class BadRequestException(AppException):
         )
 
 
+class BrokerRequiredException(AppException):
+    """Market data comes only from the user's own broker connection."""
+
+    def __init__(
+        self,
+        message: str = "Connect Fyers to see live prices, charts and analysis.",
+        error_code: str = "BROKER_REQUIRED",
+    ):
+        super().__init__(
+            message=message,
+            error_code=error_code,
+            status_code=status.HTTP_428_PRECONDITION_REQUIRED,
+        )
+
+
 class RateLimitException(AppException):
     def __init__(self, message: str = "Too many requests", error_code: str = "RATE_LIMITED"):
         super().__init__(
@@ -111,14 +126,25 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def validation_exception_handler(
         _request: Request, exc: RequestValidationError
     ) -> ORJSONResponse:
-        logger.warning("validation_error", errors=exc.errors())
+        # Only location, message and type. The raw errors also carry `input`
+        # (the submitted value, which can be a password) and `ctx` (exception
+        # objects that can't be serialised), so neither is echoed or logged.
+        details = [
+            {
+                "loc": list(err.get("loc", ())),
+                "msg": str(err.get("msg", "")).removeprefix("Value error, "),
+                "type": err.get("type", ""),
+            }
+            for err in exc.errors()
+        ]
+        logger.warning("validation_error", errors=details)
         return ORJSONResponse(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content={
                 "success": False,
-                "message": "Validation error",
+                "message": details[0]["msg"] if len(details) == 1 else "Validation error",
                 "error_code": "VALIDATION_ERROR",
-                "details": exc.errors(),
+                "details": details,
             },
         )
 

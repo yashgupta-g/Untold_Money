@@ -38,16 +38,16 @@ function PortfolioCard({ portfolio }: { portfolio: PortfolioSummary }) {
                 </span>
               </div>
             </div>
-            <div className="border border-border p-2">
+            <div className="shrink-0">
               <Wallet className="h-4 w-4 text-primary-ink" />
             </div>
           </div>
 
           <div className="mt-4 space-y-1">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <p className="text-[13px] font-medium text-muted-foreground">
               Total Invested
             </p>
-            <p className="text-xl font-bold tabular-nums">
+            <p className="text-xl font-semibold tracking-[-0.02em] tabular-nums">
               ₹{invested.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </p>
           </div>
@@ -103,7 +103,7 @@ export default function PortfolioPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Portfolio</h1>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Portfolio</h1>
           <p className="text-sm text-muted-foreground">
             Manage your investment portfolios and holdings
           </p>

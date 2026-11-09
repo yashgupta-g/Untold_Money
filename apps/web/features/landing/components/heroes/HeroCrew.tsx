@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
-import { POSITIONING } from "../../content";
 import { IsoBox, type IsoView } from "../iso";
 import styles from "./crew.module.css";
 import { bricolage } from "./fonts";
@@ -338,7 +337,6 @@ export function HeroCrew() {
         </div>
 
         <div className={styles.copy}>
-          <span className={styles.eyebrow}>{POSITIONING.eyebrow}</span>
           <h1 id="hero-title" className={styles.title}>
             Your money, with an AI team behind it.
           </h1>

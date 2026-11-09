@@ -41,13 +41,13 @@ export default function TradesPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Trade Journal</h1>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Trade Journal</h1>
           <p className="text-sm text-muted-foreground">
             Track, analyze, and improve your trading performance
           </p>
         </div>
         <div className="flex h-[40vh] flex-col items-center justify-center">
-          <div className="border border-destructive/30 p-4 mb-4">
+          <div className="mb-4 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
             <ArrowsLeftRight className="h-10 w-10 text-red-500/60" />
           </div>
           <p className="text-lg font-medium">Failed to load trades</p>
@@ -66,7 +66,7 @@ export default function TradesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Trade Journal</h1>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Trade Journal</h1>
           <p className="text-sm text-muted-foreground">
             Track, analyze, and improve your trading performance
           </p>

@@ -55,6 +55,18 @@ class AuthRepository:
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_session_by_id(self, session_id: uuid.UUID) -> Optional[UserSession]:
+        """Any session by id, revoked or not (refresh uses this to spot token reuse)."""
+        return await self.session.get(UserSession, session_id)
+
+    async def revoke_session(self, session_id: uuid.UUID) -> None:
+        stmt = (
+            update(UserSession)
+            .where(UserSession.id == session_id, UserSession.revoked_at.is_(None))
+            .values(revoked_at=datetime.now(timezone.utc))
+        )
+        await self.session.execute(stmt)
+
     async def revoke_sessions(self, user_id: uuid.UUID, token_hash: Optional[str] = None) -> None:
         stmt = (
             update(UserSession)

@@ -18,7 +18,7 @@ export default function AlertsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Alerts</h1>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Alerts</h1>
           <p className="text-sm text-muted-foreground">Set price and indicator alerts for your watchlist</p>
         </div>
         <Button size="sm" className="gap-1.5" id="create-alert-btn">
@@ -32,7 +32,7 @@ export default function AlertsPage() {
           <Card key={alert.id} className="border-border/50 transition-all hover:border-border">
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <div className="border border-border p-2">
+                <div className="shrink-0">
                   <Bell className={`h-4 w-4 ${alert.status === "triggered" ? "text-chart-2" : alert.status === "expired" ? "text-muted-foreground" : "text-primary-ink"}`} />
                 </div>
                 <div>
@@ -49,7 +49,7 @@ export default function AlertsPage() {
                 <Badge
                   variant="secondary"
                   className={`text-[10px] ${
-                    alert.status === "active" ? "bg-primary/10 text-primary-ink" :
+                    alert.status === "active" ? "bg-accent text-accent-foreground" :
                     alert.status === "triggered" ? "bg-chart-2/10 text-chart-2" :
                     "bg-muted text-muted-foreground"
                   }`}

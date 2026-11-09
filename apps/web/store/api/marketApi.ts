@@ -154,18 +154,28 @@ export const marketApi = baseApi.injectEndpoints({
     }),
 
     // --- Market Data ---
+    // Market data comes only from the user's own broker connection; without
+    // one these answer 428 BROKER_REQUIRED (see isBrokerRequired).
     getCandles: builder.query<
       ApiResponse<CandleData[]>,
-      { symbol: string; interval?: string; limit?: number }
+      { symbol: string; interval?: string; limit?: number; start?: string; end?: string }
     >({
-      query: ({ symbol, interval = "1d", limit = 200 }) => ({
+      query: ({ symbol, interval = "1d", limit = 200, start, end }) => ({
         url: `/market-data/${symbol}/candles`,
-        params: { interval, limit },
+        params: { interval, limit, ...(start ? { start } : {}), ...(end ? { end } : {}) },
       }),
+      providesTags: ["Candle"],
     }),
 
     getQuote: builder.query<ApiResponse<QuoteData>, string>({
       query: (symbol) => `/market-data/${symbol}/quote`,
+      providesTags: ["Quote"],
+    }),
+
+    /** Up to 50 symbols in one broker call. Pass them sorted for a stable cache key. */
+    getQuotes: builder.query<ApiResponse<Record<string, QuoteData>>, string[]>({
+      query: (symbols) => ({ url: "/market-data/quotes", params: { symbols: symbols.join(",") } }),
+      providesTags: ["Quote"],
     }),
 
     // --- Analytics ---
@@ -190,7 +200,14 @@ export const {
   useGetInstrumentBySymbolQuery,
   useGetCandlesQuery,
   useGetQuoteQuery,
+  useGetQuotesQuery,
   useGetIndicatorsQuery,
   useGetStockScoreQuery,
   useGetPredictionQuery,
 } = marketApi;
+
+/** The API's answer when market data needs a broker connection the user doesn't have. */
+export function isBrokerRequired(error: unknown): boolean {
+  const e = error as { status?: number; data?: { error_code?: string } } | undefined;
+  return e?.status === 428 || e?.data?.error_code === "BROKER_REQUIRED" || e?.data?.error_code === "BROKER_SESSION_EXPIRED";
+}

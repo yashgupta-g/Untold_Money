@@ -2,8 +2,8 @@
 Instrument and exchange models — stock/security entities and their exchanges.
 
 Instruments store both basic info (symbol, name, exchange) and rich company
-data (market_cap, PE ratio, description, etc.) fetched from Yahoo Finance
-during data ingestion.
+data columns (market_cap, PE ratio, description, etc.), unused while the
+only source is the NSE symbol master (instruments/master.py).
 """
 
 from __future__ import annotations
@@ -60,7 +60,7 @@ class Instrument(UUIDPrimaryKeyMixin, Base):
         nullable=False,
     )
 
-    # --- Company info (populated from Yahoo Finance during ingestion) ---
+    # --- Company info (optional; not filled by the NSE symbol master) ---
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     country: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     website: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)

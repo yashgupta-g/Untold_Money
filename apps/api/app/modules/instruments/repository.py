@@ -7,12 +7,24 @@ from __future__ import annotations
 import uuid
 from typing import Optional
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import case, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from app.modules.instruments.models import Exchange, Instrument
 
+
+
+# Large, widely traded NSE stocks, listed first when nobody has searched.
+POPULAR = (
+    "ADANIENT", "ADANIPORTS", "APOLLOHOSP", "ASIANPAINT", "AXISBANK", "BAJAJ-AUTO",
+    "BAJFINANCE", "BAJAJFINSV", "BEL", "BHARTIARTL", "CIPLA", "COALINDIA", "DRREDDY",
+    "EICHERMOT", "ETERNAL", "GRASIM", "HCLTECH", "HDFCBANK", "HDFCLIFE", "HINDALCO",
+    "HINDUNILVR", "ICICIBANK", "INDIGO", "INFY", "ITC", "JIOFIN", "JSWSTEEL", "KOTAKBANK",
+    "LT", "M&M", "MARUTI", "NESTLEIND", "NTPC", "ONGC", "POWERGRID", "RELIANCE", "SBILIFE",
+    "SBIN", "SHRIRAMFIN", "SUNPHARMA", "TATACONSUM", "TATASTEEL", "TCS", "TECHM", "TITAN",
+    "TRENT", "ULTRACEMCO", "WIPRO",
+)
 
 class InstrumentRepository:
     """Data access for instruments and exchanges."""
@@ -98,7 +110,18 @@ class InstrumentRepository:
         if instrument_type:
             stmt = stmt.where(Instrument.instrument_type == instrument_type.upper())
 
-        stmt = stmt.order_by(Instrument.symbol).limit(limit).offset(offset)
+        if query:
+            # Exact symbol, then symbol prefix, then anything else.
+            q = query.upper()
+            rank = case(
+                (func.upper(Instrument.symbol) == q, 0),
+                (func.upper(Instrument.symbol).like(f"{q}%"), 1),
+                else_=2,
+            )
+        else:
+            # No search: well-known large caps first, not "20MICRONS".
+            rank = case((Instrument.symbol.in_(POPULAR), 0), else_=1)
+        stmt = stmt.order_by(rank, Instrument.symbol).limit(limit).offset(offset)
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 

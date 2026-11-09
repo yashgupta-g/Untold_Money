@@ -1,6 +1,7 @@
 """
-Market data router — public endpoints for candles and quotes,
-plus admin endpoints for real data ingestion from Yahoo Finance.
+Market data router — quotes and candles from the signed-in user's broker.
+
+Answers 428 BROKER_REQUIRED when the user has no live broker connection.
 """
 
 from __future__ import annotations
@@ -10,26 +11,38 @@ from typing import Optional
 
 from fastapi import APIRouter, Query
 
-from app.core.dependencies import AsyncSessionDep, CurrentUserIdDep
-from app.modules.market_data.schemas import IngestRequest
+from app.core.dependencies import AsyncSessionDep, OptionalUserIdDep
 from app.modules.market_data.service import MarketDataService
 
-# --- Public routes ---
 router = APIRouter(prefix="/market-data", tags=["Market Data"])
 
 
-@router.get("/{symbol}/candles", summary="Get OHLCV candles for a symbol")
+@router.get("/quotes", summary="Live quotes for up to 50 symbols, in one broker call")
+async def get_quotes(
+    session: AsyncSessionDep,
+    user_id: OptionalUserIdDep,
+    symbols: str = Query(..., min_length=1, max_length=1000, description="Comma-separated symbols"),
+) -> dict:
+    quotes = await MarketDataService(session).get_quotes(symbols.split(","), user_id)
+    return {
+        "success": True,
+        "message": f"{len(quotes)} quotes",
+        "data": {symbol: q.model_dump(mode="json") for symbol, q in quotes.items()},
+    }
+
+
+@router.get("/{symbol}/candles", summary="OHLCV candles from your broker")
 async def get_candles(
     symbol: str,
     session: AsyncSessionDep,
+    user_id: OptionalUserIdDep,
     interval: str = Query(default="1d", pattern=r"^(1m|5m|15m|1h|4h|1d|1w)$"),
     start: Optional[datetime] = Query(default=None, description="Start datetime (ISO 8601)"),
     end: Optional[datetime] = Query(default=None, description="End datetime (ISO 8601)"),
-    limit: int = Query(default=200, ge=1, le=1000),
+    limit: int = Query(default=200, ge=1, le=5000),
 ) -> dict:
-    service = MarketDataService(session)
-    candles = await service.get_candles(
-        symbol=symbol, interval=interval, start=start, end=end, limit=limit,
+    candles = await MarketDataService(session).get_candles(
+        symbol, user_id, interval=interval, start=start, end=end, limit=limit
     )
     return {
         "success": True,
@@ -38,39 +51,11 @@ async def get_candles(
     }
 
 
-@router.get("/{symbol}/quote", summary="Get latest quote for a symbol")
-async def get_quote(
-    symbol: str,
-    session: AsyncSessionDep,
-) -> dict:
-    service = MarketDataService(session)
-    quote = await service.get_quote(symbol)
+@router.get("/{symbol}/quote", summary="Live quote from your broker")
+async def get_quote(symbol: str, session: AsyncSessionDep, user_id: OptionalUserIdDep) -> dict:
+    quote = await MarketDataService(session).get_quote(symbol, user_id)
     return {
         "success": True,
         "message": f"Quote for {symbol.upper()}",
         "data": quote.model_dump(mode="json"),
-    }
-
-
-# --- Admin routes ---
-admin_router = APIRouter(prefix="/admin/market-data", tags=["Admin — Market Data"])
-
-
-@admin_router.post("/ingest", summary="Trigger real data ingestion from Yahoo Finance")
-async def ingest_data(
-    data: IngestRequest,
-    session: AsyncSessionDep,
-    user_id: CurrentUserIdDep,
-) -> dict:
-    service = MarketDataService(session)
-    result = await service.ingest_data(
-        symbols=data.symbols,
-        interval=data.interval,
-        days=data.days,
-        actor_user_id=user_id,
-    )
-    return {
-        "success": True,
-        "message": "Yahoo Finance data ingestion completed",
-        "data": result.model_dump(mode="json"),
     }

@@ -10,20 +10,7 @@
   /* One viewport-wide column; the track overflows it and slides. */
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(28px, 4vh, 48px);
-  height: 100svh;
-  min-height: 680px;
-  padding: clamp(104px, 13vh, 132px) 0 clamp(28px, 4vh, 40px);
-  overflow: hidden;
-}
-
-/* The WebGL layer covers the pinned frame; cards keep their DOM boxes. */
-.canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+  padding-block: clamp(96px, 12vh, 128px);
 }
 
 .head {
@@ -49,16 +36,14 @@
 
 /* ---------- the reel ---------- */
 .track {
+  --inset: max(var(--gutter), calc((100% - var(--maxw)) / 2));
   display: flex;
   align-items: flex-end;
-  align-self: center;
   gap: clamp(24px, 2.6vw, 40px);
-  justify-self: start;
-  width: max-content;
   margin: 0;
-  padding: 0 24vw 0 max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+  /* First card lines up with the heading above. */
+  padding: 4px var(--inset) 20px;
   list-style: none;
-  will-change: transform;
 }
 
 .card {
@@ -82,21 +67,9 @@
 
 .media img {
   object-fit: cover;
-  transition: opacity 400ms ease;
-}
-
-/* Once WebGL has every texture, it draws the images instead. */
-.reel[data-gl] .media {
-  background: transparent;
-}
-
-.reel[data-gl] .media img {
-  opacity: 0;
 }
 
 .caption {
-  position: relative;
-  z-index: 2;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
@@ -162,19 +135,30 @@
   transform-origin: 0 50%;
 }
 
-/* ---------- phones and reduced motion: a swipeable row ---------- */
-.reel:not([data-pinned]) .pin {
-  height: auto;
-  min-height: 0;
+/* ---------- pinned: page scroll slides the row end to end ---------- */
+.reel[data-pinned] .pin {
+  height: 100svh;
+  min-height: 680px;
+  padding-block: clamp(104px, 13vh, 132px) clamp(28px, 4vh, 40px);
+  overflow: hidden;
 }
 
+.reel[data-pinned] .track {
+  align-self: center;
+  justify-self: start;
+  width: max-content;
+  /* Ends with the last card resting on the right gutter. */
+  --inset: max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+  padding-bottom: 0;
+  will-change: transform;
+}
+
+/* ---------- phones and reduced motion: a swipeable row ---------- */
 .reel:not([data-pinned]) .track {
-  width: auto;
-  max-width: 100%;
-  padding: 4px var(--gutter) 12px;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: var(--gutter);
+  scroll-padding-inline: var(--inset);
   scrollbar-width: none;
 }
 

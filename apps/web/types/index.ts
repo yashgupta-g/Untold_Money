@@ -13,9 +13,9 @@ export interface User {
   created_at: string;
 }
 
+/** The refresh token never appears here: the API keeps it in an httpOnly cookie. */
 export interface TokenResponse {
   access_token: string;
-  refresh_token: string;
   token_type: string;
   expires_in: number;
 }

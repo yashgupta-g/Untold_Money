@@ -26,6 +26,9 @@ async def lifespan(app: FastAPI):
         version=settings.API_VERSION,
     )
     yield
+    from app.modules.stream.router import shutdown_hub  # noqa: E402
+
+    await shutdown_hub()
     logger.info("app_shutting_down")
 
 
@@ -45,6 +48,11 @@ def create_app() -> FastAPI:
     )
 
     # --- Middleware ---
+    # Added first so it runs inside CORS: 429 responses still carry CORS
+    # headers, and the browser shows the real error instead of a CORS one.
+    from app.core.rate_limit import RateLimitMiddleware  # noqa: E402
+
+    application.add_middleware(RateLimitMiddleware)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=settings.BACKEND_CORS_ORIGINS,
@@ -62,10 +70,7 @@ def create_app() -> FastAPI:
         router as instruments_router,
         admin_router as instruments_admin_router,
     )
-    from app.modules.market_data.router import (  # noqa: E402
-        router as market_data_router,
-        admin_router as market_data_admin_router,
-    )
+    from app.modules.market_data.router import router as market_data_router  # noqa: E402
     from app.modules.portfolio.router import router as portfolio_router  # noqa: E402
     from app.modules.trades.router import router as trades_router  # noqa: E402
     from app.modules.analytics.router import (  # noqa: E402
@@ -73,22 +78,35 @@ def create_app() -> FastAPI:
         admin_router as analytics_admin_router,
     )
     from app.modules.predictions.router import router as predictions_router  # noqa: E402
+    from app.modules.paper.router import router as paper_router  # noqa: E402
+    from app.modules.brokers.router import router as brokers_router  # noqa: E402
+    from app.modules.stream.router import router as stream_router  # noqa: E402
 
     api_prefix = f"/api/{settings.API_VERSION}"
     application.include_router(auth_router, prefix=api_prefix)
     application.include_router(instruments_router, prefix=api_prefix)
     application.include_router(instruments_admin_router, prefix=api_prefix)
     application.include_router(market_data_router, prefix=api_prefix)
-    application.include_router(market_data_admin_router, prefix=api_prefix)
     application.include_router(portfolio_router, prefix=api_prefix)
     application.include_router(trades_router, prefix=api_prefix)
     application.include_router(analytics_router, prefix=api_prefix)
     application.include_router(analytics_admin_router, prefix=api_prefix)
     application.include_router(predictions_router, prefix=api_prefix)
+    application.include_router(paper_router, prefix=api_prefix)
+    application.include_router(brokers_router, prefix=api_prefix)
+    application.include_router(stream_router, prefix=api_prefix)
 
     # --- MCP Server (AI Agent Tools) ---
-    from app.mcp.server import mcp as mcp_server
-    application.mount("/mcp", mcp_server.sse_app())
+    # Unauthenticated access is for local development only. Elsewhere it is
+    # mounted only when MCP_API_KEY is set, and then requires that key.
+    if settings.is_local or settings.MCP_API_KEY:
+        from app.mcp.auth import require_api_key  # noqa: E402
+        from app.mcp.server import mcp as mcp_server  # noqa: E402
+
+        mcp_app = mcp_server.sse_app()
+        if settings.MCP_API_KEY:
+            mcp_app = require_api_key(mcp_app, settings.MCP_API_KEY)
+        application.mount("/mcp", mcp_app)
 
     # --- Health & Version ---
 

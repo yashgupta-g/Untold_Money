@@ -22,6 +22,17 @@ class Portfolio(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
     )
     name: Mapped[str] = mapped_column(String(100), nullable=False)
+    # manual: user-entered. broker: mirrors a linked broker account (holdings
+    # are replaced on each sync). paper: holdings of a paper-trading account.
+    kind: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="manual", server_default=text("'manual'")
+    )
+    broker_connection_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("broker_connections.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
     base_currency: Mapped[str] = mapped_column(
         String(10), nullable=False, default="INR", server_default=text("'INR'")
     )

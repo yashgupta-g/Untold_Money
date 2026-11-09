@@ -1,0 +1,625 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>2027 Form Tracker</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>try{var t=localStorage.getItem("form-tracker-2027-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+<style>
+/* UntoldMoney tokens: calm, editorial, one cobalt accent, ink primary actions */
+:root{
+  color-scheme:light;
+  --bg:#f7f7f9; --bg-elev:#ffffff; --bg-subtle:#f5f5f7; --bg-muted:#ebebef;
+  --ink:#0b0b0c; --ink-2:#3b3b40; --ink-3:#68686f; --ink-4:#a6a6ad; --on-ink:#ffffff;
+  --line:rgba(11,11,12,.08); --line-strong:rgba(11,11,12,.14);
+  --accent:#2e4bf5; --accent-soft:#e9edff; --on-accent:#ffffff;
+  --loss:#e0484d; --loss-soft:#fcebec; --loss-ink:#b42a30;
+  --warn:#d9772e; --warn-soft:#fbefe4; --warn-ink:#9a4a12;
+  --frost:rgba(247,247,249,.82); --backdrop:rgba(11,11,12,.32);
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%2368686f'%3E%3Cpath d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E");
+  --shadow-sm:0 1px 2px rgba(11,11,12,.04),0 1px 1px rgba(11,11,12,.03);
+  --shadow-md:0 2px 4px rgba(11,11,12,.04),0 8px 24px -6px rgba(11,11,12,.10);
+  --shadow-lg:0 4px 8px rgba(11,11,12,.04),0 24px 48px -12px rgba(11,11,12,.18);
+  --font:"SF Pro Display","SF Pro Text",-apple-system,BlinkMacSystemFont,"Inter",system-ui,"Segoe UI",sans-serif;
+  --r-sm:10px; --r-md:16px; --r-lg:24px; --r-pill:999px;
+  --ease:cubic-bezier(.2,.8,.2,1); --dur-micro:200ms;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0b0b0c; --bg-elev:#151518; --bg-subtle:#1c1c20; --bg-muted:#26262b;
+  --ink:#f5f5f7; --ink-2:#cfcfd5; --ink-3:#9c9ca4; --ink-4:#6c6c74; --on-ink:#0b0b0c;
+  --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+  --accent:#8a9bff; --accent-soft:rgba(46,75,245,.22); --on-accent:#0b0b0c;
+  --loss:#ff8085; --loss-soft:rgba(224,72,77,.18); --loss-ink:#ff9a9e;
+  --warn:#f4a261; --warn-soft:rgba(217,119,46,.16); --warn-ink:#f6b47c;
+  --frost:rgba(11,11,12,.8); --backdrop:rgba(0,0,0,.6);
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%239c9ca4'%3E%3Cpath d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E");
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow-md:0 8px 24px -6px rgba(0,0,0,.5); --shadow-lg:0 24px 48px -12px rgba(0,0,0,.7)}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0b0b0c; --bg-elev:#151518; --bg-subtle:#1c1c20; --bg-muted:#26262b;
+  --ink:#f5f5f7; --ink-2:#cfcfd5; --ink-3:#9c9ca4; --ink-4:#6c6c74; --on-ink:#0b0b0c;
+  --line:rgba(255,255,255,.08); --line-strong:rgba(255,255,255,.14);
+  --accent:#8a9bff; --accent-soft:rgba(46,75,245,.22); --on-accent:#0b0b0c;
+  --loss:#ff8085; --loss-soft:rgba(224,72,77,.18); --loss-ink:#ff9a9e;
+  --warn:#f4a261; --warn-soft:rgba(217,119,46,.16); --warn-ink:#f6b47c;
+  --frost:rgba(11,11,12,.8); --backdrop:rgba(0,0,0,.6);
+  --caret:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%239c9ca4'%3E%3Cpath d='M213.66 101.66l-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E");
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow-md:0 8px 24px -6px rgba(0,0,0,.5); --shadow-lg:0 24px 48px -12px rgba(0,0,0,.7)}
+
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 120px);-webkit-text-size-adjust:100%;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;transition:background-color var(--dur-micro),color var(--dur-micro);
+  padding:calc(env(safe-area-inset-top,0px) + 24px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 48px) max(16px,env(safe-area-inset-left,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+[hidden]:not([hidden=until-found i]){display:none!important}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm)}
+h1,h2,h3{margin:0;font-weight:500;text-wrap:balance}
+p{text-wrap:pretty}
+svg.i{width:16px;height:16px;flex:none;display:block}
+button{font-family:inherit}
+
+/* header */
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px 24px;padding-bottom:2px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;height:26px;padding:0 11px;border-radius:var(--r-pill);background:var(--bg-elev);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:12.5px;color:var(--ink-3);margin-bottom:10px}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+h1{font-size:clamp(26px,3.6vw,34px);line-height:1.08;letter-spacing:-.035em}
+.sub{color:var(--ink-3);margin:6px 0 0;max-width:72ch;font-size:14px;line-height:1.5}
+.h-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sync{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:var(--r-pill);background:var(--bg-elev);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:13px;color:var(--ink-3);white-space:nowrap}
+.sync i{width:7px;height:7px;border-radius:50%;background:var(--ink-4);flex:none}
+.sync.on i{background:var(--accent)} .sync.local i{background:var(--warn)}
+.theme{display:inline-flex;gap:2px;padding:3px;border-radius:var(--r-pill);background:var(--bg-muted)}
+.theme button{width:30px;height:26px;border:0;border-radius:var(--r-pill);background:transparent;color:var(--ink-3);display:grid;place-items:center;cursor:pointer;transition:background var(--dur-micro),color var(--dur-micro),box-shadow var(--dur-micro)}
+.theme button:hover{color:var(--ink)}
+.theme button svg{width:15px;height:15px}
+.theme button[aria-pressed="true"]{background:var(--bg-elev);color:var(--ink);box-shadow:var(--shadow-sm),0 0 0 1px var(--line)}
+
+/* card shell */
+.card{background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow-sm)}
+.card-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.card-h h2{font-size:15px;letter-spacing:-.01em}
+.label{font-size:12.5px;font-weight:500;color:var(--ink-3)}
+
+/* GATE timeline */
+.gate{padding:14px 18px 16px}
+.timeline{margin:12px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 16px;position:relative}
+.timeline::before{content:"";position:absolute;left:6px;right:calc(25% - 18px);top:6px;height:2px;border-radius:2px;background:var(--bg-muted)}
+.timeline .fill{position:absolute;left:6px;top:6px;height:2px;border-radius:2px;background:var(--ink)}
+.kd{position:relative;min-width:0;padding-top:22px}
+.kd::before{content:"";position:absolute;left:0;top:0;width:14px;height:14px;border-radius:50%;background:var(--bg-elev);border:2px solid var(--line-strong);box-sizing:border-box}
+.kd.past::before{background:var(--ink);border-color:var(--ink)}
+.kd.next::before{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 5px var(--accent-soft)}
+.kd b{display:block;font-weight:500;font-size:14px;letter-spacing:-.01em;line-height:1.3}
+.kd .when{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:1px;font-size:13px;color:var(--ink-2)}
+.kd .dn{font-size:11.5px;font-weight:500;padding:0 7px;border-radius:var(--r-pill);background:var(--bg-muted);color:var(--ink-3)}
+.kd.next .dn{background:var(--accent-soft);color:var(--accent)}
+.kd .ds{font-size:12.5px;color:var(--ink-3);margin-top:1px;line-height:1.35}
+
+/* stats */
+.stats{display:grid;grid-template-columns:minmax(0,1.9fr) repeat(3,minmax(0,1fr));gap:10px}
+.stat{padding:12px 16px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.stat .t{font-size:12.5px;color:var(--ink-3);line-height:1.35}
+.stat .v{font-size:26px;font-weight:500;letter-spacing:-.035em;line-height:1.05}
+.stat.next .v{font-size:16px;letter-spacing:-.015em;line-height:1.3;overflow-wrap:anywhere}
+.stat.next .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:var(--r-pill);font-size:12.5px;font-weight:500;background:var(--bg-muted);color:var(--ink-2);white-space:nowrap}
+.tag.urgent{background:var(--loss-soft);color:var(--loss-ink)}
+.tag.soon{background:var(--warn-soft);color:var(--warn-ink)}
+.bar{height:4px;border-radius:4px;background:var(--bg-muted);overflow:hidden;margin-top:auto}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--accent);width:0;transition:width .6s var(--ease)}
+
+/* sticky controls */
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin:0 -16px;padding:8px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+  background:var(--frost);-webkit-backdrop-filter:saturate(1.6) blur(18px);backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid transparent;transition:border-color var(--dur-micro)}
+.controls.stuck{border-bottom-color:var(--line)}
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:var(--r-pill);background:var(--bg-muted);max-width:100%;overflow-x:auto;scrollbar-width:none;flex:none}
+.seg::-webkit-scrollbar{display:none}
+.tab{font:500 13.5px var(--font);border:0;background:transparent;color:var(--ink-3);height:32px;padding:0 12px;border-radius:var(--r-pill);cursor:pointer;display:inline-flex;gap:8px;align-items:center;white-space:nowrap;transition:background var(--dur-micro),color var(--dur-micro),box-shadow var(--dur-micro)}
+.tab:hover{color:var(--ink)}
+.tab .n{font-size:12px;color:var(--ink-4)}
+.tab[aria-pressed="true"]{background:var(--bg-elev);color:var(--ink);box-shadow:var(--shadow-sm),0 0 0 1px var(--line)}
+.tab[aria-pressed="true"] .n{color:var(--ink-3)}
+.row2{display:flex;flex-wrap:nowrap;gap:8px;align-items:center;flex:1 1 640px;min-width:0}
+.search{position:relative;flex:1 1 180px;min-width:0}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink-3);pointer-events:none;width:15px;height:15px}
+.search input{width:100%;height:38px;padding:0 14px 0 34px;border-radius:var(--r-pill)}
+input[type=search],select,textarea{font:inherit;font-size:14px;color:var(--ink);background-color:var(--bg-elev);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm);transition:border-color var(--dur-micro),box-shadow var(--dur-micro)}
+input[type=search]::placeholder,textarea::placeholder{color:var(--ink-4)}
+input[type=search]:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+select{appearance:none;-webkit-appearance:none;height:38px;padding:0 32px 0 14px;border-radius:var(--r-pill);cursor:pointer;
+  background-image:var(--caret);background-repeat:no-repeat;background-position:right 12px center;background-size:12px}
+select option{background:var(--bg-elev);color:var(--ink)}
+.chk{position:relative;display:inline-flex;gap:7px;align-items:center;height:38px;padding:0 13px;border-radius:var(--r-pill);font-size:13.5px;font-weight:500;color:var(--ink-2);background:var(--bg-elev);border:1px solid var(--line-strong);box-shadow:var(--shadow-sm);cursor:pointer;user-select:none;white-space:nowrap;transition:background var(--dur-micro),border-color var(--dur-micro),color var(--dur-micro)}
+.chk input{position:absolute;opacity:0;pointer-events:none}
+.chk .box{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line-strong);display:grid;place-items:center;transition:background var(--dur-micro),border-color var(--dur-micro)}
+.chk .box svg{width:11px;height:11px;opacity:0;color:var(--on-accent)}
+.chk:has(input:checked){background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.chk:has(input:checked) .box{background:var(--accent);border-color:var(--accent)}
+.chk:has(input:checked) .box svg{opacity:1}
+.chk:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+
+/* sections */
+#out{display:flex;flex-direction:column;gap:22px;margin-top:2px}
+section{display:flex;flex-direction:column;gap:10px}
+.sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:0 4px}
+.sec-h h2{font-size:17px;letter-spacing:-.015em}
+.sec-h .c{font-size:12px;color:var(--ink-3);padding:0 8px;border-radius:var(--r-pill);background:var(--bg-muted)}
+.sec-h .hint{font-size:12.5px;color:var(--ink-3);margin-left:auto}
+
+/* tile grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:10px}
+.tile{position:relative;background:var(--bg-elev);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;gap:8px;padding:14px;min-width:0;
+  transition:box-shadow var(--dur-micro) var(--ease),transform var(--dur-micro) var(--ease),opacity var(--dur-micro),border-color var(--dur-micro)}
+.tile:hover{box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.tile.done{opacity:.55}
+.t-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.stamp{display:inline-flex;align-items:baseline;gap:6px;height:28px;padding:0 10px;border-radius:var(--r-sm);background:var(--bg-subtle);color:var(--ink);line-height:28px;white-space:nowrap}
+.stamp b{font-size:15px;font-weight:600;letter-spacing:-.02em}
+.stamp small{font-size:12px;font-weight:500;color:var(--ink-3)}
+.stamp.due{background:var(--loss-soft);color:var(--loss-ink)} .stamp.due small{color:inherit;opacity:.8}
+.stamp.soon{background:var(--warn-soft);color:var(--warn-ink)} .stamp.soon small{color:inherit;opacity:.8}
+.stamp.tba{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line-strong);color:var(--ink-3)}
+.stamp.tba b{font-size:13px;font-weight:500}
+.stamp.gone{background:var(--bg-subtle);color:var(--ink-4)}
+.stamp.gone b{font-size:13px;font-weight:500}
+.name{font-weight:500;font-size:15px;line-height:1.3;letter-spacing:-.01em;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;flex-wrap:wrap;gap:4px 5px;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.pill{display:inline-flex;align-items:center;gap:5px;height:20px;padding:0 8px;border-radius:var(--r-pill);font-size:12px;font-weight:500;background:var(--bg-muted);color:var(--ink-2);white-space:nowrap}
+.pill.ai{background:transparent;box-shadow:inset 0 0 0 1px var(--line-strong);color:var(--ink-2)}
+.pill.s-open{background:var(--accent-soft);color:var(--accent)}
+.pill.s-open::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.s-confirmed{background:var(--bg-muted);color:var(--ink)}
+.pill.s-expected{background:var(--bg-subtle);color:var(--ink-3)}
+.pill.s-unverified{background:var(--warn-soft);color:var(--warn-ink)}
+.pill.s-closed{background:var(--bg-subtle);color:var(--ink-4)}
+.where{display:inline-flex;align-items:center;gap:4px;min-width:0;max-width:100%}
+.where span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.where svg{width:13px;height:13px;flex:none}
+.win{font-size:13px;color:var(--ink-2);overflow-wrap:anywhere;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.t-foot{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+.t-foot select{flex:1 1 auto;min-width:0;height:32px;font-size:13px;font-weight:500;padding-left:12px}
+select.st-applied,select.st-admit,select.st-examdone,select.st-result{background-color:var(--accent-soft);color:var(--accent);border-color:transparent}
+select.st-shortlist,select.st-preparing{border-color:var(--ink);color:var(--ink)}
+select.st-skip{color:var(--ink-4)}
+.ghost{position:relative;display:inline-flex;align-items:center;gap:5px;height:32px;padding:0 10px;border:0;border-radius:var(--r-pill);background:transparent;color:var(--ink-2);font:500 13px var(--font);cursor:pointer;white-space:nowrap;transition:background var(--dur-micro),color var(--dur-micro)}
+.ghost:hover{background:var(--bg-subtle);color:var(--ink)}
+.ghost svg{width:15px;height:15px}
+.has-note{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.go{width:32px;height:32px;flex:none;border-radius:50%;background:var(--ink);color:var(--on-ink);display:grid;place-items:center;text-decoration:none;transition:transform var(--dur-micro) var(--ease),box-shadow var(--dur-micro)}
+.go svg{width:13px;height:13px}
+.go:hover{transform:translate(1px,-1px);box-shadow:var(--shadow-md)}
+.go.off{background:var(--bg-muted);color:var(--ink-4);pointer-events:none}
+.empty{border:1.5px dashed var(--line-strong);border-radius:var(--r-lg);padding:40px 20px;color:var(--ink-3);text-align:center;font-size:15px}
+.empty b{display:block;color:var(--ink);font-weight:500;font-size:17px;margin-bottom:4px;letter-spacing:-.01em}
+
+/* details sheet */
+dialog.sheet{width:min(560px,calc(100% - 32px));max-height:min(86svh,760px);padding:0;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--bg-elev);color:var(--ink);box-shadow:var(--shadow-lg);overflow:hidden}
+dialog.sheet[open]{display:flex;flex-direction:column}
+dialog.sheet::backdrop{background:var(--backdrop);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.sh-head{display:flex;gap:12px;align-items:flex-start;padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+.sh-head .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.sh-head h2{font-size:19px;letter-spacing:-.02em;line-height:1.25}
+.close{width:32px;height:32px;flex:none;border:0;border-radius:50%;background:transparent;color:var(--ink-3);display:grid;place-items:center;cursor:pointer}
+.close:hover{background:var(--bg-subtle);color:var(--ink)}
+.close svg{width:16px;height:16px}
+.sh-body{padding:16px 18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.det{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px 14px;margin:0;font-size:14px;line-height:1.5}
+.det dt{color:var(--ink-3);font-size:13px;font-weight:500;padding-top:1px}
+.det dd{margin:0;color:var(--ink-2);overflow-wrap:anywhere}
+.notes label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+.notes textarea{width:100%;min-height:88px;resize:vertical;border-radius:var(--r-sm);padding:10px 12px;line-height:1.5}
+.sh-foot{display:flex;gap:8px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);background:var(--bg-subtle)}
+.sh-foot select{flex:1 1 auto;min-width:0}
+.btn{font:500 14px var(--font);border:0;background:var(--ink);color:var(--on-ink);height:38px;padding:0 6px 0 16px;border-radius:var(--r-pill);cursor:pointer;display:inline-flex;align-items:center;gap:10px;text-decoration:none;white-space:nowrap;transition:transform var(--dur-micro) var(--ease),box-shadow var(--dur-micro)}
+.btn .arrow{width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,var(--on-ink) 18%,transparent);display:grid;place-items:center}
+.btn .arrow svg{width:12px;height:12px}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md)}
+
+/* footer */
+.foot{font-size:12.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--line);margin-top:8px}
+.foot span{max-width:70ch}
+
+/* motion */
+@media (prefers-reduced-motion:no-preference){
+  .rise{animation:rise .6s var(--ease) both}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .tile:hover{transform:translateY(-2px)}
+  dialog.sheet[open]{animation:pop .24s var(--ease)}
+  dialog.sheet[open]::backdrop{animation:fade .24s var(--ease)}
+  @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* responsive */
+@media (max-width:860px){
+  .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .stat.next{grid-column:1/-1}
+}
+@media (max-width:640px){
+  body{padding-top:calc(env(safe-area-inset-top,0px) + 16px)}
+  .sync{height:28px;font-size:12px}
+  .gate{padding:12px 14px}
+  .timeline{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+  .timeline::before,.timeline .fill{display:none}
+  .kd{padding:0 0 0 18px}
+  .kd::before{width:10px;height:10px;top:4px}
+  .kd.next::before{box-shadow:0 0 0 3px var(--accent-soft)}
+  .kd .ds{display:none}
+  .stats{gap:8px}
+  .stat{padding:10px 12px}
+  .stat .v{font-size:22px}
+  .stat .t{font-size:12px}
+  .sec-h .hint{display:none}
+  .grid{grid-template-columns:1fr;gap:8px}
+  .tile{padding:12px}
+  .controls{position:static;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;padding-block:2px}
+  .seg{width:100%}
+  .tab{flex:1 0 auto;justify-content:center}
+  .row2{flex-basis:100%;flex-wrap:wrap}
+  .search{flex-basis:100%}
+  .chk{flex:1 1 auto;justify-content:center;padding:0 10px;font-size:13px}
+  .row2 select{flex:1 1 auto}
+  dialog.sheet{width:100%;max-width:none;max-height:90svh;margin:auto 0 0;border-radius:var(--r-lg) var(--r-lg) 0 0;border-bottom:0}
+  .sh-foot{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
+  .det{grid-template-columns:1fr;gap:1px}
+  .det dt{margin-top:8px}
+  .det dt:first-child{margin-top:0}
+}
+</style></head><body>
+
+<div class="wrap">
+  <header class="rise">
+    <div>
+      <div class="eyebrow">Admissions &amp; jobs · 2027 cycle</div>
+      <h1>2027 Form Tracker</h1>
+      <p class="sub">Every master's admission (India and abroad) and every CS/IT government and PSU job from your two trackers, in one list. Set a status on each one and it's saved for you.</p>
+    </div>
+    <div class="h-right">
+      <div class="sync" id="sync" role="status"><i></i><span>Connecting…</span></div>
+      <div class="theme" id="theme" role="group" aria-label="Colour theme">
+        <button type="button" data-t="auto" aria-label="Match system theme" title="Auto"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M208 40H48a24 24 0 0 0-24 24v112a24 24 0 0 0 24 24h160a24 24 0 0 0 24-24V64a24 24 0 0 0-24-24Zm8 136a8 8 0 0 1-8 8H48a8 8 0 0 1-8-8V64a8 8 0 0 1 8-8h160a8 8 0 0 1 8 8Zm-48 48a8 8 0 0 1-8 8H96a8 8 0 0 1 0-16h64a8 8 0 0 1 8 8Z"/></svg></button>
+        <button type="button" data-t="light" aria-label="Light theme" title="Light"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M120 40V16a8 8 0 0 1 16 0v24a8 8 0 0 1-16 0Zm72 88a64 64 0 1 1-64-64 64.07 64.07 0 0 1 64 64Zm-16 0a48 48 0 1 0-48 48 48.05 48.05 0 0 0 48-48ZM58.34 69.66a8 8 0 0 0 11.32-11.32l-16-16a8 8 0 0 0-11.32 11.32Zm0 116.68-16 16a8 8 0 0 0 11.32 11.32l16-16a8 8 0 0 0-11.32-11.32ZM192 72a8 8 0 0 0 5.66-2.34l16-16a8 8 0 0 0-11.32-11.32l-16 16A8 8 0 0 0 192 72Zm5.66 114.34a8 8 0 0 0-11.32 11.32l16 16a8 8 0 0 0 11.32-11.32ZM48 128a8 8 0 0 0-8-8H16a8 8 0 0 0 0 16h24a8 8 0 0 0 8-8Zm80 80a8 8 0 0 0-8 8v24a8 8 0 0 0 16 0v-24a8 8 0 0 0-8-8Zm112-88h-24a8 8 0 0 0 0 16h24a8 8 0 0 0 0-16Z"/></svg></button>
+        <button type="button" data-t="dark" aria-label="Dark theme" title="Dark"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M233.54 142.23a8 8 0 0 0-8-2 88.08 88.08 0 0 1-109.8-109.8 8 8 0 0 0-10-10 104.84 104.84 0 0 0-52.91 37A104 104 0 0 0 136 224a103.09 103.09 0 0 0 62.52-20.88 104.84 104.84 0 0 0 37-52.91 8 8 0 0 0-1.98-7.98Zm-44.64 48.11A88 88 0 0 1 65.66 67.11a89 89 0 0 1 31.4-26A106 106 0 0 0 96 56a104.11 104.11 0 0 0 104 104 106 106 0 0 0 14.92-1.06 89 89 0 0 1-26.02 31.4Z"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="card gate rise" aria-label="GATE 2027 key dates" style="animation-delay:.06s">
+    <div class="card-h"><h2>GATE 2027 key dates</h2><span class="label">Organised by IIT Madras</span></div>
+    <div class="timeline" id="gate" role="list"><span class="fill" id="gate-fill" aria-hidden="true"></span></div>
+  </div>
+
+  <div class="stats rise" id="stats" style="animation-delay:.12s"></div>
+
+  <div class="controls" id="controls">
+    <div class="seg" id="tabs" role="group" aria-label="Show"></div>
+    <div class="row2">
+      <label class="search"><svg class="i" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/></svg><input type="search" id="f-q" placeholder="Search name, country, body…" aria-label="Search" autocomplete="off" enterkeyhint="search"></label>
+      <label class="chk"><input type="checkbox" id="f-ai"><span class="box"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M232.49 80.49l-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"/></svg></span>AI / DS only</label>
+      <label class="chk"><input type="checkbox" id="f-hide" checked><span class="box"><svg viewBox="0 0 256 256" fill="currentColor"><path d="M232.49 80.49l-128 128a12 12 0 0 1-17 0l-56-56a12 12 0 1 1 17-17L96 183 215.51 63.51a12 12 0 0 1 17 17Z"/></svg></span>Hide closed &amp; skipped</label>
+      <select id="f-status" aria-label="Filter by my status"></select>
+    </div>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="foot">
+    <span>Data checked 7 Nov 2026. "Expected" and "Not verified" dates come from previous cycles, so confirm on the official site before applying.</span>
+    <button class="btn" id="csv" hidden>Download my list (CSV)<span class="arrow"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224 144v64a8 8 0 0 1-8 8H40a8 8 0 0 1-8-8v-64a8 8 0 0 1 16 0v56h160v-56a8 8 0 0 1 16 0Zm-101.66 5.66a8 8 0 0 0 11.32 0l40-40a8 8 0 0 0-11.32-11.32L136 124.69V32a8 8 0 0 0-16 0v92.69L93.66 98.34a8 8 0 0 0-11.32 11.32Z"/></svg></span></button>
+  </div>
+</div>
+
+<dialog class="sheet" id="sheet" aria-labelledby="sh-title">
+  <div class="sh-head">
+    <div class="t"><h2 id="sh-title"></h2><div class="meta" id="sh-meta"></div></div>
+    <button type="button" class="close" id="sh-close" aria-label="Close"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  </div>
+  <div class="sh-body">
+    <dl class="det" id="sh-det"></dl>
+    <div class="notes"><label for="sh-note">My notes</label><textarea id="sh-note" placeholder="Roll number, login ID hint, documents still needed…"></textarea></div>
+  </div>
+  <div class="sh-foot">
+    <select id="sh-status" aria-label="My status"></select>
+    <a class="btn" id="sh-site" target="_blank" rel="noopener">Official site<span class="arrow"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M204 64v104a12 12 0 0 1-24 0V93L72.49 200.49a12 12 0 0 1-17-17L163 76H88a12 12 0 0 1 0-24h104a12 12 0 0 1 12 12Z"/></svg></span></a>
+  </div>
+</dialog>
+<script id="items" type="application/json">[{"group":"ms-india","name":"COAP 2027 (IIT/IISc M.Tech offers)","ai":false,"where":"Rotating IIT","window":"Registration ~last week Mar 2027","selection":"Rounds ~mid-May to ~10 Jul","elig":"Valid GATE 2025/26/27 + institute application","fee":"Nil","status":"expected","link":"","deadline":"","id":"ms-coap-2027-iit-iisc-m-tech-offers-rotating-iit"},{"group":"ms-india","name":"CCMT 2027 (NITs, IIITs, GFTIs)","ai":false,"where":"NIT nominated by board","window":"From ~mid-May 2027 (2026: 15 May)","selection":"Round 1 ~mid-Jun","elig":"Valid GATE; 6.0 CGPA / 55% (SC/ST/PwD relaxed)","fee":"~₹2,500–3,000 (verify)","status":"expected","link":"https://ccmt.admissions.nic.in","deadline":"","id":"ms-ccmt-2027-nits-iiits-gftis-nit-nominated-by-board"},{"group":"ms-india","name":"IIT Madras MS (Research) – Jan 2027 session","ai":false,"where":"IIT Madras","window":"10 Apr – 30 Oct 2026","selection":"Test / interview","elig":"B.Tech; GATE or other routes; some depts accept work experience","fee":"₹1,000 Gen; ₹500 female/SC/ST/PwD","status":"closed","link":"https://research.iitm.ac.in","deadline":"","id":"ms-iit-madras-ms-research-jan-2027-session-iit-madras"},{"group":"ms-india","name":"IIT Madras M.Tech","ai":false,"where":"IIT Madras","window":"Expected ~Mar–Apr 2027 (2026: 28 Mar – 27 Apr)","selection":"COAP","elig":"GATE 2024–26; IIT B.Tech CGPA ≥8 without GATE","fee":"","status":"expected","link":"https://mtechadm.iitm.ac.in","deadline":"","id":"ms-iit-madras-m-tech-iit-madras"},{"group":"ms-india","name":"Other IIT M.Tech / MS (Research) – Bombay, Delhi, Kanpur, KGP, Hyderabad etc.","ai":false,"where":"Each IIT","window":"Typically Mar–Apr (July session) & Oct–Nov (Jan session)","selection":"Written test and/or interview + COAP","elig":"GATE CS/DA; sponsored/self-financed/project-staff seats may accept work experience","fee":"Varies","status":"unverified","link":"","deadline":"","id":"ms-other-iit-m-tech-ms-research-bombay-delhi-kanpur-kgp-hyde"},{"group":"ms-india","name":"IISc M.Tech / M.Tech (Research)","ai":false,"where":"IISc Bangalore","window":"Expected ~Mar 2027","selection":"Shortlist + test/interview (2025: 14 Apr – 5 Jun); COAP","elig":"B.E./B.Tech 60% (CGPA 6.5) + valid GATE","fee":"₹800 Gen; ₹400 SC/ST/PwD","status":"expected","link":"https://admissions.iisc.ac.in","deadline":"","id":"ms-iisc-m-tech-m-tech-research-iisc-bangalore"},{"group":"ms-india","name":"IIIT Hyderabad PGEE 2027 (M.Tech / MS by Research)","ai":false,"where":"IIIT-H","window":"Expected Feb – early Apr 2027","selection":"PGEE ~early May + interview","elig":"B.Tech; GATE route also exists","fee":"₹3,100 (2026)","status":"expected","link":"https://pgadmissions.iiit.ac.in/pgee","deadline":"","id":"ms-iiit-hyderabad-pgee-2027-m-tech-ms-by-research-iiit-h"},{"group":"ms-india","name":"IIIT Delhi M.Tech","ai":false,"where":"IIIT Delhi","window":"Typically spring","selection":"Own test/interview","elig":"GATE and/or institute test/interview","fee":"Varies","status":"unverified","link":"https://iiitd.ac.in","deadline":"","id":"ms-iiit-delhi-m-tech-iiit-delhi"},{"group":"ms-india","name":"IIIT Bangalore M.Tech / MS by Research","ai":false,"where":"IIIT Bangalore","window":"Typically spring","selection":"Own test/interview","elig":"GATE and/or institute test/interview","fee":"Varies","status":"unverified","link":"https://iiitb.ac.in","deadline":"","id":"ms-iiit-bangalore-m-tech-ms-by-research-iiit-bangalore"},{"group":"ms-india","name":"IIIT Allahabad M.Tech","ai":false,"where":"IIIT Allahabad","window":"Typically spring","selection":"Own test/interview","elig":"GATE and/or institute test/interview","fee":"Varies","status":"unverified","link":"https://iiita.ac.in","deadline":"","id":"ms-iiit-allahabad-m-tech-iiit-allahabad"},{"group":"ms-india","name":"BITS HD 2027 (M.E., incl. Software Systems)","ai":false,"where":"BITS Pilani","window":"Expected ~Feb–Apr 2027 (2026: 18 Feb – 20 Apr)","selection":"HD CBT ~late May","elig":"B.E./B.Tech; GATE route (50% seats) or HD test","fee":"₹1,000 GATE-only; ₹3,600 with HD test","status":"expected","link":"https://bitsadmission.com","deadline":"","id":"ms-bits-hd-2027-m-e-incl-software-systems-bits-pilani"},{"group":"ms-india","name":"VITMEE","ai":false,"where":"VIT","window":"Typically Nov–May (rolling phases)","selection":"Own test / GATE","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://vit.ac.in","deadline":"","id":"ms-vitmee-vit"},{"group":"ms-india","name":"SRMJEEE PG","ai":false,"where":"SRM","window":"Typically Nov–May (rolling phases)","selection":"Own test / GATE","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://srmist.edu.in","deadline":"","id":"ms-srmjeee-pg-srm"},{"group":"ms-india","name":"Amrita M.Tech admissions","ai":false,"where":"Amrita","window":"Typically Nov–May","selection":"Own test / GATE","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://amrita.edu","deadline":"","id":"ms-amrita-m-tech-admissions-amrita"},{"group":"ms-india","name":"MET PG (Manipal)","ai":false,"where":"MAHE","window":"Typically Nov–May","selection":"Own test / GATE","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://manipal.edu","deadline":"","id":"ms-met-pg-manipal-mahe"},{"group":"ms-india","name":"TANCET / CEETA-PG","ai":false,"where":"Anna University","window":"Typically Feb–Mar","selection":"State CET; GATE priority","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://tancet.annauniv.edu","deadline":"","id":"ms-tancet-ceeta-pg-anna-university"},{"group":"ms-india","name":"AP PGECET","ai":false,"where":"APSCHE","window":"Typically Mar–Apr","selection":"State CET; GATE priority","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://cets.apsche.ap.gov.in","deadline":"","id":"ms-ap-pgecet-apsche"},{"group":"ms-india","name":"TS PGECET","ai":false,"where":"TGCHE","window":"Typically Mar–Apr","selection":"State CET; GATE priority","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://pgecet.tgche.ac.in","deadline":"","id":"ms-ts-pgecet-tgche"},{"group":"ms-india","name":"Karnataka PGCET","ai":false,"where":"KEA","window":"Typically Jun–Jul","selection":"State CET; GATE priority","elig":"B.Tech","fee":"Varies","status":"unverified","link":"https://cetonline.karnataka.gov.in","deadline":"","id":"ms-karnataka-pgcet-kea"},{"group":"ms-india","name":"OJEE PG, Gujarat ACPC/GU PGCET, Maharashtra PG CAP, Kerala, Punjab","ai":false,"where":"State authorities","window":"Typically Feb–Jul (varies)","selection":"State CET / GATE merit","elig":"B.Tech","fee":"Varies","status":"unverified","link":"","deadline":"","id":"ms-ojee-pg-gujarat-acpc-gu-pgcet-maharashtra-pg-cap-kerala-p"},{"group":"ms-india","name":"Jamia (JMI) M.Tech","ai":false,"where":"Jamia Millia Islamia","window":"Typically Apr–Jun","selection":"GATE / own test","elig":"GATE priority + own test","fee":"Varies","status":"unverified","link":"https://jmi.ac.in","deadline":"","id":"ms-jamia-jmi-m-tech-jamia-millia-islamia"},{"group":"ms-india","name":"DTU / NSUT / IGDTUW M.Tech (Delhi)","ai":false,"where":"Delhi universities","window":"Typically Apr–Jun","selection":"GATE / own process","elig":"GATE priority + merit","fee":"Varies","status":"unverified","link":"https://dtu.ac.in","deadline":"","id":"ms-dtu-nsut-igdtuw-m-tech-delhi-delhi-universities"},{"group":"ms-india","name":"Jadavpur University M.E./M.Tech","ai":false,"where":"Jadavpur University","window":"Typically Apr–Jun","selection":"GATE / own test","elig":"GATE priority + own process","fee":"Varies","status":"unverified","link":"https://jadavpuruniversity.in","deadline":"","id":"ms-jadavpur-university-m-e-m-tech-jadavpur-university"},{"group":"ms-india","name":"DIAT Pune M.Tech (DRDO deemed university)","ai":false,"where":"DIAT","window":"Typically spring","selection":"Test / interview","elig":"B.Tech + GATE; sponsored via test/interview","fee":"Varies","status":"unverified","link":"https://diat.ac.in","deadline":"","id":"ms-diat-pune-m-tech-drdo-deemed-university-diat"},{"group":"ms-india","name":"IIST M.Tech (ISRO's institute)","ai":false,"where":"IIST","window":"Typically spring","selection":"Shortlist + test/interview","elig":"B.Tech + GATE","fee":"Varies","status":"unverified","link":"https://iist.ac.in","deadline":"","id":"ms-iist-m-tech-isro-s-institute-iist"},{"group":"ms-india","name":"ISI Kolkata M.Tech Computer Science (also M.Tech Cryptology & Security)","ai":false,"where":"Indian Statistical Institute","window":"Expected ~2nd week Feb – 4th week Mar 2027","selection":"Own test ~2nd week May 2027 + interview; result ~Jun","elig":"Any 4-yr B.E./B.Tech; no GATE needed","fee":"Check brochure","status":"expected","link":"https://isical.ac.in","deadline":"","id":"ms-isi-kolkata-m-tech-computer-science-also-m-tech-cryptolog"},{"group":"ms-india","name":"CMI M.Sc Computer Science / Data Science","ai":false,"where":"Chennai Mathematical Institute","window":"Expected ~1st week Mar – 1st week Apr 2027","selection":"Entrance ~1st week May 2027 + interview","elig":"B.E./B.Tech with strong CS background","fee":"Check site","status":"expected","link":"https://cmi.ac.in","deadline":"","id":"ms-cmi-m-sc-computer-science-data-science-chennai-mathematic"},{"group":"ms-india","name":"CUET PG 2027 (central universities – e.g. JNU M.Tech CS, MCA)","ai":false,"where":"NTA","window":"Expected Dec 2026 – Jan 2027","selection":"CBT 2–31 Mar 2027","elig":"B.Tech; check each university's programme list","fee":"Check bulletin","status":"expected","link":"https://exams.nta.ac.in/CUET-PG","deadline":"","id":"ms-cuet-pg-2027-central-universities-e-g-jnu-m-tech-cs-mca-n"},{"group":"ms-india","name":"IIT Hyderabad M.Tech Artificial Intelligence (Dept of AI)","ai":true,"where":"IIT Hyderabad","window":"Expected ~Mar–Apr 2027 via IITH portal","selection":"Shortlist → written test + interview (2026: test 7 May, interviews 11–13 May); TA via COAP","elig":"Any B.Tech. GATE CS/DA/EC/EE/MA for TA (COAP) & RA modes; SELF-SPONSORED route needs NO GATE (CGPA ≥7)","fee":"","status":"expected","link":"https://ai.iith.ac.in/m-tech-admissions/index.html","deadline":"","id":"ms-iit-hyderabad-m-tech-artificial-intelligence-dept-of-ai-i"},{"group":"ms-india","name":"IIT Madras M.Tech Data Science & AI","ai":true,"where":"IIT Madras","window":"Expected ~Mar–Apr 2027","selection":"COAP","elig":"GATE (check CS/DA) + COAP","fee":"","status":"unverified","link":"https://mtechadm.iitm.ac.in","deadline":"","id":"ms-iit-madras-m-tech-data-science-ai-iit-madras"},{"group":"ms-india","name":"IIT Bombay / IIT Delhi M.Tech in AI, Machine Intelligence & Data Science","ai":true,"where":"IIT Bombay, IIT Delhi","window":"Expected ~Mar–Apr 2027","selection":"Institute shortlist + COAP","elig":"GATE (check CS/DA) + COAP","fee":"","status":"unverified","link":"","deadline":"","id":"ms-iit-bombay-iit-delhi-m-tech-in-ai-machine-intelligence-da"},{"group":"ms-india","name":"IISc M.Tech AI / Computational & Data Science","ai":true,"where":"IISc Bangalore","window":"Expected ~Mar 2027","selection":"Shortlist + test/interview; COAP","elig":"Valid GATE in an eligible paper (check CS/DA)","fee":"","status":"unverified","link":"https://admissions.iisc.ac.in","deadline":"","id":"ms-iisc-m-tech-ai-computational-data-science-iisc-bangalore"},{"group":"ms-india","name":"IIT Bhilai, NIT Trichy & other NITs/IIITs – M.Tech Data Science / AI","ai":true,"where":"Various","window":"With COAP (IITs) / CCMT (NITs, IIITs) cycles","selection":"COAP / CCMT","elig":"GATE CS/DA","fee":"","status":"unverified","link":"https://ccmt.admissions.nic.in","deadline":"","id":"ms-iit-bhilai-nit-trichy-other-nits-iiits-m-tech-data-scienc"},{"group":"ms-india","name":"MS (Research) with option to upgrade to PhD (IITs, IIIT-H)","ai":false,"where":"Various","window":"With MS (Research) cycles above","selection":"As per institute","elig":"Join MS (Research); many institutes allow a later upgrade to PhD based on performance","fee":"","status":"unverified","link":"","deadline":"","id":"ms-ms-research-with-option-to-upgrade-to-phd-iits-iiit-h-var"},{"group":"ms-india","name":"BITS WILP M.Tech (Software Engg, Data Science & Engg, AI & ML)","ai":true,"where":"While working","window":"Multiple intakes a year","selection":"","elig":"Must be employed; work-experience requirement","fee":"","status":"unverified","link":"https://bits-pilani-wilp.ac.in","deadline":"","workpro":true,"id":"ms-bits-wilp-m-tech-software-engg-data-science-engg-ai-ml-wh"},{"group":"ms-india","name":"IIT Hyderabad M.Tech for working professionals","ai":false,"where":"While working","window":"Usually 1–2 intakes a year","selection":"","elig":"Work experience; weekend/online classes","fee":"","status":"unverified","link":"https://iith.ac.in","deadline":"","workpro":true,"id":"ms-iit-hyderabad-m-tech-for-working-professionals-while-work"},{"group":"ms-india","name":"IIT Madras web-enabled M.Tech","ai":false,"where":"While working","window":"Company-linked","selection":"","elig":"Usually company-sponsored","fee":"","status":"unverified","link":"https://iitm.ac.in","deadline":"","workpro":true,"id":"ms-iit-madras-web-enabled-m-tech-while-working"},{"group":"ms-india","name":"IIT Kanpur eMasters","ai":false,"where":"While working","window":"Several rounds a year","selection":"","elig":"No GATE; work-experience based","fee":"","status":"unverified","link":"https://emasters.iitk.ac.in","deadline":"","workpro":true,"id":"ms-iit-kanpur-emasters-while-working"},{"group":"ms-india","name":"IISc online M.Tech","ai":false,"where":"While working","window":"Typically spring","selection":"","elig":"Online entrance test + programme fee","fee":"","status":"unverified","link":"https://iisc.ac.in","deadline":"","workpro":true,"id":"ms-iisc-online-m-tech-while-working"},{"group":"ms-india","name":"IIT sponsored / self-financed / part-time M.Tech seats","ai":false,"where":"While working","window":"With regular M.Tech cycle (Mar–Apr)","selection":"","elig":"Employer sponsorship letter; GATE often waived","fee":"","status":"unverified","link":"","deadline":"","workpro":true,"id":"ms-iit-sponsored-self-financed-part-time-m-tech-seats-while-"},{"group":"ms-abroad","name":"Carnegie Mellon (CMU) – MS Computer Science (SCS)","ai":false,"where":"USA","window":"Early: 18 Nov 2026; Final: 9 Dec 2026 (3 pm EST = 10 Dec IST)","selection":"","elig":"GRE: Strongly recommended · English: TOEFL/IELTS/Duolingo required, no waivers · Cost: $$$$","fee":"","notes":"3 LORs (2 faculty/employer), 1–2 page SOP, CV. Fee $80 early / $100 later.","status":"expected","link":"https://cs.cmu.edu/education/graduate-admissions","deadline":"2026-12-09","id":"ms-carnegie-mellon-cmu-ms-computer-science-scs-usa"},{"group":"ms-abroad","name":"Stanford – MS Computer Science","ai":false,"where":"USA","window":"8 Dec 2026","selection":"","elig":"GRE: Check portal · English: Take TOEFL/IELTS by ~Oct (6 wks before deadline) · Cost: $$$$","fee":"","notes":"Mostly self-funded MS.","status":"confirmed","link":"https://cs.stanford.edu/admissions-graduate-application-deadlines","deadline":"2026-12-08","id":"ms-stanford-ms-computer-science-usa"},{"group":"ms-abroad","name":"UC Berkeley – EECS MS (research) / MEng","ai":false,"where":"USA","window":"MS: 1 Dec 2026; MEng: 6 Jan 2027","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"MEng is 1-year professional; needs a personal history statement.","status":"expected","link":"https://eecs.berkeley.edu","deadline":"2027-01-06","id":"ms-uc-berkeley-eecs-ms-research-meng-usa"},{"group":"ms-abroad","name":"UIUC – MS CS (thesis) / MCS (professional)","ai":false,"where":"USA","window":"MS CS: 1 Dec; MCS: 1 May 2027","selection":"","elig":"GRE: Recommended, not required · English: TOEFL/IELTS · Cost: $$$","fee":"","notes":"Submit ~1 month early. No late applications.","status":"confirmed","link":"https://siebelschool.illinois.edu/admissions/graduate/application-deadlines","deadline":"2026-12-01","id":"ms-uiuc-ms-cs-thesis-mcs-professional-usa"},{"group":"ms-abroad","name":"UCLA – MS Computer Science","ai":false,"where":"USA","window":"15 Dec 2026","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"Letters also due 15 Dec.","status":"expected","link":"https://cs.ucla.edu","deadline":"2026-12-15","id":"ms-ucla-ms-computer-science-usa"},{"group":"ms-abroad","name":"USC Viterbi – MS Computer Science","ai":false,"where":"USA","window":"15 Dec 2026 (scholarship consideration); 15 Jan 2027 final","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"Big intake; apply by 15 Dec for merit awards.","status":"expected","link":"https://viterbigradadmission.usc.edu","deadline":"2027-01-15","id":"ms-usc-viterbi-ms-computer-science-usa"},{"group":"ms-abroad","name":"UC San Diego – MS CSE","ai":false,"where":"USA","window":"16 Dec 2026","selection":"","elig":"GRE: Not required (Fall 2027) · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"Decisions by April.","status":"expected","link":"https://cse.ucsd.edu","deadline":"2026-12-16","id":"ms-uc-san-diego-ms-cse-usa"},{"group":"ms-abroad","name":"Columbia – MS Computer Science","ai":false,"where":"USA","window":"15 Jan 2027 (priority); 15 Feb 2027 final","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"Apply by priority date – later files less likely to be accepted.","status":"expected","link":"https://cs.columbia.edu","deadline":"2027-01-15","id":"ms-columbia-ms-computer-science-usa"},{"group":"ms-abroad","name":"Cornell (Ithaca) – MEng Computer Science","ai":false,"where":"USA","window":"1 Feb 2027","selection":"","elig":"GRE: Not required / not considered · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"1-year professional degree. Late files not processed.","status":"confirmed","link":"https://cs.cornell.edu/master-engineering-computer-science/apply","deadline":"2027-02-01","id":"ms-cornell-ithaca-meng-computer-science-usa"},{"group":"ms-abroad","name":"Georgia Tech – MS Computer Science (on campus)","ai":false,"where":"USA","window":"1 Feb 2027","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$","fee":"","notes":"Strong value for money. (Online OMSCS is a cheap alternative while working.)","status":"expected","link":"https://cc.gatech.edu","deadline":"2027-02-01","id":"ms-georgia-tech-ms-computer-science-on-campus-usa"},{"group":"ms-abroad","name":"Arizona State (ASU) – MS Computer Science","ai":false,"where":"USA","window":"1 Dec 2026","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$","fee":"","notes":"Large intake, lower cost.","status":"expected","link":"https://scai.engineering.asu.edu","deadline":"2026-12-01","id":"ms-arizona-state-asu-ms-computer-science-usa"},{"group":"ms-abroad","name":"UT Austin, Michigan, Purdue, UW Seattle, NYU, UMass Amherst, Northeastern, Stony Brook, Texas A&M – MS CS","ai":false,"where":"USA","window":"Typically 1 Dec – 15 Jan (verify each)","selection":"","elig":"GRE: Varies · English: TOEFL/IELTS · Cost: $$–$$$$","fee":"","notes":"Check each department page in November.","status":"unverified","link":"","deadline":"","id":"ms-ut-austin-michigan-purdue-uw-seattle-nyu-umass-amherst-no"},{"group":"ms-abroad","name":"Columbia – MS Data Science","ai":true,"where":"USA","window":"15 Jan 2027 (priority); 15 Feb 2027 final","selection":"","elig":"GRE: Optional (2026 cycle) · English: TOEFL/IELTS · Cost: $$$$","fee":"","notes":"Needs calculus/linear algebra + programming (Python/SQL/R).","status":"expected","link":"https://datascience.columbia.edu/education/programs/m-s-in-data-science/admissions","deadline":"2027-01-15","id":"ms-columbia-ms-data-science-usa"},{"group":"ms-abroad","name":"Carnegie Mellon – MS Machine Learning / MS AI & Innovation (MSAII)","ai":true,"where":"USA","window":"Typically early–mid Dec (verify)","selection":"","elig":"GRE: MSAII: required; MSML: check · English: TOEFL/IELTS/Duolingo · Cost: $$$$","fee":"","notes":"Very competitive; check ml.cmu.edu and the SCS admissions page.","status":"unverified","link":"https://ml.cmu.edu","deadline":"","id":"ms-carnegie-mellon-ms-machine-learning-ms-ai-innovation-msai"},{"group":"ms-abroad","name":"UBC (Vancouver) – Master of Data Science (MDS)","ai":true,"where":"Canada","window":"31 Jan 2027","selection":"","elig":"GRE: Not required · English: If last degree not in English · Cost: $$$","fee":"","notes":"B+ (76%) in 3rd/4th year; recorded video interview; work experience welcome.","status":"confirmed","link":"https://masterdatascience.ubc.ca/admissions","deadline":"2027-01-31","id":"ms-ubc-vancouver-master-of-data-science-mds-canada"},{"group":"ms-abroad","name":"University of Waterloo – Master of Data Science & AI (MDSAI, incl. co-op)","ai":true,"where":"Canada","window":"Check programme","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$","fee":"","notes":"","status":"unverified","link":"https://uwaterloo.ca/data-science","deadline":"","id":"ms-university-of-waterloo-master-of-data-science-ai-mdsai-in"},{"group":"ms-abroad","name":"University of Toronto – MScAC (Applied Computing, 16 months incl. 8-month paid internship)","ai":false,"where":"Canada","window":"1 Dec 2026","selection":"","elig":"GRE: Not required · English: TOEFL 93 / IELTS 7.0 · Cost: $$$","fee":"","notes":"Industry-focused; great for an employed developer.","status":"expected","link":"https://mscac.utoronto.ca","deadline":"2026-12-01","id":"ms-university-of-toronto-mscac-applied-computing-16-months-i"},{"group":"ms-abroad","name":"UBC – MSc Computer Science (research)","ai":false,"where":"Canada","window":"15 Dec 2026 (portal opened 15 Sep)","selection":"","elig":"GRE: Not mentioned · English: Per UBC rules (check) · Cost: Funded","fee":"","notes":"Fully funded research MSc – need faculty fit.","status":"confirmed","link":"https://cs.ubc.ca/students/grad/admissions","deadline":"2026-12-15","id":"ms-ubc-msc-computer-science-research-canada"},{"group":"ms-abroad","name":"University of Waterloo – MMath CS / MDSAI","ai":false,"where":"Canada","window":"Typically ~1 Dec (verify)","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: Funded (research) / $$$","fee":"","notes":"Research MMath is usually funded.","status":"unverified","link":"https://cs.uwaterloo.ca","deadline":"","id":"ms-university-of-waterloo-mmath-cs-mdsai-canada"},{"group":"ms-abroad","name":"University of Edinburgh – MSc Artificial Intelligence (1 yr)","ai":true,"where":"UK","window":"30 Mar 2027 (may extend if places remain); start 13 Sep 2027","selection":"","elig":"GRE: No · English: IELTS 7.0 (6.5 in three parts) · Cost: $$$","fee":"","notes":"No application fee; 1 reference; strong maths (probability/statistics) needed. £1,500 deposit on offer.","status":"confirmed","link":"https://study.ed.ac.uk/programmes/postgraduate-taught/107-artificial-intelligence","deadline":"2027-03-30","id":"ms-university-of-edinburgh-msc-artificial-intelligence-1-yr-"},{"group":"ms-abroad","name":"UCL – MSc Machine Learning / Computational Statistics & ML / Data Science & ML","ai":true,"where":"UK","window":"Check course page – popular courses close early","selection":"","elig":"GRE: No · English: IELTS · Cost: $$$$","fee":"","notes":"Apply in the first months the portal is open.","status":"unverified","link":"https://ucl.ac.uk","deadline":"","id":"ms-ucl-msc-machine-learning-computational-statistics-ml-data"},{"group":"ms-abroad","name":"University of Oxford – MSc Advanced Computer Science (1 yr)","ai":false,"where":"UK","window":"6 Jan 2027, 12:00 noon UK","selection":"","elig":"GRE: No · English: Higher level required · Cost: $$$$","fee":"","notes":"Needs ~first-class equivalent (check Indian % equivalence).","status":"confirmed","link":"https://ox.ac.uk/admissions/graduate/courses/msc-advanced-computer-science","deadline":"2027-01-06","id":"ms-university-of-oxford-msc-advanced-computer-science-1-yr-u"},{"group":"ms-abroad","name":"University of Cambridge – MPhil Advanced Computer Science (1 yr)","ai":false,"where":"UK","window":"25 Feb 2027; apply by 8 Dec 2026 for funding","selection":"","elig":"GRE: No · English: IELTS/TOEFL · Cost: $$$$","fee":"","notes":"400-word research proposal. 8 Dec is the funding (Gates/Cambridge Trust) cut-off.","status":"expected","link":"https://postgraduate.study.cam.ac.uk","deadline":"2026-12-08","id":"ms-university-of-cambridge-mphil-advanced-computer-science-1"},{"group":"ms-abroad","name":"Imperial College London – MSc Computing / Advanced Computing / AI & ML","ai":false,"where":"UK","window":"Rolling rounds – open now; courses close early","selection":"","elig":"GRE: No · English: IELTS/TOEFL · Cost: $$$$","fee":"","notes":"Apply early. India Future Leaders Scholarship exists.","status":"open","link":"https://imperial.ac.uk/computing","deadline":"","id":"ms-imperial-college-london-msc-computing-advanced-computing-"},{"group":"ms-abroad","name":"Edinburgh, UCL, King's, Manchester, Warwick – MSc CS / AI / Data Science","ai":false,"where":"UK","window":"Rolling or rounds (Dec–Jun)","selection":"","elig":"GRE: No · English: IELTS · Cost: $$$","fee":"","notes":"Apply in the first rounds – popular courses fill early.","status":"unverified","link":"","deadline":"","id":"ms-edinburgh-ucl-king-s-manchester-warwick-msc-cs-ai-data-sc"},{"group":"ms-abroad","name":"ETH Zurich – MSc Computer Science","ai":false,"where":"Switzerland","window":"1–30 Nov 2026 (11:59 AM CET) – ONLY window for non-Swiss degrees","selection":"","elig":"GRE: Not required (check dept) · English: English proof · Cost: $$ tuition / $$$$ living","fee":"","notes":"2 LORs + 1-page motivation letter. Apply for ESOP scholarship at the same time.","status":"open","link":"https://ethz.ch/en/studies/registration-application/master.html","deadline":"2026-11-30","id":"ms-eth-zurich-msc-computer-science-switzerland"},{"group":"ms-abroad","name":"ETH Zurich – MSc Data Science","ai":true,"where":"Switzerland","window":"1–30 Nov 2026 (same ETH window – only one for non-Swiss degrees)","selection":"","elig":"GRE: Check dept · English: English proof · Cost: $$ tuition / $$$$ living","fee":"","notes":"Strong maths/stats background expected.","status":"open","link":"https://ethz.ch/en/studies/registration-application/master.html","deadline":"2026-11-30","id":"ms-eth-zurich-msc-data-science-switzerland"},{"group":"ms-abroad","name":"EPFL – MSc Computer Science / Data Science","ai":false,"where":"Switzerland","window":"15 Dec 2026 (decision late Mar) or 31 Mar 2027 (decision mid-Jun)","selection":"","elig":"GRE: Check · English: English proof · Cost: $$ tuition / $$$$ living","fee":"","notes":"Excellence Fellowship – apply in December window to be safe.","status":"confirmed","link":"https://epfl.ch/education/admission","deadline":"2026-12-15","id":"ms-epfl-msc-computer-science-data-science-switzerland"},{"group":"ms-abroad","name":"TU Munich (TUM) – M.Sc. Informatics","ai":false,"where":"Germany","window":"1 Feb – 31 May 2027 (visa applicants: by 31 Mar)","selection":"","elig":"GRE: GRE Q≥164 & AWA≥4.0  OR  GATE CS scorecard · English: English proof · Cost: $$ (non-EU tuition since 2024)","fee":"","notes":"APS + uni-assist VPD needed. 2-stage aptitude test (essay + written test). YOUR GATE 2027 SCORE CAN REPLACE GRE.","status":"expected","link":"https://cit.tum.de/en/cit/studies/degree-programs/master-informatics","deadline":"2027-05-31","id":"ms-tu-munich-tum-m-sc-informatics-germany"},{"group":"ms-abroad","name":"RWTH Aachen – M.Sc. Computer Science / Data Science","ai":false,"where":"Germany","window":"1 Mar 2027 (some programmes 15 Jul)","selection":"","elig":"GRE: Check · English: English proof · Cost: $ (no tuition; semester fee)","fee":"","notes":"APS needed. Confirm English-taught track.","status":"expected","link":"https://rwth-aachen.de","deadline":"2027-03-01","id":"ms-rwth-aachen-m-sc-computer-science-data-science-germany"},{"group":"ms-abroad","name":"KIT, TU Berlin, TU Darmstadt, Saarland, LMU, Stuttgart – M.Sc. CS / Informatics","ai":false,"where":"Germany","window":"Typically Jan – Jul (verify)","selection":"","elig":"GRE: Some ask GRE · English: English/German · Cost: $ (BW states charge non-EU)","fee":"","notes":"APS mandatory for Indian degrees.","status":"unverified","link":"https://daad.de","deadline":"","id":"ms-kit-tu-berlin-tu-darmstadt-saarland-lmu-stuttgart-m-sc-cs"},{"group":"ms-abroad","name":"University of Amsterdam – MSc Artificial Intelligence","ai":true,"where":"Netherlands","window":"31 Jan (non-EU; portal opens 1 Oct) – year not printed","selection":"","elig":"GRE: Not mentioned · English: English proof · Cost: $$$","fee":"","notes":"Max 200 admitted by ranking. Needs set credits in CS, programming, calculus, linear algebra, probability. €100 fee.","status":"expected","link":"https://uva.nl","deadline":"2027-01-31","id":"ms-university-of-amsterdam-msc-artificial-intelligence-nethe"},{"group":"ms-abroad","name":"TU Delft – MSc Computer Science","ai":false,"where":"Netherlands","window":"15 Jan 2027 (Van Effen scholarship route: 1 Dec 2026)","selection":"","elig":"GRE: Required (per guide) · English: IELTS/TOEFL · Cost: $$$","fee":"","notes":"University arranges residence permit.","status":"expected","link":"https://tudelft.nl","deadline":"2027-01-15","id":"ms-tu-delft-msc-computer-science-netherlands"},{"group":"ms-abroad","name":"TU Eindhoven – MSc Data Science & AI","ai":false,"where":"Netherlands","window":"1 May 2027 (scholarship: 1 Jan 2027)","selection":"","elig":"GRE: Check · English: IELTS/TOEFL · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://tue.nl","deadline":"2027-05-01","id":"ms-tu-eindhoven-msc-data-science-ai-netherlands"},{"group":"ms-abroad","name":"University of Amsterdam – MSc AI / CS","ai":false,"where":"Netherlands","window":"Check programme","selection":"","elig":"GRE: No · English: IELTS/TOEFL · Cost: $$$","fee":"","notes":"Apply early if you need a residence permit.","status":"unverified","link":"https://uva.nl","deadline":"","id":"ms-university-of-amsterdam-msc-ai-cs-netherlands"},{"group":"ms-abroad","name":"KTH Royal Institute of Technology – MSc Computer Science","ai":false,"where":"Sweden","window":"15 Jan 2027 (documents by 1 Feb)","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"Apply via universityadmissions.se – rank up to 4 programmes.","status":"expected","link":"https://universityadmissions.se","deadline":"2027-01-15","id":"ms-kth-royal-institute-of-technology-msc-computer-science-sw"},{"group":"ms-abroad","name":"DTU – MSc CS & Engineering","ai":false,"where":"Denmark","window":"15 Jan 2027","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://dtu.dk","deadline":"2027-01-15","id":"ms-dtu-msc-cs-engineering-denmark"},{"group":"ms-abroad","name":"Aalto University – MSc CS / ML","ai":false,"where":"Finland","window":"5 Jan 2027 (docs 12 Jan)","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"Scholarships with application.","status":"expected","link":"https://aalto.fi","deadline":"2027-01-05","id":"ms-aalto-university-msc-cs-ml-finland"},{"group":"ms-abroad","name":"University of Helsinki – MSc CS / Data Science","ai":false,"where":"Finland","window":"5–19 Jan 2027","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://helsinki.fi","deadline":"2027-01-19","id":"ms-university-of-helsinki-msc-cs-data-science-finland"},{"group":"ms-abroad","name":"NTNU – International master's","ai":false,"where":"Norway","window":"1 Dec 2026","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://ntnu.edu","deadline":"2026-12-01","id":"ms-ntnu-international-master-s-norway"},{"group":"ms-abroad","name":"Trinity College Dublin – MSc CS (Data Science)","ai":false,"where":"Ireland","window":"31 Jan 2027 (may fill earlier)","selection":"","elig":"GRE: No · English: IELTS · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://tcd.ie","deadline":"2027-01-31","id":"ms-trinity-college-dublin-msc-cs-data-science-ireland"},{"group":"ms-abroad","name":"École Polytechnique – MScT (AI & data programmes)","ai":false,"where":"France","window":"Round 2: 11 Jan 2027","selection":"","elig":"GRE: No · English: English proof · Cost: $$$","fee":"","notes":"Round 1 closed 12 Oct.","status":"expected","link":"https://polytechnique.edu","deadline":"2027-01-11","id":"ms-cole-polytechnique-msct-ai-data-programmes-france"},{"group":"ms-abroad","name":"Politecnico di Milano – MSc Computer Science & Engineering","ai":false,"where":"Italy","window":"1 Dec 2026 (1st call); 25 Feb 2027 (2nd call)","selection":"","elig":"GRE: No · English: English proof · Cost: $ – $$","fee":"","notes":"Low fees, income-based.","status":"expected","link":"https://polimi.it","deadline":"2026-12-01","id":"ms-politecnico-di-milano-msc-computer-science-engineering-it"},{"group":"ms-abroad","name":"NUS – Master of Computing in AI (MComp AI specialisation)","ai":true,"where":"Singapore","window":"Likely same window as MComp: 1 Oct 2026 – 31 Jan 2027 (verify)","selection":"","elig":"GRE: Check (MComp accepts GRE/GMAT/GATE) · English: TOEFL/IELTS if needed · Cost: $$$","fee":"","notes":"","status":"expected","link":"https://comp.nus.edu.sg/programmes/pg/mai/scholarships","deadline":"2027-01-31","id":"ms-nus-master-of-computing-in-ai-mcomp-ai-specialisation-sin"},{"group":"ms-abroad","name":"NUS – MComp (Computer Science specialisation)","ai":false,"where":"Singapore","window":"1 Oct 2026 – 31 Jan 2027 (only August intake)","selection":"","elig":"GRE: GRE, GMAT or GATE accepted · English: TOEFL/IELTS if medium not English · Cost: $$$","fee":"","notes":"Fee S$109. Early applicants may get early offers. GATE accepted as test.","status":"open","link":"https://comp.nus.edu.sg/programmes/pg/mcs/application","deadline":"2027-01-31","id":"ms-nus-mcomp-computer-science-specialisation-singapore"},{"group":"ms-abroad","name":"NTU – MSc AI / CS","ai":false,"where":"Singapore","window":"Check programme","selection":"","elig":"GRE: Check · English: TOEFL/IELTS · Cost: $$$","fee":"","notes":"","status":"unverified","link":"https://ntu.edu.sg","deadline":"","id":"ms-ntu-msc-ai-cs-singapore"},{"group":"ms-abroad","name":"University of Melbourne – Master of Computer Science","ai":false,"where":"Australia","window":"Feb 2027 intake closed 31 Aug 2026; July 2027 intake (select programmes) 31 May 2027","selection":"","elig":"GRE: No · English: IELTS 6.5 (no band <6) · Cost: $$$$","fee":"","notes":"Check if CS has a July intake.","status":"expected","link":"https://study.unimelb.edu.au","deadline":"2027-05-31","id":"ms-university-of-melbourne-master-of-computer-science-austra"},{"group":"ms-abroad","name":"UNSW, ANU, Sydney, Monash – Master of IT / CS","ai":false,"where":"Australia","window":"Feb & Jul intakes; usually Oct–Nov (Feb) and Apr–May (Jul)","selection":"","elig":"GRE: No · English: IELTS · Cost: $$$$","fee":"","notes":"","status":"unverified","link":"","deadline":"","id":"ms-unsw-anu-sydney-monash-master-of-it-cs-australia"},{"group":"jobs-psu","name":"POWERGRID (Engineer Trainee-2027)","ai":false,"where":"Via GATE / own test","window":"Tentatively Mar/Apr 2027 (portal lists to 30 Apr 2027)","selection":"Advt CC/03/2026 dated 24.09.2026","elig":"Yes (CS / Computer Engg / IT) · 60% or equiv. CGPA; age ≤28 as on 31.03.2027","fee":"","status":"confirmed","link":"https://powergrid.in","deadline":"2027-04-30","id":"job-powergrid-engineer-trainee-2027-via-gate-own-test"},{"group":"jobs-psu","name":"NTPC (EET-2027)","ai":false,"where":"Via GATE / own test","window":"After result, ~Mar–Apr 2027","selection":"Advt 11/26","elig":"Yes · GATE 2027 only; detailed advt to follow","fee":"","status":"confirmed","link":"https://careers.ntpc.co.in","deadline":"","id":"job-ntpc-eet-2027-via-gate-own-test"},{"group":"jobs-psu","name":"NTPC Mining (NML)","ai":false,"where":"Via GATE / own test","window":"Awaited","selection":"Advt NML/01/2026","elig":"Yes · GATE 2027 only","fee":"","status":"confirmed","link":"https://ntpc.co.in","deadline":"","id":"job-ntpc-mining-nml-via-gate-own-test"},{"group":"jobs-psu","name":"Grid-India","ai":false,"where":"Via GATE / own test","window":"Opens after GATE result","selection":"Advt CC/26/2026 dated 16.09.2026","elig":"Yes (15 Executive Trainee CS posts) · Min 65% / equiv. CGPA; age ≤28 as on 31.07.2027; GATE 85% + GD 3% + interview 12%","fee":"","status":"confirmed","link":"https://grid-india.in","deadline":"","id":"job-grid-india-via-gate-own-test"},{"group":"jobs-psu","name":"DRDO (RAC Scientist 'B')","ai":false,"where":"Via GATE / own test","window":"Not announced","selection":"RAC advises GATE 2027 for upcoming vacancies","elig":"Yes · Valid GATE + interview","fee":"","status":"expected","link":"https://rac.gov.in","deadline":"","id":"job-drdo-rac-scientist-b-via-gate-own-test"},{"group":"jobs-psu","name":"BARC (OCES/DGFS)","ai":false,"where":"Via GATE / own test","window":"Dec 2026 – Jan 2027","selection":"GATE 2025/26/27 shortlisting or own exam","elig":"Yes · Interview-based final selection","fee":"","status":"expected","link":"https://barc.gov.in","deadline":"","id":"job-barc-oces-dgfs-via-gate-own-test"},{"group":"jobs-psu","name":"NHAI","ai":false,"where":"Via GATE / own test","window":"Usually Jan–Apr after result","selection":"Expected (past pattern)","elig":"Yes (historically) · —","fee":"","status":"expected","link":"https://nhai.gov.in","deadline":"","id":"job-nhai-via-gate-own-test"},{"group":"jobs-psu","name":"NIC Scientist-B (CS/IT + Data Science & AI posts)","ai":true,"where":"Via GATE / own test","window":"2026: 27 Mar – 24 Apr; next cycle ~Mar–Apr 2027","selection":"2026 cycle used GATE 2024/25/26 (CS, EC, DA); 2027 cycle expected to use GATE 2025–27","elig":"Yes (2026: 168 CS/IT + 50 Data Science & AI posts) · B.E./B.Tech/M.Tech/MCA in CS/IT/AI/DS; no experience needed; merit 60% GATE + 40% interview","fee":"","status":"expected","link":"https://nic.gov.in","deadline":"","id":"job-nic-scientist-b-cs-it-data-science-ai-posts-via-gate-own"},{"group":"jobs-psu","name":"CERT-In (MeitY)","ai":false,"where":"Via GATE / own test","window":"Usually Jan–Apr after result","selection":"Expected (past pattern)","elig":"Yes (historically) · —","fee":"","status":"expected","link":"https://cert-in.org.in","deadline":"","id":"job-cert-in-meity-via-gate-own-test"},{"group":"jobs-psu","name":"Intelligence Bureau (ACIO Tech)","ai":false,"where":"Via GATE / own test","window":"Irregular","selection":"Expected (past pattern)","elig":"Yes (historically) · GATE CS/ECE","fee":"","status":"expected","link":"https://mha.gov.in","deadline":"","id":"job-intelligence-bureau-acio-tech-via-gate-own-test"},{"group":"jobs-psu","name":"Cabinet Secretariat – Senior Field Officer (Technical)","ai":true,"where":"Via GATE / own test","window":"2025: 26 Apr – 25 May (by post); next ~Apr–May 2027","selection":"Uses GATE CS / DA / EC (apply under one paper)","elig":"Yes (2025: 5 Data Science/AI seats + CS seats) · DA route: B.E./B.Tech in DS/AI or M.Sc + GATE DA ≥50%; age ≤35; Level-10 pay; GATE + interview","fee":"","status":"expected","link":"https://cabsec.gov.in","deadline":"","id":"job-cabinet-secretariat-senior-field-officer-technical-via-g"},{"group":"jobs-psu","name":"IHMCL","ai":false,"where":"Via GATE / own test","window":"Usually Jan–Apr","selection":"Expected (past pattern)","elig":"Yes (historically) · —","fee":"","status":"expected","link":"https://ihmcl.co.in","deadline":"","id":"job-ihmcl-via-gate-own-test"},{"group":"jobs-psu","name":"NPCIL","ai":false,"where":"Via GATE / own test","window":"Usually Jan–Apr","selection":"Expected (past pattern)","elig":"Varies · —","fee":"","status":"expected","link":"https://npcilcareers.co.in","deadline":"","id":"job-npcil-via-gate-own-test"},{"group":"jobs-psu","name":"AAI (Junior Executive)","ai":false,"where":"Via GATE / own test","window":"Usually Jan–Apr","selection":"Expected (past pattern)","elig":"Varies by cycle · —","fee":"","status":"expected","link":"https://aai.aero","deadline":"","id":"job-aai-junior-executive-via-gate-own-test"},{"group":"jobs-psu","name":"NLC India","ai":false,"where":"Via GATE / own test","window":"Unverified","selection":"Some sites list 6–27 Jan 2027","elig":"Varies by cycle · Stale age limits on source","fee":"","status":"unverified","link":"https://nlcindia.in","deadline":"","id":"job-nlc-india-via-gate-own-test"},{"group":"jobs-psu","name":"IOCL","ai":false,"where":"Via GATE / own test","window":"Unverified; IOCL route 'mixed/uncertain'","selection":"Some sites list 4 Jan – 10 Feb 2027","elig":"Historically yes · Source page looks recycled","fee":"","status":"unverified","link":"https://iocl.com","deadline":"","id":"job-iocl-via-gate-own-test"},{"group":"jobs-psu","name":"ECIL","ai":false,"where":"Via GATE / own test","window":"Unverified","selection":"Some sites list 16 Jan – 15 Feb 2027","elig":"Historically yes · Source page looks recycled","fee":"","status":"unverified","link":"https://ecil.co.in","deadline":"","id":"job-ecil-via-gate-own-test"},{"group":"jobs-psu","name":"ONGC, HPCL, Oil India, BHEL, SAIL, BEL, NRL, CPCL","ai":false,"where":"Via GATE / own test","window":"Watch their own notifications","selection":"Moved / moving to OWN CBT","elig":"ONGC/BEL/BHEL historically took CS · Own exam, not GATE","fee":"","status":"unverified","link":"","deadline":"","id":"job-ongc-hpcl-oil-india-bhel-sail-bel-nrl-cpcl-via-gate-own-"},{"group":"jobs-psu","name":"Other PSUs with occasional CS/IT openings: NFL, RITES, NHPC, BIS, EIL, BPCL, HAL, BSNL, CONCOR, RVNL, NBCC and others","ai":false,"where":"Via GATE / own test","window":"Check each site Jan–Apr 2027; apply only if CS/IT is listed","selection":"No GATE 2027 CS/IT confirmation found","elig":"Occasionally – only when the notification lists CS/IT · —","fee":"","status":"unverified","link":"","deadline":"","id":"job-other-psus-with-occasional-cs-it-openings-nfl-rites-nhpc"},{"group":"jobs-sci","name":"ISRO Scientist/Engineer 'SC' (ICRB)","ai":false,"where":"ISRO","window":"2026: 27 Aug – 16 Sep; CBT 29 Oct 2026. 2027 expected ~Aug–Sep","selection":"","elig":"Yes (21 + 1 PRL posts in 2026) · B.E./B.Tech CS ≥65% or CGPA 6.84; age ≤28","fee":"","status":"expected","link":"https://isro.gov.in","deadline":"","id":"job-isro-scientist-engineer-sc-icrb-isro"},{"group":"jobs-sci","name":"ISRO centres (VSSC, SAC, URSC, LPSC, SDSC, NRSC, IPRC)","ai":false,"where":"ISRO centres","window":"Irregular; check each centre","selection":"","elig":"Sometimes · Varies","fee":"","status":"unverified","link":"https://isro.gov.in","deadline":"","id":"job-isro-centres-vssc-sac-ursc-lpsc-sdsc-nrsc-iprc-isro-cent"},{"group":"jobs-sci","name":"DRDO RAC Scientist 'B'","ai":false,"where":"RAC / DRDO","window":"Advt 156 closed mid-2026; next expected to use GATE 2027","selection":"","elig":"Yes · Valid GATE + interview","fee":"","status":"expected","link":"https://rac.gov.in","deadline":"","id":"job-drdo-rac-scientist-b-rac-drdo"},{"group":"jobs-sci","name":"BARC OCES/DGFS","ai":false,"where":"DAE","window":"Expected Dec 2026 – Jan 2027","selection":"","elig":"Yes · B.Tech ≥60%; GATE or online test; interview; DGFS sponsors M.Tech at IITs","fee":"","status":"expected","link":"https://barc.gov.in","deadline":"","id":"job-barc-oces-dgfs-dae"},{"group":"jobs-sci","name":"NPCIL Executive Trainee","ai":false,"where":"NPCIL","window":"Expected after GATE","selection":"","elig":"Varies · GATE-based","fee":"","status":"expected","link":"https://npcilcareers.co.in","deadline":"","id":"job-npcil-executive-trainee-npcil"},{"group":"jobs-sci","name":"CDAC recruitment (Project Engineer incl. AI/ML roles)","ai":true,"where":"C-DAC","window":"Rolling drives across CDAC centres","selection":"","elig":"Yes · B.E./B.Tech; AI/ML project posts appear in rolling drives","fee":"","status":"unverified","link":"https://cdac.in","deadline":"","id":"job-cdac-recruitment-project-engineer-incl-ai-ml-roles-c-dac"},{"group":"jobs-sci","name":"CDAC C-CAT","ai":false,"where":"C-DAC ACTS","window":"25 Nov – 29 Dec 2026; exam 9–10 Jan 2027","selection":"","elig":"Yes · B.E./B.Tech","fee":"","status":"confirmed","link":"https://cdac.in","deadline":"2026-12-29","id":"job-cdac-c-cat-c-dac-acts"},{"group":"jobs-sci","name":"NIELIT Scientist / Scientific & Technical Assistant","ai":false,"where":"MeitY via NIELIT","window":"Irregular (NIC Scientist-B is in 'PSUs via GATE')","selection":"","elig":"Yes · B.Tech CS/IT; GATE or own exam by cycle","fee":"","status":"unverified","link":"https://nielit.gov.in","deadline":"","id":"job-nielit-scientist-scientific-technical-assistant-meity-vi"},{"group":"jobs-sci","name":"BEL PE, HAL MT, BHEL ET, ECIL GET (own CBTs)","ai":false,"where":"PSUs","window":"Not verified for 2027","selection":"","elig":"BEL/ECIL/BHEL historically took CS · —","fee":"","status":"unverified","link":"https://bel-india.in","deadline":"","id":"job-bel-pe-hal-mt-bhel-et-ecil-get-own-cbts-psus"},{"group":"jobs-sci","name":"AFCAT 01/2027","ai":false,"where":"Indian Air Force","window":"12 Nov – 11 Dec 2026; course Jan 2028","selection":"","elig":"Check – Ground Duty (Tech) branch rules · Ground Duty age 20–26; fee ₹550 + GST (nil for GATE/NCC entry)","fee":"","status":"confirmed","link":"https://afcat.edcil.co.in","deadline":"2026-12-11","id":"job-afcat-01-2027-indian-air-force"},{"group":"jobs-sci","name":"Indian Navy SSC (IT / Executive)","ai":false,"where":"Indian Navy","window":"Twice a year","selection":"","elig":"Yes (SSC IT) · B.Tech CS/IT, typically 60%; age ~20–24","fee":"","status":"unverified","link":"https://joinindiannavy.gov.in","deadline":"","id":"job-indian-navy-ssc-it-executive-indian-navy"},{"group":"jobs-sci","name":"Army TGC (Technical Graduate Course)","ai":false,"where":"Indian Army","window":"TGC-145 (Jul 2027 course): 30 Sep – 29 Oct 2026 – closed. TGC-146 expected ~Apr–May 2027","selection":"","elig":"Yes (6 CS seats in TGC-145) · Unmarried male B.E./B.Tech; age 20–27; no written exam (SSB)","fee":"","status":"closed","link":"https://joinindianarmy.nic.in","deadline":"","id":"job-army-tgc-technical-graduate-course-indian-army"},{"group":"jobs-sci","name":"Army SSC (Tech)","ai":false,"where":"Indian Army","window":"Twice a year","selection":"","elig":"Yes (CS/IT stream) · B.Tech; age ~20–27","fee":"","status":"unverified","link":"https://joinindianarmy.nic.in","deadline":"","id":"job-army-ssc-tech-indian-army"},{"group":"jobs-sci","name":"Indian Coast Guard Asst Commandant (Technical)","ai":false,"where":"ICG","window":"Twice a year","selection":"","elig":"Check branch · B.Tech","fee":"","status":"unverified","link":"https://joinindiancoastguard.cdac.in","deadline":"","id":"job-indian-coast-guard-asst-commandant-technical-icg"},{"group":"jobs-sci","name":"UPSC CDS","ai":false,"where":"UPSC","window":"CDS (I) 2027 exam 11 Apr 2027 (secondary reporting)","selection":"","elig":"Yes (any graduate – IMA/OTA) · Age limits apply","fee":"","status":"expected","link":"https://upsc.gov.in","deadline":"","id":"job-upsc-cds-upsc"},{"group":"jobs-govt","name":"UPSC Civil Services / IFoS 2027","ai":false,"where":"UPSC","window":"Notification 13 Jan; last date 2 Feb; prelims 23 May; mains 20 Aug 2027","selection":"","elig":"Yes (any graduate; age 21–32 Gen)","fee":"","notes":"","status":"confirmed","link":"https://upsc.gov.in","deadline":"2027-02-02","id":"job-upsc-civil-services-ifos-2027-upsc"},{"group":"jobs-govt","name":"UPSC one-off recruitment (Assistant Programmer, System Analyst etc.)","ai":false,"where":"UPSC","window":"Advertised via UPSC ORA notices","selection":"","elig":"Yes","fee":"","notes":"Check 'Recruitment' tab regularly","status":"unverified","link":"https://upsc.gov.in","deadline":"","id":"job-upsc-one-off-recruitment-assistant-programmer-system-ana"},{"group":"jobs-govt","name":"SSC CGL 2027","ai":false,"where":"SSC","window":"2026: notified 21 May; closed 25 Jun; Tier 1 30 Sep – 30 Oct. 2027 ~May–Jun","selection":"","elig":"Yes (any graduate)","fee":"","notes":"Wait for SSC 2027-28 calendar (~Jan 2027)","status":"expected","link":"https://ssc.gov.in","deadline":"","id":"job-ssc-cgl-2027-ssc"},{"group":"jobs-govt","name":"SSC Scientific Assistant (IMD)","ai":false,"where":"SSC","window":"Irregular","selection":"","elig":"Yes (CS/IT historically)","fee":"","notes":"","status":"unverified","link":"https://ssc.gov.in","deadline":"","id":"job-ssc-scientific-assistant-imd-ssc"},{"group":"jobs-govt","name":"RRB JE (Information Technology) – CEN 04/2026","ai":false,"where":"Railway Recruitment Boards","window":"Applied 14 Aug – 13 Sep 2026; CBT-1 27–28 Oct (+2 Nov) 2026","selection":"","elig":"Yes (JE-IT posts)","fee":"","notes":"4,487 posts after Corrigendum 2 (4 Nov 2026)","status":"closed","link":"https://rrbcdg.gov.in","deadline":"","id":"job-rrb-je-information-technology-cen-04-2026-railway-recrui"},{"group":"jobs-govt","name":"RRB NTPC (Graduate)","ai":false,"where":"Railway Recruitment Boards","window":"Per RRB annual calendar","selection":"","elig":"Yes","fee":"","notes":"","status":"unverified","link":"https://rrbcdg.gov.in","deadline":"","id":"job-rrb-ntpc-graduate-railway-recruitment-boards"},{"group":"jobs-govt","name":"DMRC / metros – Assistant Manager (IT)","ai":false,"where":"DMRC","window":"Irregular","selection":"","elig":"Yes","fee":"","notes":"","status":"unverified","link":"https://delhimetrorail.com","deadline":"","id":"job-dmrc-metros-assistant-manager-it-dmrc"},{"group":"jobs-govt","name":"UPPCL AE Trainee (CS/IT)","ai":false,"where":"UP Power Corporation","window":"2026 notification awaited; GATE vs own CBT unconfirmed","selection":"","elig":"Yes (24 AE CS/IT posts in an earlier cycle)","fee":"","notes":"Age 21–40; old fee ₹1,000 Gen / ₹700 SC/ST","status":"expected","link":"https://upenergy.in","deadline":"","id":"job-uppcl-ae-trainee-cs-it-up-power-corporation"},{"group":"jobs-govt","name":"UPRVUNL AE","ai":false,"where":"UP Rajya Vidyut Utpadan Nigam","window":"No 2026 advt found; CBT-based","selection":"","elig":"Past cycles included CS","fee":"","notes":"","status":"expected","link":"https://uprvunl.org","deadline":"","id":"job-uprvunl-ae-up-rajya-vidyut-utpadan-nigam"},{"group":"jobs-govt","name":"UP Metro (UPMRC) Assistant Manager (IT)","ai":false,"where":"UPMRC","window":"Last advt 2024 (3 posts; age 21–28; fee ₹1,000)","selection":"","elig":"Yes (MCA or B.E./B.Tech CS)","fee":"","notes":"No current advertisement","status":"unverified","link":"https://upmetrorail.com","deadline":"","id":"job-up-metro-upmrc-assistant-manager-it-upmrc"},{"group":"jobs-govt","name":"UPSC CAPF (Assistant Commandant) 2027","ai":false,"where":"UPSC","window":"Notification 17 Feb; last date 9 Mar; exam 4 Jul 2027","selection":"","elig":"Yes (any graduate; age 20–25)","fee":"","notes":"Officer posts in BSF/CRPF/CISF/ITBP/SSB","status":"confirmed","link":"https://upsc.gov.in","deadline":"2027-03-09","id":"job-upsc-capf-assistant-commandant-2027-upsc"},{"group":"jobs-govt","name":"UPSC CDS (I) & (II) 2027","ai":false,"where":"UPSC","window":"CDS (I) ~Dec 2026 notice / Apr 2027 exam; CDS (II) exam 19 Sep 2027","selection":"","elig":"Yes (any graduate – IMA/OTA)","fee":"","notes":"Age limits apply","status":"confirmed","link":"https://upsc.gov.in","deadline":"","id":"job-upsc-cds-i-ii-2027-upsc"},{"group":"jobs-govt","name":"UPPSC PCS (Combined State / Upper Subordinate) 2027","ai":false,"where":"UPPSC","window":"2027 dates not found; usually notified early in the year","selection":"","elig":"Yes (any graduate)","fee":"","notes":"Check UPPSC exam calendar","status":"unverified","link":"https://uppsc.up.nic.in","deadline":"","id":"job-uppsc-pcs-combined-state-upper-subordinate-2027-uppsc"},{"group":"jobs-govt","name":"UPSSSC PET 2026","ai":false,"where":"UPSSSC","window":"Written exam 25 Oct, 30 Oct, 1 Nov 2026","selection":"","elig":"Yes (needed for most UP Group C posts)","fee":"","notes":"Score is the gateway to UP Group C hiring","status":"closed","link":"https://upsssc.gov.in","deadline":"","id":"job-upsssc-pet-2026-upsssc"},{"group":"jobs-bank","name":"IBPS SO – IT Officer (Scale I)","ai":false,"where":"Bank / regulator","window":"CRP SPL-XVI: notified 30 Jun 2026; reg 1–21 Jul; prelims 29 Aug; mains 1 Nov 2026; 376 IT posts. Interviews ~Dec–Jan. Next notice ~Jun–Jul 2027","selection":"","elig":"Yes","fee":"","status":"expected","link":"https://ibps.in","deadline":"","id":"job-ibps-so-it-officer-scale-i-bank-regulator"},{"group":"jobs-bank","name":"SBI SO (Systems / IT)","ai":false,"where":"Bank / regulator","window":"Rolling notifications","selection":"","elig":"Yes","fee":"","status":"unverified","link":"https://sbi.co.in/careers","deadline":"","id":"job-sbi-so-systems-it-bank-regulator"},{"group":"jobs-bank","name":"RBI Grade B / RBI IT posts","ai":false,"where":"Bank / regulator","window":"Usually mid-year","selection":"","elig":"Grade B: any graduate (60%)","fee":"","status":"unverified","link":"https://opportunities.rbi.org.in","deadline":"","id":"job-rbi-grade-b-rbi-it-posts-bank-regulator"},{"group":"jobs-bank","name":"SEBI Grade A (IT stream)","ai":false,"where":"Bank / regulator","window":"Irregular","selection":"","elig":"Yes","fee":"","status":"unverified","link":"https://sebi.gov.in","deadline":"","id":"job-sebi-grade-a-it-stream-bank-regulator"},{"group":"jobs-bank","name":"NABARD Grade A (IT)","ai":false,"where":"Bank / regulator","window":"Irregular","selection":"","elig":"Yes (when IT stream offered)","fee":"","status":"unverified","link":"https://nabard.org","deadline":"","id":"job-nabard-grade-a-it-bank-regulator"},{"group":"jobs-bank","name":"SIDBI Grade A","ai":false,"where":"Bank / regulator","window":"Irregular","selection":"","elig":"Yes (when IT stream offered)","fee":"","status":"unverified","link":"https://sidbi.in","deadline":"","id":"job-sidbi-grade-a-bank-regulator"},{"group":"jobs-bank","name":"LIC AAO (IT)","ai":false,"where":"Bank / regulator","window":"Irregular","selection":"","elig":"Yes (when IT stream offered)","fee":"","status":"unverified","link":"https://licindia.in","deadline":"","id":"job-lic-aao-it-bank-regulator"},{"group":"jobs-bank","name":"IB ACIO-II / Tech (via GATE CS/ECE)","ai":false,"where":"Bank / regulator","window":"Irregular; uses previous GATE scores","selection":"","elig":"Yes","fee":"","status":"unverified","link":"https://mha.gov.in","deadline":"","id":"job-ib-acio-ii-tech-via-gate-cs-ece-bank-regulator"},{"group":"jobs-bank","name":"RBI Young Professional (AI / Data Analysis / Policy Analytics)","ai":true,"where":"Bank / regulator","window":"2026: notice 15 Jun, apply by 26 Jul (by email). ₹1.5 lakh/month, 3-yr contract (up to 5), age 21–30, Mumbai. Next ~Jun–Jul 2027","selection":"","elig":"Yes (B.Tech CS/IT OK for Data Analysis & Policy Analytics; AI domain needs a PG)","fee":"","status":"expected","link":"https://rbi.org.in","deadline":"","id":"job-rbi-young-professional-ai-data-analysis-policy-analytics"},{"group":"jobs-bank","name":"RBI lateral experts – Data Scientist, Data Engineer, AI/ML Specialist","ai":true,"where":"Bank / regulator","window":"Last round ~90 posts, closed 6 Jan 2026; lateral hiring needs work experience – check each post","selection":"","elig":"Yes (experienced professionals)","fee":"","status":"unverified","link":"https://rbi.org.in","deadline":"","id":"job-rbi-lateral-experts-data-scientist-data-engineer-ai-ml-s"},{"group":"jobs-bank","name":"IBPS PO / SBI PO (general officer, any graduate)","ai":false,"where":"Bank / regulator","window":"Usually notified Jul–Sep; prelims Aug–Oct","selection":"","elig":"Yes (any graduate)","fee":"","status":"unverified","link":"https://ibps.in","deadline":"","id":"job-ibps-po-sbi-po-general-officer-any-graduate-bank-regulat"}]</script>
+<script>
+(function(){
+const ITEMS = JSON.parse(document.getElementById("items").textContent);
+const GROUPS = {"ms-india":"Master's · India","ms-abroad":"Master's · Abroad","jobs-psu":"Job · PSU","jobs-sci":"Job · Scientist/Defence","jobs-govt":"Job · UPSC/SSC/State","jobs-bank":"Job · Bank/Regulator"};
+const TABS = [["all","All"],["ms-india","Master's · India"],["ms-abroad","Master's · Abroad"],["jobs","Govt & PSU jobs"]];
+const STATUSES = [["","Not started"],["shortlist","Shortlisted"],["preparing","Preparing"],["applied","Applied"],["admit","Admit card"],["examdone","Exam done"],["result","Result out"],["skip","Skip"]];
+const INFO = {open:"Open now",confirmed:"Confirmed",expected:"Expected",unverified:"Not verified",closed:"Closed"};
+const GATE = [["Fix form defects","2026-11-30","Last date on GOAPS"],["City slip","2027-01-04","Download from portal"],["Exam","2027-02-06","6, 7, 13, 14, 20, 21 Feb"],["Result","2027-03-19","Then COAP, PSU forms, TUM"]];
+const APPLIED = ["applied","admit","examdone","result"];
+
+/* Phosphor (regular) paths, drawn inline */
+const ICON = {
+  pin:"M128 64a40 40 0 1 0 40 40 40 40 0 0 0-40-40Zm0 64a24 24 0 1 1 24-24 24 24 0 0 1-24 24Zm0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3 8 8 0 0 0 9.18 0 254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88Zm0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118Z",
+  arrow:"M204 64v104a12 12 0 0 1-24 0V93L72.49 200.49a12 12 0 0 1-17-17L163 76H88a12 12 0 0 1 0-24h104a12 12 0 0 1 12 12Z",
+  note:"M216 40H40a16 16 0 0 0-16 16v144a16 16 0 0 0 16 16h132.69a15.86 15.86 0 0 0 11.31-4.69L227.31 168a15.86 15.86 0 0 0 4.69-11.31V56a16 16 0 0 0-16-16ZM40 56h176v96h-48a16 16 0 0 0-16 16v48H40Zm144 148.69V168h36.7ZM88 96a8 8 0 0 1 8-8h64a8 8 0 0 1 0 16H96a8 8 0 0 1-8-8Zm0 32a8 8 0 0 1 8-8h64a8 8 0 0 1 0 16H96a8 8 0 0 1-8-8Z"
+};
+function icon(name){const s=document.createElementNS("http://www.w3.org/2000/svg","svg");s.setAttribute("viewBox","0 0 256 256");s.setAttribute("fill","currentColor");s.setAttribute("aria-hidden","true");const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d",ICON[name]);s.append(p);return s}
+
+let state = {};          // id -> {s, n}
+let store = null;        // {save(id, v)} when db is available
+const LS = "form-tracker-2027";
+const PREF = "form-tracker-2027-prefs";
+const THEME = "form-tracker-2027-theme";
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+state = lsGet(LS) || {};
+const prefs = Object.assign({tab:"all",ai:false,hide:true,st:"any",q:""}, lsGet(PREF) || {});
+
+function today(){const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function parse(s){const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
+function days(s){return Math.round((parse(s)-today())/864e5)}
+function fmt(s){return parse(s).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}
+function short(s){return parse(s).toLocaleDateString("en-IN",{day:"numeric",month:"short"})}
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function st(id){return (state[id]&&state[id].s)||""}
+function note(id){return (state[id]&&state[id].n)||""}
+function isDone(id){return st(id)==="skip"}
+function isJob(it){return it.group.startsWith("jobs")}
+function dLabel(n){return n===0?"Today":"D-"+n}
+function urgency(n){return n<=14?"urgent":n<=30?"soon":""}
+function statusSelect(it,label){
+  const sel=el("select");sel.setAttribute("aria-label",label);
+  STATUSES.forEach(([v,l])=>{const o=el("option",null,l);o.value=v;sel.append(o)});
+  const s=st(it.id);sel.value=s;sel.className=s?"st-"+s:"";
+  return sel;
+}
+
+/* theme: auto / light / dark */
+(function(){
+  const box=document.getElementById("theme");
+  let cur="auto";try{cur=localStorage.getItem(THEME)||"auto"}catch(e){}
+  function apply(t){
+    cur=t;
+    if(t==="auto")delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=t;
+    try{localStorage.setItem(THEME,t)}catch(e){}
+    box.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===t)));
+  }
+  box.querySelectorAll("button").forEach(b=>b.onclick=()=>apply(b.dataset.t));
+  apply(cur);
+})();
+
+/* GATE timeline */
+(function(){
+  const box=document.getElementById("gate");let marked=false,lastPast=-1;
+  GATE.forEach(([t,d,s],i)=>{
+    const n=days(d);const k=el("div","kd");k.setAttribute("role","listitem");
+    if(n<0){k.classList.add("past");lastPast=i}
+    else if(!marked){k.classList.add("next");marked=true;k.setAttribute("aria-current","step")}
+    k.append(el("b",null,t));
+    const line=el("div","when");line.append(el("span",null,fmt(d)),el("span","dn",n>=0?dLabel(n):"Done"));
+    k.append(line,el("div","ds",s));box.append(k);
+  });
+  const fill=document.getElementById("gate-fill");
+  if(lastPast>=0){fill.style.width="calc("+lastPast+" * (25% + 4px))"}else fill.remove();
+})();
+
+/* controls */
+const tabsBox=document.getElementById("tabs");
+const fAi=document.getElementById("f-ai"),fHide=document.getElementById("f-hide"),fSt=document.getElementById("f-status"),fQ=document.getElementById("f-q");
+fAi.checked=prefs.ai;fHide.checked=prefs.hide;fQ.value=prefs.q;
+[["any","My status: any"]].concat(STATUSES.map(([v,l])=>[v||"none",l])).forEach(([v,l])=>{const o=el("option",null,l);o.value=v;fSt.append(o)});
+fSt.value=prefs.st;
+TABS.forEach(([v,l])=>{const b=el("button","tab");b.type="button";b.dataset.v=v;b.append(el("span",null,l),el("span","n"));b.onclick=()=>{prefs.tab=v;savePrefs();render()};tabsBox.append(b)});
+fAi.onchange=()=>{prefs.ai=fAi.checked;savePrefs();render()};
+fHide.onchange=()=>{prefs.hide=fHide.checked;savePrefs();render()};
+fSt.onchange=()=>{prefs.st=fSt.value;savePrefs();render()};
+let qt;fQ.oninput=()=>{clearTimeout(qt);qt=setTimeout(()=>{prefs.q=fQ.value.trim();savePrefs();render()},150)};
+function savePrefs(){lsSet(PREF,prefs)}
+
+// hairline under the sticky bar only once it's pinned
+(function(){
+  const c=document.getElementById("controls");const s=el("div");s.style.height="1px";s.style.marginBottom="-1px";c.before(s);
+  if("IntersectionObserver" in window)new IntersectionObserver(([e])=>c.classList.toggle("stuck",!e.isIntersecting)).observe(s);
+})();
+
+function matches(it,ignoreTab){
+  if(!ignoreTab){
+    if(prefs.tab==="jobs"&&!isJob(it))return false;
+    if(prefs.tab!=="all"&&prefs.tab!=="jobs"&&it.group!==prefs.tab)return false;
+  }
+  if(prefs.ai&&!it.ai)return false;
+  const s=st(it.id);
+  if(prefs.hide&&(s==="skip"||(it.status==="closed"&&!s)))return false;
+  if(prefs.st!=="any"&&(prefs.st==="none"?s!=="":s!==prefs.st))return false;
+  if(prefs.q){const q=prefs.q.toLowerCase();if(!(it.name+" "+it.where+" "+it.window+" "+(it.notes||"")).toLowerCase().includes(q))return false}
+  return true;
+}
+const ORDER={open:0,confirmed:1,expected:2,unverified:3,closed:4};
+function bucket(it){
+  if(it.status==="closed")return "closed";
+  if(it.deadline){const n=days(it.deadline);if(n<0)return "passed";if(n<=30)return "soon";return "dated"}
+  return "tba";
+}
+const SECTIONS=[["soon","Due in the next 30 days","Act on these first"],["dated","Later deadlines","Dated, more than 30 days away"],["tba","Dates not announced yet","Watch the official site"],["passed","Deadline passed",""],["closed","Closed for this cycle","Next cycle noted inside"]];
+
+function stamp(it){
+  const b=bucket(it);const box=el("div","stamp");
+  if(b==="closed"){box.classList.add("gone");box.append(el("b",null,"Closed"));return box}
+  if(!it.deadline){box.classList.add("tba");box.append(el("b",null,"Date TBA"));return box}
+  const n=days(it.deadline);
+  if(n<0){box.classList.add("gone");box.append(el("b",null,"Passed"),el("small",null,short(it.deadline)));return box}
+  const u=urgency(n);if(u)box.classList.add(u==="urgent"?"due":"soon");
+  box.append(el("b",null,dLabel(n)),el("small",null,short(it.deadline)));
+  box.setAttribute("aria-label",(n===0?"Due today":n+" days left")+", deadline "+fmt(it.deadline));
+  return box;
+}
+function metaRow(it,withStatus){
+  const meta=el("div","meta");
+  if(withStatus)meta.append(el("span","pill s-"+it.status,INFO[it.status]));
+  meta.append(el("span","pill",GROUPS[it.group]));
+  if(it.ai)meta.append(el("span","pill ai","AI / DS"));
+  if(it.where){const w=el("span","where");w.title=it.where;w.append(icon("pin"),el("span",null,it.where));meta.append(w)}
+  return meta;
+}
+
+function tile(it){
+  const s=st(it.id);const t=el("article","tile"+(s==="skip"?" done":""));t.dataset.id=it.id;
+  const top=el("div","t-top");top.append(stamp(it),el("span","pill s-"+it.status,INFO[it.status]));t.append(top);
+  const nm=el("h3","name",it.name);nm.title=it.name;t.append(nm);
+  t.append(metaRow(it,false));
+  if(it.window){const w=el("div","win",it.window);w.title=it.window;t.append(w)}
+  const foot=el("div","t-foot");
+  const sel=statusSelect(it,"My status for "+it.name);
+  sel.onchange=()=>{setItem(it.id,{s:sel.value});render()};
+  const det=el("button","ghost");det.type="button";det.append(icon("note"),document.createTextNode("Details"));
+  det.setAttribute("aria-label","Details and notes for "+it.name);det.setAttribute("aria-haspopup","dialog");
+  if(note(it.id)){const dot=el("span","has-note");dot.title="Has a note";det.append(dot)}
+  det.onclick=()=>openSheet(it,det);
+  foot.append(sel,det);
+  if(it.link){const a=el("a","go");a.href=it.link;a.target="_blank";a.rel="noopener";a.title="Official site";a.setAttribute("aria-label","Official site for "+it.name+" (opens in a new tab)");a.append(icon("arrow"));foot.append(a)}
+  else{const a=el("span","go off");a.title="No official link yet";a.append(icon("arrow"));foot.append(a)}
+  t.append(foot);
+  return t;
+}
+
+/* details sheet */
+const sheet=document.getElementById("sheet");
+const shTitle=document.getElementById("sh-title"),shMeta=document.getElementById("sh-meta"),shDet=document.getElementById("sh-det"),shNote=document.getElementById("sh-note"),shSite=document.getElementById("sh-site");
+let shSel=document.getElementById("sh-status"),shItem=null,shOpener=null;
+function openSheet(it,opener){
+  shItem=it;shOpener=opener;
+  shTitle.textContent=it.name;
+  shMeta.textContent="";const m=metaRow(it,true);while(m.firstChild)shMeta.append(m.firstChild);
+  shDet.textContent="";
+  [["Deadline",it.deadline?fmt(it.deadline)+(days(it.deadline)>=0?" · "+dLabel(days(it.deadline)):""):""],["Window",it.window],["Eligibility",it.elig],["Selection",it.selection],["Fee",it.fee],["Notes",it.notes]].forEach(([k,v])=>{if(v){shDet.append(el("dt",null,k),el("dd",null,v))}});
+  shNote.value=note(it.id);
+  const sel=statusSelect(it,"My status for "+it.name);sel.id="sh-status";
+  sel.onchange=()=>{setItem(it.id,{s:sel.value});sel.className=sel.value?"st-"+sel.value:"";render()};
+  shSel.replaceWith(sel);shSel=sel;
+  if(it.link){shSite.hidden=false;shSite.href=it.link}else shSite.hidden=true;
+  if(typeof sheet.showModal==="function")sheet.showModal();else sheet.setAttribute("open","");
+}
+function saveNote(){if(shItem&&shNote.value!==note(shItem.id))setItem(shItem.id,{n:shNote.value})}
+shNote.onchange=saveNote;
+document.getElementById("sh-close").onclick=()=>sheet.close();
+sheet.addEventListener("click",e=>{if(e.target===sheet)sheet.close()});
+sheet.addEventListener("close",()=>{
+  saveNote();const id=shItem&&shItem.id;shItem=null;render();
+  const back=id&&document.querySelector('.tile[data-id="'+CSS.escape(id)+'"] .ghost');
+  (back||shOpener)&&(back||shOpener).focus();
+});
+
+function statCard(cls){return el("div","card stat"+(cls?" "+cls:""))}
+
+function render(){
+  // tabs
+  tabsBox.querySelectorAll(".tab").forEach(b=>{
+    const v=b.dataset.v;b.setAttribute("aria-pressed",String(prefs.tab===v));
+    const n=ITEMS.filter(it=>(v==="all"||(v==="jobs"?isJob(it):it.group===v))&&matches(it,true)).length;
+    b.querySelector(".n").textContent=n;
+  });
+  // stats (always over everything, not filters)
+  const live=ITEMS.filter(it=>!isDone(it.id)&&it.status!=="closed");
+  const upcoming=live.filter(it=>it.deadline&&days(it.deadline)>=0&&!APPLIED.includes(st(it.id))).sort((a,b)=>a.deadline.localeCompare(b.deadline));
+  const statsBox=document.getElementById("stats");statsBox.textContent="";
+  const nx=statCard("next");
+  nx.append(el("div","t","Next deadline you haven't applied for"));
+  if(upcoming[0]){
+    const n=days(upcoming[0].deadline);
+    nx.append(el("div","v",upcoming[0].name));
+    const r=el("div","row");r.append(el("span","tag "+urgency(n),dLabel(n)),el("span","t",fmt(upcoming[0].deadline)));nx.append(r);
+  }else{nx.append(el("div","v","Nothing dated pending"),el("div","t","No upcoming dated deadlines left"))}
+  statsBox.append(nx);
+  const due30=upcoming.filter(it=>days(it.deadline)<=30).length;
+  const applied=ITEMS.filter(it=>APPLIED.includes(st(it.id))).length;
+  const shortN=ITEMS.filter(it=>["shortlist","preparing"].includes(st(it.id))).length;
+  [[due30,"Due in 30 days, not applied"],[shortN,"Shortlisted or preparing"],[applied,"Applied or further"]].forEach(([v,t],i)=>{
+    const b=statCard();b.append(el("div","t",t),el("div","v",String(v)));
+    if(i===2){const tot=applied+live.filter(it=>!APPLIED.includes(st(it.id))).length;const bar=el("div","bar");bar.setAttribute("role","img");bar.setAttribute("aria-label",applied+" of "+tot+" applied");const f=el("i");bar.append(f);b.append(bar);requestAnimationFrame(()=>{f.style.width=(tot?Math.round(applied/tot*100):0)+"%"})}
+    statsBox.append(b);
+  });
+  // tiles
+  const out=document.getElementById("out");out.textContent="";
+  const shown=ITEMS.filter(it=>matches(it,false));
+  if(!shown.length){const e=el("div","empty");e.append(el("b",null,"Nothing matches these filters"),document.createTextNode("Try switching off “Hide closed & skipped” or clearing the search."));out.append(e);return}
+  SECTIONS.forEach(([key,title,hint])=>{
+    const list=shown.filter(it=>bucket(it)===key);
+    if(!list.length)return;
+    list.sort((a,b)=>{
+      if(a.deadline&&b.deadline&&a.deadline!==b.deadline)return a.deadline.localeCompare(b.deadline);
+      if(ORDER[a.status]!==ORDER[b.status])return ORDER[a.status]-ORDER[b.status];
+      return a.name.localeCompare(b.name);
+    });
+    const sec=el("section");const h=el("div","sec-h");h.append(el("h2",null,title),el("span","c",String(list.length)));if(hint)h.append(el("span","hint",hint));
+    sec.append(h);const g=el("div","grid");
+    list.forEach(it=>g.append(tile(it)));
+    sec.append(g);out.append(sec);
+  });
+}
+
+/* persistence */
+const pending={};let writing={};
+function setItem(id,patch){
+  state[id]=Object.assign({s:"",n:""},state[id]||{},patch);
+  lsSet(LS,state);
+  if(store)queueWrite(id);
+}
+function queueWrite(id){
+  if(writing[id]){pending[id]=true;return}
+  writing[id]=true;
+  const v=state[id];
+  store.save(id,{s:v.s||"",n:v.n||"",t:Date.now()}).catch(e=>{
+    if(e&&e.code==="invalid_argument"){store=null;setSync("local","Saved on this device only")}
+    else if(e&&e.code==="quota_exceeded"){setSync("local","Account storage is full, saved on this device")}
+  }).finally(()=>{writing[id]=false;if(pending[id]){pending[id]=false;queueWrite(id)}});
+}
+function setSync(kind,text){const s=document.getElementById("sync");s.className="sync "+(kind||"");s.querySelector("span").textContent=text}
+
+render();
+setSync("local","Saved on this device");
+
+(async function connect(){
+  if(!window.claude||!window.claude.use){return}
+  const [db,user]=await Promise.all([window.claude.use("db"),window.claude.use("user")]);
+  const uid=user?await user.id():null;
+  if(!db||!uid){setSync("local","Saved on this device only (sign in to sync)");return}
+  const col=db.collection("data/users/"+uid);
+  store={save:(id,v)=>col.doc(id).set(v)};
+  setSync("","Loading your saved statuses…");
+  let first=true;
+  const timer=setTimeout(()=>setSync("local","Can't reach your saved data yet, changes are kept on this device"),10000);
+  col.onSnapshot(snap=>{
+    if(!snap.metadata.fromCache){clearTimeout(timer);setSync("on","Synced to your account")}
+    const remote={};snap.docs.forEach(d=>{if(d.exists)remote[d.id]=d.data()});
+    if(first){
+      first=false;
+      // push any device-only statuses the account doesn't have yet
+      Object.keys(state).forEach(id=>{if(!remote[id]&&(state[id].s||state[id].n)&&ITEMS.some(i=>i.id===id))queueWrite(id)});
+    }
+    Object.keys(remote).forEach(id=>{if(!writing[id])state[id]={s:remote[id].s||"",n:remote[id].n||""}});
+    lsSet(LS,state);
+    if(sheet.open)return; // don't redraw under the open details sheet
+    const active=document.activeElement;
+    if(active&&active.tagName==="TEXTAREA")return;
+    render();
+  },err=>{clearTimeout(timer);store=null;setSync("local","Sync stopped, saved on this device")});
+
+  const dl=await window.claude.use("downloads");
+  if(dl){
+    const btn=document.getElementById("csv");btn.hidden=false;
+    btn.onclick=async()=>{
+      const esc=v=>'"'+String(v||"").replace(/"/g,'""')+'"';
+      const lab=Object.fromEntries(STATUSES);
+      const lines=[["Name","Type","Where","Deadline","Window","Info status","My status","My notes","Official site"].map(esc).join(",")];
+      ITEMS.forEach(it=>lines.push([it.name,GROUPS[it.group],it.where,it.deadline,it.window,INFO[it.status],lab[st(it.id)],(state[it.id]||{}).n,it.link].map(esc).join(",")));
+      try{await dl.save({filename:"2027-form-tracker.csv",data:"﻿"+lines.join("\n")})}catch(e){}
+    };
+  }
+})();
+})();
+</script>
+
+</body></html>

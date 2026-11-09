@@ -39,12 +39,12 @@ export function Integrations() {
           >
             <h2 id="integrations-title" className={cn(shared.h2, styles.title)}>
               <span>Plug your AI assistant into</span>
-              <span>live NSE and US market data</span>
+              <span>the NSE stock list</span>
             </h2>
             <p className={shared.lede}>
               UntoldMoney speaks the Model Context Protocol, so Claude, Cursor and other assistants
-              can pull candles, indicators and validated predictions. Prices come from Yahoo
-              Finance; the models run on scikit-learn.
+              can look up any NSE stock or index. Live prices stay inside the app, from your own
+              broker account.
             </p>
           </div>
         </div>

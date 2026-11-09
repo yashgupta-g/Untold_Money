@@ -3,131 +3,143 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { SquaresFour, TrendUp, ChartPieSlice, ArrowsLeftRight, Eye, Bell, GearSix, ShieldCheck, CaretLeft, CaretRight } from "@phosphor-icons/react";
+import {
+  SquaresFour,
+  TrendUp,
+  ChartPieSlice,
+  ArrowsLeftRight,
+  Eye,
+  Bell,
+  GearSix,
+  ShieldCheck,
+  SidebarSimple,
+  Flask,
+  PlugsConnected,
+  type Icon,
+} from "@phosphor-icons/react";
 import { useSidebar } from "./sidebar-context";
 
-const navItems = [
+type NavItem = { label: string; href: string; icon: Icon };
+
+const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: SquaresFour },
   { label: "Stocks", href: "/stocks", icon: TrendUp },
   { label: "Portfolio", href: "/portfolio", icon: ChartPieSlice },
   { label: "Trades", href: "/trades", icon: ArrowsLeftRight },
+  { label: "Paper trading", href: "/paper", icon: Flask },
+  { label: "Brokers", href: "/brokers", icon: PlugsConnected },
   { label: "Watchlist", href: "/watchlist", icon: Eye },
   { label: "Alerts", href: "/alerts", icon: Bell },
   { label: "Settings", href: "/settings", icon: GearSix },
 ];
 
-const adminItems = [
-  { label: "Admin", href: "/admin", icon: ShieldCheck },
-];
+const adminItems: NavItem[] = [{ label: "Admin", href: "/admin", icon: ShieldCheck }];
+
+/** The landing page's brand mark: ink tile, two white strokes. */
+export function LogoMark({ className }: { className?: string }) {
+  return (
+    <span
+      className={cn(
+        "grid size-[30px] shrink-0 place-items-center rounded-[9px] bg-foreground text-background",
+        className
+      )}
+    >
+      <svg width="16" height="16" viewBox="0 0 26 26" aria-hidden="true">
+        <path d="M2 10 10 2h6L2 16zM24 16l-8 8h-6l14-14z" fill="currentColor" />
+      </svg>
+    </span>
+  );
+}
+
+function NavLink({ item, collapsed, active }: { item: NavItem; collapsed: boolean; active: boolean }) {
+  return (
+    <Link
+      href={item.href}
+      title={collapsed ? item.label : undefined}
+      aria-label={collapsed ? item.label : undefined}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group flex h-10 items-center gap-3 rounded-xl px-3 text-[14.5px] transition-colors duration-200",
+        collapsed && "justify-center px-0",
+        active
+          ? "bg-muted font-medium text-foreground"
+          : "text-sidebar-foreground hover:bg-muted/60 hover:text-foreground"
+      )}
+    >
+      <item.icon
+        size={19}
+        weight={active ? "fill" : "regular"}
+        className={cn(
+          "shrink-0 transition-colors",
+          active ? "text-primary-ink" : "text-muted-foreground group-hover:text-foreground"
+        )}
+      />
+      {!collapsed && <span>{item.label}</span>}
+    </Link>
+  );
+}
 
 export function Sidebar() {
   const pathname = usePathname();
   const { collapsed, toggle } = useSidebar();
+  const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300",
-        collapsed ? "w-[68px]" : "w-[240px]"
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-300",
+        collapsed ? "w-[72px]" : "w-[248px]"
       )}
     >
       {/* Logo */}
-      <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
-        {!collapsed && (
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center bg-primary">
-              <TrendUp className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-bold tracking-tight text-sidebar-foreground">
-              Untold<span className="text-primary-ink">Money</span>
-            </span>
-          </Link>
-        )}
-        {collapsed && (
-          <div className="mx-auto flex h-8 w-8 items-center justify-center bg-primary">
-            <TrendUp className="h-4 w-4 text-primary-foreground" />
-          </div>
-        )}
+      <div className={cn("flex h-16 items-center px-5", collapsed && "justify-center px-0")}>
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2.5 text-[18px] font-medium tracking-[-0.02em] text-foreground"
+          aria-label="UntoldMoney dashboard"
+        >
+          <LogoMark />
+          {!collapsed && "UntoldMoney"}
+        </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-        <div className="mb-2 px-3">
-          {!collapsed && (
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Main
-            </span>
-          )}
+      <nav className="flex-1 overflow-y-auto px-3 py-3" aria-label="Main">
+        {!collapsed && (
+          <p className="mb-1.5 px-3 text-[13px] font-medium text-muted-foreground">Workspace</p>
+        )}
+        <div className="space-y-0.5">
+          {navItems.map((item) => (
+            <NavLink key={item.href} item={item} collapsed={collapsed} active={isActive(item.href)} />
+          ))}
         </div>
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-primary/10 text-primary-ink"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-              )}
-            >
-              <item.icon
-                className={cn(
-                  "h-[18px] w-[18px] shrink-0 transition-colors",
-                  isActive ? "text-primary-ink" : "text-muted-foreground group-hover:text-sidebar-foreground"
-                )}
-              />
-              {!collapsed && <span>{item.label}</span>}
-              {isActive && !collapsed && (
-                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
-              )}
-            </Link>
-          );
-        })}
 
-        {/* Admin Section */}
-        <div className="mt-6 mb-2 px-3">
-          {!collapsed && (
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              System
-            </span>
-          )}
+        {collapsed ? (
+          <div className="mx-3 my-4 h-px bg-sidebar-border" />
+        ) : (
+          <p className="mb-1.5 mt-6 px-3 text-[13px] font-medium text-muted-foreground">System</p>
+        )}
+        <div className="space-y-0.5">
+          {adminItems.map((item) => (
+            <NavLink key={item.href} item={item} collapsed={collapsed} active={isActive(item.href)} />
+          ))}
         </div>
-        {adminItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all duration-200",
-                isActive
-                  ? "bg-primary/10 text-primary-ink"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-              )}
-            >
-              <item.icon className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
-              {!collapsed && <span>{item.label}</span>}
-            </Link>
-          );
-        })}
       </nav>
 
-      {/* Collapse Toggle */}
-      <div className="border-t border-sidebar-border p-3">
+      {/* Collapse toggle */}
+      <div className="p-3">
         <button
+          type="button"
           onClick={toggle}
-          className="flex w-full items-center justify-center gap-2 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
-        >
-          {collapsed ? (
-            <CaretRight className="h-4 w-4" />
-          ) : (
-            <>
-              <CaretLeft className="h-4 w-4" />
-              <span>Collapse</span>
-            </>
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
+          className={cn(
+            "flex h-10 w-full items-center gap-3 rounded-xl px-3 text-[14px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground",
+            collapsed && "justify-center px-0"
           )}
+        >
+          <SidebarSimple size={19} className="shrink-0" />
+          {!collapsed && <span>Collapse</span>}
         </button>
       </div>
     </aside>

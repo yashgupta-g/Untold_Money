@@ -30,18 +30,18 @@ export const HERO_OPTIONS = [
     style: "Anthropomorphic",
     Component: dynamic(() => import("./HeroCrew").then((m) => m.HeroCrew), { loading }),
   },
-  {
-    id: "xray",
-    label: "X-ray",
-    style: "Cursor lens",
-    Component: dynamic(() => import("./HeroXray").then((m) => m.HeroXray), { loading }),
-  },
-  {
-    id: "exploded",
-    label: "Taken apart",
-    style: "Exploded view",
-    Component: dynamic(() => import("./HeroExploded").then((m) => m.HeroExploded), { loading }),
-  },
+  // {
+  //   id: "xray",
+  //   label: "X-ray",
+  //   style: "Cursor lens",
+  //   Component: dynamic(() => import("./HeroXray").then((m) => m.HeroXray), { loading }),
+  // },
+  // {
+  //   id: "exploded",
+  //   label: "Taken apart",
+  //   style: "Exploded view",
+  //   Component: dynamic(() => import("./HeroExploded").then((m) => m.HeroExploded), { loading }),
+  // },
 ] satisfies { id: string; label: string; style: string; Component: ComponentType }[];
 
 type HeroId = (typeof HERO_OPTIONS)[number]["id"];
@@ -122,7 +122,8 @@ export function HeroSwitcher() {
       <div ref={wrapRef}>
         <Component key={option.id} />
       </div>
-      <Dock selected={option.id} />
+      {/* The picker only appears while there is more than one option to choose. */}
+      {HERO_OPTIONS.length > 1 && <Dock selected={option.id} />}
     </>
   );
 }

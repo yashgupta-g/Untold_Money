@@ -8,7 +8,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text, text
+from sqlalchemy import DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -36,6 +36,12 @@ class Trade(UUIDPrimaryKeyMixin, Base):
     trade_status: Mapped[str] = mapped_column(
         String(20), nullable=False, default="OPEN", server_default=text("'OPEN'")
     )
+    # MANUAL (typed in), PAPER (paper-trading fill) or a broker name (synced fill).
+    source: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="MANUAL", server_default=text("'MANUAL'")
+    )
+    # The fill that opened this trade (paper order id or broker trade id).
+    external_ref: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     strategy_tag: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     mistake_tag: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     emotion_tag: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
@@ -50,3 +56,33 @@ class Trade(UUIDPrimaryKeyMixin, Base):
 
     def __repr__(self) -> str:
         return f"<Trade {self.trade_side} {self.instrument_id}>"
+
+
+class JournalFill(UUIDPrimaryKeyMixin, Base):
+    """
+    Ledger of fills already applied to the journal. A sync can see the same
+    broker trade many times; this makes each fill count exactly once.
+    """
+
+    __tablename__ = "journal_fills"
+    __table_args__ = (
+        UniqueConstraint("portfolio_id", "external_ref", name="uq_journal_fills_portfolio_ref"),
+    )
+
+    portfolio_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("portfolios.id", ondelete="CASCADE"), nullable=False
+    )
+    instrument_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("instruments.id"), nullable=False
+    )
+    external_ref: Mapped[str] = mapped_column(String(100), nullable=False)
+    source: Mapped[str] = mapped_column(String(20), nullable=False)
+    side: Mapped[str] = mapped_column(String(10), nullable=False)
+    quantity: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+    price: Mapped[float] = mapped_column(Numeric(18, 4), nullable=False)
+    filled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )

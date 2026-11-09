@@ -62,6 +62,7 @@ def create_access_token(
 
 def create_refresh_token(
     subject: str,
+    extra_claims: Optional[dict[str, Any]] = None,
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     """Create a JWT refresh token."""
@@ -78,6 +79,8 @@ def create_refresh_token(
         "type": "refresh",
         "jti": secrets.token_urlsafe(32),
     }
+    if extra_claims:
+        to_encode.update(extra_claims)
     return jwt.encode(to_encode, secret, algorithm=algorithm)
 
 

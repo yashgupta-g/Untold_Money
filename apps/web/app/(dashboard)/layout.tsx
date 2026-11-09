@@ -2,6 +2,7 @@
 
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
+import { LiveFeedProvider } from "@/components/market/LiveFeedProvider";
 import { SidebarProvider, useSidebar } from "@/components/layout/sidebar-context";
 import { cn } from "@/lib/utils";
 
@@ -13,12 +14,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div
         className={cn(
-          "flex flex-1 flex-col transition-all duration-300",
-          collapsed ? "pl-[68px]" : "pl-[240px]"
+          "flex min-w-0 flex-1 flex-col transition-[padding] duration-300",
+          collapsed ? "pl-[72px]" : "pl-[248px]"
         )}
       >
         <Topbar />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="mx-auto w-full max-w-[1440px] flex-1 px-6 py-8 lg:px-8">{children}</main>
       </div>
     </div>
   );
@@ -31,6 +32,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
+      <LiveFeedProvider />
       <DashboardContent>{children}</DashboardContent>
     </SidebarProvider>
   );

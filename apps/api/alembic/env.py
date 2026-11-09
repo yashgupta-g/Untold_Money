@@ -23,9 +23,10 @@ from app.core.database import Base
 from app.modules.users.models import User, UserConsent, UserSession  # noqa: F401
 from app.modules.audit.models import AuditLog  # noqa: F401
 from app.modules.instruments.models import Exchange, Instrument  # noqa: F401
-from app.modules.market_data.models import MarketCandle  # noqa: F401
 from app.modules.portfolio.models import Holding, Portfolio  # noqa: F401
-from app.modules.trades.models import Trade  # noqa: F401
+from app.modules.trades.models import JournalFill, Trade  # noqa: F401
+from app.modules.brokers.models import BrokerConnection  # noqa: F401
+from app.modules.paper.models import PaperAccount, PaperOrder  # noqa: F401
 from app.modules.analytics.models import TechnicalIndicator, StockScore  # noqa: F401
 from app.modules.predictions.models import Prediction  # noqa: F401
 

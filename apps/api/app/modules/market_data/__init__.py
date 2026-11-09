@@ -1,4 +1,1 @@
-# Market data module
-from app.modules.market_data.models import MarketCandle
-
-__all__ = ["MarketCandle"]
+# Market data module: quotes and candles from the user's own broker.

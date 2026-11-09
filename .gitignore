@@ -69,3 +69,8 @@ logs/
 *.bak
 *.tmp
 coverage/
+
+# TradingView Advanced Charts: licensed, distributed privately by TradingView.
+# Copy charting_library/ (and datafeeds/ if you use it) into apps/web/public/.
+apps/web/public/charting_library/
+apps/web/public/datafeeds/

@@ -6,14 +6,18 @@ from __future__ import annotations
 
 import uuid
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
+from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
+from app.core.exceptions import UnauthorizedException
 from app.core.logging import get_logger
 from app.core.security import (
     create_access_token,
     create_refresh_token,
+    decode_token,
     hash_password,
     hash_token,
     verify_password,
@@ -122,6 +126,7 @@ class AuthService:
                 user_agent=user_agent,
                 metadata={"reason": "invalid_password"},
             )
+            await self._commit_security_event()
             raise InvalidCredentialsException()
 
         if user.status != "active":
@@ -151,33 +156,103 @@ class AuthService:
             tokens=tokens,
         )
 
+    async def refresh(
+        self,
+        refresh_token: str,
+        ip_address: str,
+        user_agent: str,
+    ) -> AuthResponse:
+        """
+        Exchange a refresh token for a new token pair (rotation).
+
+        The old session is revoked and a new one created, so each refresh
+        token works once. Presenting an already-rotated token means it was
+        copied: every session for that user is revoked as a precaution.
+        """
+        try:
+            payload = decode_token(refresh_token)
+        except JWTError:
+            raise UnauthorizedException("Session has ended. Please log in again.")
+        if payload.get("type") != "refresh":
+            raise UnauthorizedException("Invalid token type")
+
+        try:
+            user_id = uuid.UUID(payload["sub"])
+            session_id = uuid.UUID(payload["sid"])
+        except (KeyError, ValueError):
+            raise UnauthorizedException("Session has ended. Please log in again.")
+
+        session = await self.repo.get_session_by_id(session_id)
+        if (
+            not session
+            or session.user_id != user_id
+            or session.refresh_token_hash != hash_token(refresh_token)
+        ):
+            raise UnauthorizedException("Session has ended. Please log in again.")
+
+        if session.revoked_at is not None:
+            await self.repo.revoke_all_user_sessions(user_id)
+            await self.audit.log_event(
+                action="session.refresh_reuse_detected",
+                entity_type="user_session",
+                entity_id=str(session_id),
+                actor_user_id=user_id,
+                ip_address=ip_address,
+                user_agent=user_agent,
+            )
+            logger.warning("refresh_token_reuse", user_id=str(user_id), session_id=str(session_id))
+            await self._commit_security_event()
+            raise UnauthorizedException("Session has ended. Please log in again.")
+
+        if not session.is_active:
+            raise UnauthorizedException("Session has ended. Please log in again.")
+
+        user = await self.repo.get_user_by_id(user_id)
+        if not user or user.status != "active":
+            raise AccountDisabledException()
+
+        await self.repo.revoke_session(session_id)
+        tokens = await self._create_tokens_and_session(
+            user_id=user_id,
+            ip_address=ip_address,
+            user_agent=user_agent,
+        )
+        return AuthResponse(user=UserResponse.model_validate(user), tokens=tokens)
+
     async def logout(
         self,
-        user_id: uuid.UUID,
         ip_address: str,
         user_agent: str,
         refresh_token: Optional[str] = None,
+        session_id: Optional[uuid.UUID] = None,
+        user_id: Optional[uuid.UUID] = None,
     ) -> None:
-        """Revoke user session(s)."""
+        """
+        End the current session, identified by the refresh token (cookie) or,
+        failing that, the access token's session id. Works even after the
+        access token has expired, so logout never leaves a live session.
+        """
+        session = None
         if refresh_token:
-            token_hash = hash_token(refresh_token)
-            session = await self.repo.get_session_by_token_hash(token_hash)
-            if session:
-                await self.repo.revoke_session(session.id)
-        else:
-            await self.repo.revoke_all_user_sessions(user_id)
+            session = await self.repo.get_session_by_token_hash(hash_token(refresh_token))
+        if not session and session_id:
+            session = await self.repo.get_session_by_id(session_id)
+        if not session:
+            return
 
-        # Audit log
+        await self.repo.revoke_session(session.id)
+        actor = user_id or session.user_id
+
         await self.audit.log_event(
             action="user.logged_out",
             entity_type="user",
-            entity_id=str(user_id),
-            actor_user_id=user_id,
+            entity_id=str(actor),
+            actor_user_id=actor,
             ip_address=ip_address,
             user_agent=user_agent,
         )
 
-        logger.info("user_logged_out", user_id=str(user_id))
+        logger.info("user_logged_out", user_id=str(actor))
 
     async def get_current_user(self, user_id: uuid.UUID) -> UserResponse:
         """Get current user profile."""
@@ -186,22 +261,36 @@ class AuthService:
             raise InvalidCredentialsException()
         return UserResponse.model_validate(user)
 
+    async def _commit_security_event(self) -> None:
+        """
+        Persist audit or revocation writes before raising. The request's DB
+        session rolls back on any exception, which would otherwise discard
+        exactly the records a security event needs to keep.
+        """
+        await self.repo.session.commit()
+
     async def _create_tokens_and_session(
         self,
         user_id: uuid.UUID,
         ip_address: str,
         user_agent: str,
     ) -> TokenResponse:
-        """Create access + refresh tokens and persist session."""
+        """
+        Create access + refresh tokens and persist the session. Both tokens
+        carry the session id (`sid`), so revoking the session ends both.
+        """
         settings = get_settings()
-        access_token = create_access_token(subject=str(user_id))
-        refresh_token = create_refresh_token(subject=str(user_id))
+        session_id = uuid.uuid4()
+        claims = {"sid": str(session_id)}
+        access_token = create_access_token(subject=str(user_id), extra_claims=claims)
+        refresh_token = create_refresh_token(subject=str(user_id), extra_claims=claims)
 
         expires_at = datetime.now(timezone.utc) + timedelta(
             days=settings.REFRESH_TOKEN_EXPIRE_DAYS
         )
 
         session = UserSession(
+            id=session_id,
             user_id=user_id,
             refresh_token_hash=hash_token(refresh_token),
             device_info=user_agent[:512] if user_agent else None,

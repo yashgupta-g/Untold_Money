@@ -1,22 +1,41 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useDeferredValue, useState } from "react";
 import Link from "next/link";
-import { MagnifyingGlass, TrendUp, TrendDown, ArrowUpRight, ArrowDownRight, CircleNotch, ChartBar, Funnel, ArrowsClockwise } from "@phosphor-icons/react";
+import { MagnifyingGlass, ArrowUpRight, ArrowDownRight, CircleNotch, ChartBar, ArrowsClockwise } from "@phosphor-icons/react";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   useGetInstrumentsQuery,
-  useGetQuoteQuery,
+  useGetQuotesQuery,
   type InstrumentDetail,
+  type QuoteData,
 } from "@/store/api/marketApi";
+import { ConnectBrokerPrompt } from "@/components/market/ConnectBrokerPrompt";
+import { useBrokerStatus } from "@/hooks/useBrokerStatus";
+import { useLivePrices } from "@/hooks/useLivePrices";
+import type { LiveTick } from "@/lib/liveFeed";
 
-function StockRow({ instrument }: { instrument: InstrumentDetail }) {
-  const { data: quoteRes, isLoading: quoteLoading } = useGetQuoteQuery(instrument.symbol);
-  const quote = quoteRes?.data;
+function StockRow({
+  instrument,
+  quote: apiQuote,
+  tick,
+  quoteLoading,
+}: {
+  instrument: InstrumentDetail;
+  quote?: QuoteData;
+  tick?: LiveTick;
+  quoteLoading: boolean;
+}) {
+  // A live tick from the user's broker beats the API quote.
+  const quote = apiQuote
+    ? tick
+      ? { ...apiQuote, price: tick.ltp, change: tick.ch, change_percent: tick.chp, volume: tick.volume }
+      : apiQuote
+    : undefined;
   const isPositive = quote ? quote.change >= 0 : true;
 
   return (
@@ -24,7 +43,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
       <div className="grid grid-cols-12 items-center gap-4 px-4 py-3.5 text-sm transition-all duration-200 hover:bg-muted/40 group">
         {/* Symbol & Name */}
         <div className="col-span-4 flex items-center gap-3 min-w-0">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border text-xs font-bold text-primary-ink">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent text-xs font-semibold text-accent-foreground">
             {instrument.symbol.slice(0, 2)}
           </div>
           <div className="min-w-0">
@@ -46,7 +65,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-16 animate-pulse bg-muted" />
+              <div className="h-4 w-16 animate-pulse rounded-md bg-muted" />
             </div>
           ) : quote ? (
             <p className="font-semibold tabular-nums">₹{quote.price.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</p>
@@ -59,10 +78,10 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-14 animate-pulse bg-muted" />
+              <div className="h-4 w-14 animate-pulse rounded-md bg-muted" />
             </div>
           ) : quote ? (
-            <div className={`flex items-center justify-end gap-1 font-medium ${isPositive ? "text-emerald-500" : "text-red-500"}`}>
+            <div className={`flex items-center justify-end gap-1 font-medium ${isPositive ? "text-profit" : "text-loss"}`}>
               {isPositive ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
               <span className="tabular-nums">{isPositive ? "+" : ""}{quote.change_percent.toFixed(2)}%</span>
             </div>
@@ -73,7 +92,7 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
         <div className="col-span-2 hidden lg:block text-right">
           {quoteLoading ? (
             <div className="flex justify-end">
-              <div className="h-4 w-14 animate-pulse bg-muted" />
+              <div className="h-4 w-14 animate-pulse rounded-md bg-muted" />
             </div>
           ) : quote ? (
             <p className="text-xs text-muted-foreground tabular-nums">
@@ -88,31 +107,40 @@ function StockRow({ instrument }: { instrument: InstrumentDetail }) {
 
 export default function StocksPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const query = useDeferredValue(searchQuery.trim());
   const { data: instrumentsRes, isLoading, isFetching, refetch } = useGetInstrumentsQuery({
-    q: searchQuery,
+    q: query,
     limit: 50,
   });
 
   const instruments = instrumentsRes?.data ?? [];
+  const broker = useBrokerStatus();
+  // One broker call for every row on screen, then live ticks on top.
+  const symbols = instruments.map((i) => i.symbol).sort();
+  const quotes = useGetQuotesQuery(symbols, { skip: !broker.connected || symbols.length === 0 });
+  const { prices } = useLivePrices(broker.connected ? symbols : []);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Stocks</h1>
+          <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Stocks</h1>
           <p className="text-sm text-muted-foreground">
-            Browse and search {instruments.length} instruments on NSE
+            Search every stock and index listed on NSE
           </p>
         </div>
         <Button
           variant="outline"
           size="sm"
-          onClick={() => refetch()}
-          disabled={isFetching}
+          onClick={() => {
+            refetch();
+            if (broker.connected) quotes.refetch();
+          }}
+          disabled={isFetching || quotes.isFetching}
           className="gap-2"
         >
-          <ArrowsClockwise className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} />
+          <ArrowsClockwise className={`h-3.5 w-3.5 ${isFetching || quotes.isFetching ? "animate-spin" : ""}`} />
           Refresh
         </Button>
       </div>
@@ -129,11 +157,15 @@ export default function StocksPage() {
         />
       </div>
 
+      {!broker.loading && !broker.connected && (
+        <ConnectBrokerPrompt compact expired={broker.expired} />
+      )}
+
       {/* Stock Table */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 border-b border-border/50 px-4 py-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          <div className="grid grid-cols-12 gap-4 border-b border-border/50 px-4 py-3 text-[13px] font-medium text-muted-foreground">
             <span className="col-span-4">Instrument</span>
             <span className="col-span-2 hidden md:block">Sector</span>
             <span className="col-span-2 text-right">Price</span>
@@ -153,14 +185,20 @@ export default function StocksPage() {
               <ChartBar className="h-12 w-12 text-muted-foreground/30" />
               <p className="mt-3 text-sm font-medium">No instruments found</p>
               <p className="text-xs text-muted-foreground">
-                {searchQuery ? `No results for "${searchQuery}"` : "Run mock ingestion to seed data"}
+                {query ? `No results for "${query}"` : "The NSE list is still loading. Try again in a minute."}
               </p>
             </div>
           ) : (
             /* Stock Rows */
             <div className="divide-y divide-border/30">
               {instruments.map((instrument) => (
-                <StockRow key={instrument.id} instrument={instrument} />
+                <StockRow
+                  key={instrument.id}
+                  instrument={instrument}
+                  quote={quotes.data?.data[instrument.symbol]}
+                  tick={prices[instrument.symbol]}
+                  quoteLoading={broker.connected && quotes.isLoading}
+                />
               ))}
             </div>
           )}

@@ -16,7 +16,7 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-[32px] font-medium leading-tight tracking-[-0.035em]">Settings</h1>
         <p className="text-sm text-muted-foreground">Manage your account and preferences</p>
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
@@ -24,7 +24,7 @@ export default function SettingsPage() {
           <Card key={item.title} className="cursor-pointer border-border/50 transition-all hover:border-primary/20">
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                <div className="border border-border p-2">
+                <div className="shrink-0">
                   <item.icon className="h-4 w-4 text-primary-ink" />
                 </div>
                 <div>
