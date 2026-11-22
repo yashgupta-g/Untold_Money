@@ -74,3 +74,10 @@ coverage/
 # Copy charting_library/ (and datafeeds/ if you use it) into apps/web/public/.
 apps/web/public/charting_library/
 apps/web/public/datafeeds/
+
+# Production secrets and runtime files
+.env.production
+celerybeat-schedule
+
+# Vercel
+.vercel

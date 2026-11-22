@@ -1,0 +1,213 @@
+/*
+ * "Inside the app": real screens on a flywheel, shot on an emerald studio
+ * set. The panel (key light, satin bands, grain) sits behind; the wheel of
+ * 3D phones sits in front and breaks out past the panel's top edge, while
+ * the floor fades the lower phones away. `--turn` (AppShowcase.tsx) turns
+ * the wheel one `--step` per phone.
+ */
+
+.section {
+  position: relative;
+  padding-top: var(--section);
+}
+
+.pin {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 3vh, 40px);
+}
+
+.head {
+  padding-inline: var(--gutter);
+}
+
+.stage {
+  /* the "emerald studio" set looks the same on every page theme */
+  --studio-1: #1b4c41;
+  --studio-2: #10302a;
+  --studio-3: #0a1815;
+  --studio-4: #070a0a;
+  --studio-light: rgba(166, 230, 207, 0.2);
+  --studio-band: rgba(166, 230, 207, 0.055);
+  --spw: clamp(200px, 21vw, 300px); /* phone width */
+  --R: calc(var(--spw) * 2.6); /* wheel radius */
+  --step: 24deg; /* angle between phones */
+  --top: 18%; /* where the panel starts; phones pop out above it */
+  position: relative;
+  height: clamp(660px, 62vw, 880px);
+  margin: 0 12px;
+  perspective: 1400px;
+  perspective-origin: 50% 25%;
+  /* clip the sides and the bottom to the panel, leave the top open */
+  clip-path: inset(-48px 0 0 0 round 0 0 var(--r-stage) var(--r-stage));
+}
+
+/* ---------- the set ---------- */
+.panel {
+  position: absolute;
+  inset: var(--top) 0 0 0;
+  overflow: hidden;
+  border-radius: var(--r-stage);
+  background: radial-gradient(130% 100% at 50% 0%, var(--studio-1) 0%, var(--studio-2) 36%, var(--studio-3) 68%, var(--studio-4) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* a soft key light falling from above */
+.key {
+  position: absolute;
+  top: -35%;
+  left: 50%;
+  width: 64%;
+  height: 120%;
+  background: radial-gradient(50% 50% at 50% 32%, var(--studio-light), transparent 72%);
+  filter: blur(24px);
+  translate: -50% 0;
+}
+
+/* wide satin light bands, barely there */
+.bands {
+  position: absolute;
+  inset: -10% -25%;
+  background: repeating-linear-gradient(-18deg, transparent 0 130px, var(--studio-band) 130px 210px, transparent 210px 340px);
+  filter: blur(14px);
+  -webkit-mask-image: radial-gradient(70% 75% at 50% 35%, #000 25%, transparent 85%);
+  mask-image: radial-gradient(70% 75% at 50% 35%, #000 25%, transparent 85%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  background-size: 160px;
+  mix-blend-mode: soft-light;
+  opacity: 0.4;
+}
+
+/* ---------- the wheel ---------- */
+.tilt {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transform: rotateX(12deg);
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+}
+
+/* the pivot: a zero-size point below the stage */
+.wheel {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--spw) * 1.1 + 14px + var(--R));
+  width: 0;
+  height: 0;
+  transform: rotate(calc(var(--turn, 0) * var(--step) * -1));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/*
+ * Each phone: centred on the pivot, pushed out by R, turned to its angle.
+ * --rel is its distance from the top slot; the top phone lifts toward the
+ * viewer and the side phones turn a little to show their edge.
+ */
+.slot {
+  --rel: calc(var(--k) - var(--turn, 0));
+  --near: max(0, 1 - max(var(--rel), var(--rel) * -1));
+  position: absolute;
+  left: calc(var(--spw) / -2);
+  top: calc(var(--spw) * -1.083);
+  transform: rotate(calc(var(--k) * var(--step))) translateY(calc(var(--R) * -1)) translateZ(calc(var(--near) * 36px))
+    rotateY(calc(var(--rel) * -8deg)) scale(calc(1 + var(--near) * 0.05));
+  backface-visibility: hidden;
+}
+
+.slot .phone {
+  --pw: var(--spw);
+}
+
+/* the floor: lower phones sink into the dark */
+.floor {
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: 26%;
+  border-radius: 0 0 var(--r-stage) var(--r-stage);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--studio-4) 78%, transparent) 62%, var(--studio-4));
+  pointer-events: none;
+}
+
+/* ---------- small frosted labels in the panel corners ---------- */
+.labels {
+  position: absolute;
+  top: calc(var(--top) + 20px);
+  z-index: 3;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.labelsL {
+  left: 20px;
+  justify-items: start;
+}
+
+.labelsR {
+  right: 20px;
+  justify-items: end;
+}
+
+.labels li {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---------- pinned (desktop, motion allowed) ---------- */
+.section[data-pinned] .pin {
+  height: 100svh;
+  padding-top: 84px;
+  padding-bottom: 12px;
+}
+
+.section[data-pinned] .stage {
+  /* the "emerald studio" set looks the same on every page theme */
+  --studio-1: #1b4c41;
+  --studio-2: #10302a;
+  --studio-3: #0a1815;
+  --studio-4: #070a0a;
+  --studio-light: rgba(166, 230, 207, 0.2);
+  --studio-band: rgba(166, 230, 207, 0.055);
+  --spw: clamp(190px, 26.5vh, 300px);
+  flex: 1;
+  height: auto;
+}
+
+@media (max-width: 760px) {
+  .stage {
+    --spw: 205px;
+    --R: calc(var(--spw) * 1.95);
+    --step: 30deg;
+    --top: 20%;
+    height: calc(var(--spw) * 2.35 + 24px);
+  }
+
+  /* decoration only; the phones carry the story on small screens */
+  .labels {
+    display: none;
+  }
+}

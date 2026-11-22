@@ -1,0 +1,999 @@
+/*
+ * Sections built from the Goonj app. The page stays sky; the app's own
+ * colour (charcoal, emerald-teal glows) appears inside cards and screens.
+ */
+
+/* ---------- promises ---------- */
+.promiseRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(16px, 3vw, 40px);
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+.promise {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+  margin: 0;
+  text-align: center;
+}
+
+.promisePhone {
+  --pw: clamp(210px, 19vw, 270px);
+}
+
+/* the middle phone steps forward */
+.promise[data-i="1"] {
+  translate: 0 -28px;
+}
+
+.promise[data-i="1"] .promisePhone {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 60px 90px -40px rgba(14, 26, 46, 0.6);
+}
+
+.promise figcaption {
+  display: grid;
+  gap: 6px;
+  max-width: 30ch;
+}
+
+.promiseNo {
+  color: var(--sky-1);
+  font-family: var(--f-display);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.promise b {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.promise figcaption > span:last-child {
+  color: var(--ink-3);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ---------- how it works ---------- */
+.how {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 64px);
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+.howSteps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.howStep {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 18px 20px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--ink-3);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    color 300ms ease;
+}
+
+.howStep:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.howStep[data-on] {
+  border-color: var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  color: var(--ink-2);
+}
+
+.howNo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--card-2);
+  color: var(--ink-3);
+  font-family: var(--f-display);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.howStep[data-on] .howNo {
+  background: var(--sky-1);
+  color: #fff;
+}
+
+.howText {
+  display: grid;
+  gap: 4px;
+}
+
+.howText b {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.howText span {
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.howStep:not([data-on]) .howText span {
+  display: none;
+}
+
+.howBar {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 0;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--card-2);
+}
+
+.howBar i {
+  display: block;
+  height: 100%;
+  background: var(--sky-1);
+  transform-origin: left;
+  animation: fill linear both;
+}
+
+.howBar i[data-paused] {
+  animation-play-state: paused;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.howStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 640px;
+}
+
+.howGlow {
+  position: absolute;
+  inset: 8% 10%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(70, 116, 184, 0.35), rgba(70, 116, 184, 0));
+  filter: blur(20px);
+}
+
+.howPhones {
+  position: relative;
+  display: grid;
+}
+
+.howScreen {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  transition:
+    opacity 600ms var(--ease),
+    transform 700ms var(--ease-expo);
+}
+
+.howScreen[data-on] {
+  opacity: 1;
+  transform: none;
+}
+
+.howPhone {
+  --pw: clamp(240px, 22vw, 300px);
+}
+
+/* ---------- tracks & playbooks ---------- */
+.tracksWrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+}
+
+.tracksCopy {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+.trackGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* the app's track cards: dark gradient, soft glow, a simple mark */
+.trackCard {
+  position: relative;
+  display: grid;
+  align-content: end;
+  gap: 4px;
+  min-height: 170px;
+  padding: 18px;
+  overflow: hidden;
+  border-radius: 22px;
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.trackCard b {
+  font-family: var(--f-display);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.trackCard > span:last-child {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.trackMark {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  width: 34px;
+  height: 18px;
+  border-radius: 0 0 34px 34px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.35));
+}
+
+.green {
+  background: linear-gradient(165deg, #2f6f55 0%, #1f4a3c 45%, #1b2a2a 100%);
+}
+
+.slate {
+  background: linear-gradient(165deg, #5b7f87 0%, #3a5960 45%, #1f2b30 100%);
+}
+
+.blue {
+  background: linear-gradient(165deg, #3d64a3 0%, #26457a 45%, #1a2338 100%);
+}
+
+.teal {
+  background: linear-gradient(165deg, #2c7068 0%, #1d4a48 45%, #1a2829 100%);
+}
+
+.playbook {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  min-height: 560px;
+  padding: 28px 28px 0;
+  overflow: hidden;
+  border-radius: var(--r-stage);
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(41, 77, 67, 0.95) 0%, rgba(41, 77, 67, 0) 70%),
+    #171a21;
+  color: #fff;
+  box-shadow: var(--shadow-float);
+}
+
+.pbTrack {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.pbTitle {
+  font-family: var(--f-display);
+  font-size: clamp(26px, 2.4vw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.pbLine {
+  max-width: 36ch;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.pbTabs {
+  display: inline-flex;
+  width: fit-content;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 13px;
+}
+
+.pbTabs span {
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.pbTabs span[data-on] {
+  background: #294d43;
+  color: #fff;
+}
+
+.pbJourney {
+  display: grid;
+  gap: 10px;
+  max-width: 220px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pbJourney li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+}
+
+.pbJourney i {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+}
+
+.pbJourney li[data-state="done"] {
+  color: #fff;
+}
+
+.pbJourney li[data-state="done"] i {
+  border-color: #46b08f;
+  background: #46b08f;
+}
+
+.pbJourney li[data-state="on"] {
+  color: #fff;
+}
+
+.pbJourney li[data-state="on"] i {
+  border-color: #fff;
+  background: #6f9ad3;
+}
+
+.pbJourney em {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(70, 176, 143, 0.2);
+  color: #9be0c8;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.pbPhone {
+  --pw: clamp(200px, 16vw, 230px);
+  position: absolute;
+  right: 24px;
+  bottom: -110px;
+  rotate: -4deg;
+}
+
+/* ---------- progress ---------- */
+.progress {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  grid-template-areas:
+    "phone medal streak"
+    "phone done done";
+  gap: 14px;
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+.pCard {
+  position: relative;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding: 24px;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.pCard b {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.pCard p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.pPhoneCard {
+  grid-area: phone;
+  align-content: start;
+  justify-items: center;
+  gap: 18px;
+  padding-bottom: 0;
+  background: linear-gradient(180deg, var(--sky-4), var(--card));
+}
+
+.pPhone {
+  --pw: clamp(220px, 20vw, 270px);
+  margin-bottom: -60px;
+}
+
+.pCaption {
+  display: grid;
+  gap: 4px;
+  color: var(--ink-3);
+  font-size: 14.5px;
+  text-align: center;
+}
+
+.pMedal {
+  grid-area: medal;
+  justify-items: center;
+  text-align: center;
+  background: radial-gradient(80% 60% at 50% 25%, #2a3140 0%, #171a21 70%);
+}
+
+.pMedal b {
+  color: #fff;
+}
+
+.pMedal p {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.medal {
+  width: 110px;
+  height: 110px;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.5));
+}
+
+.achieved {
+  width: fit-content;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(214, 186, 120, 0.18);
+  color: #e8d3a0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pStreak {
+  grid-area: streak;
+}
+
+.streakNo {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 72px;
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+
+.week {
+  display: flex;
+  gap: 6px;
+  margin: 6px 0;
+}
+
+.week i {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--card-2);
+  color: var(--ink-3);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.week i[data-on] {
+  background: var(--sky-1);
+  color: #fff;
+}
+
+.pComplete {
+  grid-area: done;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 18px;
+  background: linear-gradient(120deg, #224642 0%, #1e2d33 60%, #181b22 100%);
+}
+
+.pComplete b {
+  color: #fff;
+}
+
+.pComplete p {
+  grid-column: 2;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.check {
+  grid-row: span 3;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.check svg {
+  width: 26px;
+  height: 26px;
+}
+
+.rwa {
+  grid-column: 2;
+  width: fit-content;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- everyday ---------- */
+.everyday {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 14px;
+  margin-top: clamp(40px, 5vw, 64px);
+}
+
+.eCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 340px;
+  padding: 26px;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.eKicker {
+  color: var(--sky-1);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.eCard b {
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.eCard p {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 14.5px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.chips i {
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: var(--card-2);
+  color: var(--ink-2);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.eTrends {
+  background:
+    radial-gradient(70% 60% at 100% 0%, rgba(70, 116, 184, 0.45) 0%, rgba(70, 116, 184, 0) 70%),
+    linear-gradient(160deg, #1f3f73 0%, #16233f 100%);
+}
+
+.eTrends b,
+.eTrends .eKicker {
+  color: #fff;
+}
+
+.eTrends p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.eTrends .chips i {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.eMood {
+  align-items: center;
+  text-align: center;
+  background: #171a21;
+}
+
+.eMood b {
+  color: #fff;
+}
+
+.eMood .eKicker {
+  align-self: flex-start;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* the app's mood orb: a soft blurred light that changes colour */
+.orb {
+  width: 120px;
+  height: 120px;
+  margin: 8px 0 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #fff 0%, var(--c1) 30%, var(--c2) 70%, transparent 72%);
+  filter: blur(8px);
+  transition: background 500ms ease;
+}
+
+.moodLabel {
+  color: #fff;
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.moodRange {
+  width: 100%;
+  accent-color: #7ff0d0;
+  cursor: pointer;
+}
+
+/* ---------- plans ---------- */
+.toggle {
+  display: inline-flex;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.toggle button {
+  height: 38px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-3);
+  font: 500 14.5px/1 var(--f-body);
+  cursor: pointer;
+}
+
+.toggle button[aria-pressed="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.plans {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 380px));
+  justify-content: center;
+  gap: 16px;
+  margin-top: clamp(32px, 4vw, 48px);
+}
+
+.plan {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 28px;
+  border-radius: var(--r-stage);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.plan[data-featured] {
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(41, 77, 67, 0.95) 0%, rgba(41, 77, 67, 0) 70%),
+    #171a21;
+  color: #fff;
+  box-shadow: var(--shadow-float);
+}
+
+.planTag {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(155, 224, 200, 0.16);
+  color: #9be0c8;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.planName {
+  font-family: var(--f-display);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.planLine {
+  margin: 0;
+  color: var(--ink-3);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.plan[data-featured] .planLine {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 6px 0 4px;
+}
+
+.price span {
+  font-family: var(--f-display);
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.price small {
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+.plan[data-featured] .price small {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.price em {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(70, 176, 143, 0.16);
+  color: #2f8f6f;
+  font-size: 12.5px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.plan[data-featured] .price em {
+  color: #9be0c8;
+}
+
+.features {
+  display: grid;
+  gap: 10px;
+  margin: 6px 0 10px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.plan[data-featured] .features {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+}
+
+.features svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.features circle {
+  fill: #46b08f;
+}
+
+.features path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.planCta {
+  display: grid;
+  place-items: center;
+  height: 52px;
+  margin-top: auto;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--f-display);
+  font-size: 15.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 200ms var(--ease);
+}
+
+.planCta:hover {
+  transform: translateY(-2px);
+}
+
+.plan[data-featured] .planCta {
+  background: #fff;
+  color: #171a21;
+}
+
+.planNote {
+  margin: 18px 0 0;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1023px) {
+  .how,
+  .tracksWrap {
+    grid-template-columns: 1fr;
+  }
+  .howStage {
+    min-height: 0;
+    order: -1;
+  }
+  .progress {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "phone phone"
+      "medal streak"
+      "done done";
+  }
+  .everyday {
+    grid-template-columns: 1fr 1fr;
+  }
+  .eTrends {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .promiseRow {
+    display: flex;
+    gap: 16px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 8px var(--gutter);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .promise {
+    flex: 0 0 76vw;
+    scroll-snap-align: center;
+  }
+  .promise[data-i="1"] {
+    translate: none;
+  }
+  .promise .promisePhone,
+  .promise[data-i="1"] .promisePhone {
+    --pw: min(62vw, 250px);
+  }
+  .trackGrid {
+    grid-template-columns: 1fr;
+  }
+  .trackCard {
+    min-height: 130px;
+  }
+  .playbook {
+    min-height: 520px;
+  }
+  .pbPhone {
+    --pw: 170px;
+    right: 14px;
+  }
+  .progress,
+  .everyday {
+    grid-template-columns: 1fr;
+    grid-template-areas: none;
+  }
+  .pPhoneCard,
+  .pMedal,
+  .pStreak,
+  .pComplete {
+    grid-area: auto;
+  }
+  .plans {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .howScreen,
+  .howBar i,
+  .orb {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* v6 "app" theme: white pills carry dark text */
+:global([data-goonj="app"]) .toggle button[aria-pressed="true"],
+:global([data-goonj="app"]) .planCta {
+  color: var(--on-ink);
+}
+
+:global([data-goonj="app"]) .eTrends {
+  background:
+    radial-gradient(70% 60% at 100% 0%, rgba(70, 104, 106, 0.55) 0%, rgba(70, 104, 106, 0) 70%),
+    linear-gradient(160deg, #15483f 0%, #171a21 100%);
+}

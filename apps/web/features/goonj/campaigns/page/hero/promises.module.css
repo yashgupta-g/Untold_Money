@@ -1,0 +1,142 @@
+/*
+ * The hero's promises (Promises.tsx): one frosted strip in three parts, each
+ * with the old way struck through above the Goonj way.
+ */
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-auto-flow: column;
+  width: 100%;
+  max-width: 860px;
+  margin: 22px auto 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 18px;
+  border: 1px solid rgba(250, 248, 245, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(4, 22, 27, 0.35);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  text-align: left;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+}
+
+.item + .item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 1px;
+  background: rgba(250, 248, 245, 0.1);
+}
+
+/* a slightly smaller metal tile here */
+.item .icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+}
+
+.item .icon svg {
+  width: 30px;
+  height: 30px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  font-family: var(--f-display);
+}
+
+.no {
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: rgba(250, 248, 245, 0.42);
+}
+
+.no s {
+  position: relative;
+  text-decoration: none;
+}
+
+/* a strike line we can draw across */
+.no s::after {
+  content: "";
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  top: 55%;
+  height: 1.5px;
+  border-radius: 2px;
+  background: rgba(244, 114, 32, 0.75);
+  transform-origin: left;
+}
+
+.just {
+  /* same face, weight and tracking as the nav links and badge */
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  color: rgba(250, 248, 245, 0.92);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .no s::after {
+    animation: strike 0.7s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: calc(0.75s + var(--i) * 0.18s);
+  }
+
+  .just {
+    animation: justIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(0.95s + var(--i) * 0.18s);
+  }
+}
+
+@keyframes strike {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes justIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (max-width: 760px) {
+  .strip {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    margin-top: 26px;
+  }
+
+  .item {
+    padding: 11px 14px;
+  }
+
+  .item + .item::before {
+    left: 18px;
+    right: 18px;
+    top: 0;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+}

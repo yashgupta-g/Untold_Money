@@ -1,0 +1,10 @@
+Mock-up photos for testing Goonj campaign pages. These are stock models, not real
+influencers: use them only to preview the design, not on a live campaign.
+All from Pexels (free to use, no attribution required: https://www.pexels.com/license/).
+
+1-woman-red-saree.jpg          https://www.pexels.com/photo/elegant-smiling-ethnic-woman-in-traditional-indian-dress-7442282/
+2-woman-pink-saree.jpg         https://www.pexels.com/photo/elegant-woman-in-traditional-pink-saree-35108807/
+3-woman-yellow-saree.jpg       https://www.pexels.com/photo/woman-sitting-in-traditional-dress-20158866/
+4-woman-creator-ring-light.jpg https://www.pexels.com/photo/ethnic-female-blogger-filming-video-on-cellphone-with-light-lamp-6347571/
+5-man-yellow-kurta.jpg         https://www.pexels.com/photo/portrait-of-smiling-man-in-traditional-indian-attire-34423732/
+6-man-on-phone.jpg             https://www.pexels.com/photo/cheerful-indian-man-talking-on-cellphone-and-looking-away-4307713/

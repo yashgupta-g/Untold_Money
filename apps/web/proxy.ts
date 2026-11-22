@@ -1,3 +1,4 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -32,8 +33,34 @@ const authPaths = ["/login", "/register"];
 const matches = (pathname: string, paths: string[]) =>
   paths.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
-export function proxy(request: NextRequest) {
+/**
+ * Goonj campaign dashboard (/goonj/admin): keeps the editor's Supabase
+ * session cookie fresh. It doesn't guard anything itself; the admin pages
+ * and actions check the session and the allowlist on the server.
+ */
+async function refreshGoonjSession(request: NextRequest) {
+  const url = process.env.SUPABASE_INTERNAL_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  let response = NextResponse.next({ request });
+  if (!url || !key) return response;
+  const supabase = createServerClient(url, key, {
+    cookieOptions: { name: "sb-goonj-auth" },
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: (list) => {
+        for (const { name, value } of list) request.cookies.set(name, value);
+        response = NextResponse.next({ request });
+        for (const { name, value, options } of list) response.cookies.set(name, value, options);
+      },
+    },
+  });
+  await supabase.auth.getUser();
+  return response;
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
+  if (pathname.startsWith("/goonj/admin")) return refreshGoonjSession(request);
   const signedIn = request.cookies.get(SIGNED_IN_COOKIE)?.value === "1";
 
   if (!signedIn && matches(pathname, protectedPaths)) {
@@ -61,6 +88,7 @@ export const config = {
     "/alerts/:path*",
     "/settings/:path*",
     "/admin/:path*",
+    "/goonj/admin/:path*",
     "/login",
     "/register",
   ],

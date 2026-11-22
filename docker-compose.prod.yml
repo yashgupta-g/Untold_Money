@@ -1,0 +1,103 @@
+# Production stack for one server (Oracle Cloud Always Free, or any VPS).
+# The website runs on Vercel; this file runs everything else:
+#   caddy (HTTPS) → api, plus worker, scheduler, postgres, redis.
+#
+#   docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
+#
+# See infra/deployment/README.md.
+
+x-backend: &backend
+  build:
+    context: ./apps/api
+    dockerfile: Dockerfile
+  image: untoldmoney-api:prod
+  restart: unless-stopped
+  env_file:
+    - .env.production
+  environment: &backend-env
+    APP_ENV: production
+    DEBUG: "false"
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: "5432"
+    DATABASE_URL: "postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}"
+    REDIS_URL: "redis://redis:6379/0"
+    CELERY_BROKER_URL: "redis://redis:6379/1"
+    CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Migrations run first; if they fail the API does not start.
+  api:
+    <<: *backend
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000
+             --proxy-headers --forwarded-allow-ips='*'"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+
+  worker:
+    <<: *backend
+    command: celery -A app.workers.celery_app:celery_app worker --loglevel=info --concurrency=2
+
+  scheduler:
+    <<: *backend
+    command: celery -A app.workers.celery_app:celery_app beat --loglevel=info --schedule /tmp/celerybeat-schedule
+
+  # HTTPS in front of the API. Caddy gets a free Let's Encrypt certificate
+  # for API_DOMAIN and passes WebSockets (/api/v1/stream) through as-is.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN}
+    volumes:
+      - ./infra/deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:

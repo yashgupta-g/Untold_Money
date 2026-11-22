@@ -1,0 +1,13 @@
+# Only the website (apps/web) goes to Vercel; the backend runs on its own server.
+/*
+!/apps
+/apps/*
+!/apps/web
+/apps/web/node_modules
+/apps/web/.next
+/apps/web/.env
+/apps/web/.env.*
+/apps/web/tsconfig.tsbuildinfo
+/apps/web/supabase/.temp
+/apps/web/supabase/.branches
+.DS_Store

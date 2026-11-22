@@ -1,0 +1,241 @@
+/*
+ * The glass "Goonj" finish (see the footer wordmark), for buttons: the logo's
+ * gradient, a bevel that catches light along the top and settles into shade
+ * below, a crisp rim, and a specular highlight (--gx/--gy) that drifts on its
+ * own and follows the pointer while hovered.
+ */
+
+@property --gx {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 22%;
+}
+
+@property --gy {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 24%;
+}
+
+.gloss {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 26px;
+  border-radius: 999px;
+  /* the logo's own direction: warm on the left, teal on the right */
+  background: linear-gradient(95deg, #8e2a3e 0%, #e0442f 22%, #f08a3c 40%, #e9a46a 50%, #7a4a3e 64%, #1f4f5a 82%, #3db3c6 100%);
+  box-shadow:
+    inset 0 1.5px 0.5px rgba(255, 255, 255, 0.75),
+    inset 0 -1.5px 0.5px rgba(255, 255, 255, 0.3),
+    inset 0 -9px 14px -6px rgba(30, 8, 10, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 14px 30px -12px rgba(150, 60, 40, 0.6),
+    0 4px 10px -4px rgba(20, 30, 50, 0.35);
+  color: #fff;
+  font-family: var(--f-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  text-shadow: 0 1px 1px rgba(70, 20, 10, 0.5);
+  white-space: nowrap;
+  animation: glide 6s ease-in-out infinite alternate;
+  transition:
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 300ms ease;
+}
+
+/* the bevel catching light: a glossy band across the top */
+.gloss::before {
+  content: "";
+  position: absolute;
+  inset: 3px 14px 50%;
+  z-index: -1;
+  border-radius: 999px 999px 50% 50% / 999px 999px 30% 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+/* the specular light, as on the footer letters */
+.gloss::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(76px 46px at var(--gx) var(--gy), rgba(255, 250, 240, 0.8), rgba(255, 238, 215, 0.22) 45%, transparent 75%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* while hovered, the pointer moves the light instead */
+.gloss[data-live] {
+  animation: none;
+}
+
+.gloss:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    inset 0 1.5px 0.5px rgba(255, 255, 255, 0.85),
+    inset 0 -1.5px 0.5px rgba(255, 255, 255, 0.35),
+    inset 0 -9px 14px -6px rgba(30, 8, 10, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.26),
+    0 18px 38px -12px rgba(150, 60, 40, 0.75),
+    0 6px 14px -4px rgba(20, 30, 50, 0.4);
+}
+
+.gloss:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.gloss:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.gloss svg {
+  filter: drop-shadow(0 1px 1px rgba(70, 20, 10, 0.5));
+}
+
+.sm {
+  height: 48px;
+  padding: 0 7px 0 20px;
+  font-size: 15px;
+}
+
+@keyframes glide {
+  0% {
+    --gx: 12%;
+    --gy: 22%;
+  }
+  50% {
+    --gy: 34%;
+  }
+  100% {
+    --gx: 88%;
+    --gy: 22%;
+  }
+}
+
+/* ---------- the secondary: clear glass, a gradient rim, the same light ---------- */
+.ghost {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 24px 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.06) 100%);
+  box-shadow:
+    inset 0 1.5px 0.5px rgba(255, 255, 255, 0.55),
+    inset 0 -10px 16px -10px rgba(255, 255, 255, 0.28),
+    0 12px 28px -14px rgba(20, 30, 60, 0.45);
+  color: #fff;
+  font-family: var(--f-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 1px rgba(20, 30, 60, 0.35);
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  /* the same glide as the main CTA, half a beat later: they shine in turn */
+  animation: glide 6s ease-in-out -3s infinite alternate;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* the rim: a 1.5px ring in the logo's gradient */
+.ghost::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: linear-gradient(95deg, #e0442f 0%, #f08a3c 30%, #e9a46a 50%, #3d8fa0 75%, #3db3c6 100%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.ghost::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(76px 46px at var(--gx) var(--gy), rgba(255, 250, 240, 0.45), transparent 72%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.ghost[data-live] {
+  animation: none;
+}
+
+.ghost:hover {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.ghost:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.ghost:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* a drop of the main button: a glossy gradient pearl holding the play icon */
+.pearl {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #ffe0c2 0%, #f3a15a 26%, #e0442f 58%, #8e2a3e 88%);
+  box-shadow:
+    inset 0 1.5px 0.5px rgba(255, 255, 255, 0.8),
+    inset 0 -5px 8px -2px rgba(30, 8, 10, 0.45),
+    0 6px 14px -6px rgba(150, 60, 40, 0.7);
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pearl svg {
+  width: 13px;
+  height: 13px;
+  margin-left: 2px;
+  fill: #fff;
+  filter: drop-shadow(0 1px 1px rgba(70, 20, 10, 0.5));
+}
+
+.ghost:hover .pearl {
+  transform: scale(1.1) rotate(-8deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost {
+    animation: none;
+    transition: none;
+  }
+  .gloss {
+    animation: none;
+    transition: none;
+  }
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8" />
+<style>
+  body { margin: 0; padding: 16px; font: 13px/1.5 system-ui, sans-serif; color: #e8e6e3; background: #111416; }
+  b { color: #f47220; }
+  .bar { height: 4px; margin-top: 10px; border-radius: 4px; background: #2a2f33; overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: #f47220; transition: width 0.2s; }
+</style>
+<div><b>Goonj page → prototype</b></div>
+<div id="s">Connecting to the local server…</div>
+<div class="bar"><i id="p"></i></div>
+<script>
+  const BASE = "http://localhost:4545";
+  const status = (t) => (document.getElementById("s").textContent = t);
+  const prog = (f) => (document.getElementById("p").style.width = Math.round(f * 100) + "%");
+  (async () => {
+    try {
+      const data = await (await fetch(BASE + "/data.json")).json();
+      const names = new Set();
+      const tiles = (r) => r && r.tiles && r.tiles.forEach((t) => names.add("img/" + t.src));
+      Object.values(data.hero).forEach(tiles);
+      data.wall.states.forEach(tiles);
+      data.reel.cards.forEach(tiles);
+      data.sections.forEach(tiles);
+      (data.anims || []).forEach((a) => names.add("gif/" + a.src));
+      const images = {};
+      let i = 0;
+      for (const n of names) {
+        status("Loading images " + ++i + " / " + names.size + "…");
+        prog(i / names.size);
+        const r = await fetch(BASE + "/" + n);
+        if (!r.ok) throw new Error("missing " + n);
+        images[n.split("/")[1]] = new Uint8Array(await r.arrayBuffer());
+      }
+      status("Building the page in Figma… (this can take a minute)");
+      parent.postMessage({ pluginMessage: { type: "build", data, images } }, "*");
+    } catch (e) {
+      status("Couldn't load the capture from " + BASE + ". In tools/goonj-figma run: node serve.mjs — then run the plugin again.");
+      parent.postMessage({ pluginMessage: { type: "error", message: String(e) } }, "*");
+    }
+  })();
+</script>

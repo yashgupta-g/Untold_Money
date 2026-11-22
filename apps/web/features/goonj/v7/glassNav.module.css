@@ -1,0 +1,336 @@
+/*
+ * Liquid-glass nav. The glass is built in layers: a tinted fill, a heavy
+ * backdrop blur + saturation (refraction too, in Chromium), a bright rim
+ * that catches light top-left and bottom-right, an inner glow at the lower
+ * edge, and a pointer-following highlight. Only transform/opacity/width animate.
+ */
+
+.wrap {
+  position: fixed;
+  /* at rest it sits in the slot the hero keeps for it (hero padding 12px + navSpace margin), inside the frame */
+  top: calc(12px + clamp(14px, 2.2vh, 22px));
+  left: 50%;
+  /* mounted on <body>: above every section */
+  z-index: 90;
+  width: min(calc(100% - 32px), 1240px);
+  translate: -50% 0;
+  transition:
+    width 700ms var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    top 500ms var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1));
+  /* "backwards", not "both": a held opacity animation would make this a
+     backdrop root and the glass could no longer see (blur) the page */
+  animation: drop 900ms var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)) backwards;
+}
+
+/* scrolled: the bar slims down and floats a little higher */
+.wrap[data-scrolled] {
+  top: 10px;
+  width: min(calc(100% - 32px), 1010px);
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    translate: -50% -24px;
+  }
+}
+
+/* ---------- the glass ---------- */
+.bar {
+  --mx: 50%;
+  --my: 50%;
+  --shine: 50%;
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 64px;
+  padding: 0 8px 0 20px;
+  border-radius: 999px;
+  /* clear glass: barely tinted, so the page shows through */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.18) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.5),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.55),
+    inset 0 -16px 28px -20px rgba(255, 255, 255, 0.9),
+    0 10px 30px -12px rgba(14, 26, 46, 0.28),
+    0 1px 3px rgba(14, 26, 46, 0.08);
+  color: #0b0e12;
+  backdrop-filter: blur(12px) saturate(1.9) brightness(1.06);
+  -webkit-backdrop-filter: blur(12px) saturate(1.9) brightness(1.06);
+  transition:
+    background 450ms ease,
+    color 450ms ease,
+    box-shadow 450ms ease;
+}
+
+/* Chromium: the page bends at the rim, like light through a glass pill */
+.bar[data-refract] {
+  backdrop-filter: url(#goonj-lens) blur(5px) saturate(1.9) brightness(1.06);
+}
+
+/* over dark surfaces: smoky glass, light text */
+.bar[data-dark] {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.03) 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.2),
+    inset 0 -16px 28px -20px rgba(255, 255, 255, 0.35),
+    0 14px 36px -14px rgba(0, 0, 0, 0.6);
+  color: #f5f7f6;
+  /* keeps light links readable over bright spots behind the glass */
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px) saturate(1.6) brightness(0.8);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6) brightness(0.8);
+}
+
+.bar[data-dark][data-refract] {
+  backdrop-filter: url(#goonj-lens) blur(5px) saturate(1.6) brightness(0.8);
+}
+
+/* the shine: a curved gleam top-left, and a streak that glides as you scroll */
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    radial-gradient(55% 140% at 18% -55%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 62%),
+    linear-gradient(
+        104deg,
+        transparent 40%,
+        rgba(255, 255, 255, 0.55) 48.5%,
+        rgba(255, 255, 255, 0.85) 49.5%,
+        rgba(255, 255, 255, 0.15) 52%,
+        transparent 60%
+      )
+      var(--shine) 0 / 300% 100% no-repeat;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.bar[data-dark] .shine {
+  opacity: 0.32;
+}
+
+/* the rim: a 1px ring brightest top-left and bottom-right, like thick glass */
+.bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.2) 28%,
+    rgba(255, 255, 255, 0.05) 55%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+/* light pooling under the pointer */
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(180px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.55), transparent 65%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.bar:hover::after {
+  opacity: 1;
+}
+
+/* over a dark hero: smoky glass, light text */
+.bar[data-dark] {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.4),
+    inset 0 -12px 24px -16px rgba(255, 255, 255, 0.25),
+    0 14px 36px -14px rgba(0, 0, 0, 0.7);
+  color: #f3f5f4;
+}
+
+.bar[data-dark]::before {
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 30%,
+    rgba(255, 255, 255, 0.02) 55%,
+    rgba(255, 255, 255, 0.35) 100%
+  );
+}
+
+.bar[data-dark]::after {
+  background: radial-gradient(180px circle at var(--mx) var(--my), rgba(255, 255, 255, 0.16), transparent 65%);
+}
+
+/* ---------- contents ---------- */
+.start {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.brand {
+  display: inline-flex;
+}
+
+.logo {
+  display: block;
+  height: 46px;
+}
+
+.links {
+  --px: 0px;
+  --pw: 0px;
+  --po: 0;
+  position: relative;
+  display: flex;
+  gap: 2px;
+}
+
+.links a {
+  position: relative;
+  z-index: 1;
+  padding: 10px 16px;
+  border-radius: 999px;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  opacity: 0.68;
+  transition: opacity 200ms ease;
+}
+
+.links a:hover,
+.links a[aria-current] {
+  opacity: 1;
+}
+
+.links a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 1px;
+}
+
+/* a drop of glass that slides to the hovered link */
+.pill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--pw);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 6px 14px -8px rgba(14, 26, 46, 0.35);
+  opacity: var(--po);
+  translate: var(--px) 0;
+  transition:
+    translate 500ms var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    width 500ms var(--ease-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+    opacity 250ms ease;
+  pointer-events: none;
+}
+
+.bar[data-dark] .pill {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* ---------- the call to action: the glass "Goonj" finish (GlossLink) ---------- */
+.cta {
+  justify-self: end;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  color: #0b0e12;
+  transition: transform 220ms ease;
+}
+
+.cta:hover .arrow {
+  transform: rotate(-45deg);
+}
+
+
+.defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1023px) {
+  .links {
+    display: none;
+  }
+  .bar {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .wrap {
+    top: 24px;
+    width: calc(100% - 40px);
+  }
+  .wrap[data-scrolled] {
+    top: 8px;
+    width: calc(100% - 16px);
+  }
+  .bar {
+    height: 58px;
+    padding-left: 14px;
+  }
+  .logo {
+    height: 38px;
+  }
+  .cta {
+    height: 44px;
+    padding-left: 16px;
+    font-size: 14px;
+  }
+  .arrow {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine {
+    background-position: 50% 0;
+  }
+  .wrap {
+    animation: none;
+  }
+  .pill {
+    transition: opacity 150ms ease;
+  }
+}

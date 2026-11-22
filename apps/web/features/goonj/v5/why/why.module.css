@@ -1,0 +1,312 @@
+/* "Why Goonj": knowing vs doing, a before/after drag compare. */
+
+.options {
+  position: relative;
+  scroll-margin-top: 80px;
+}
+
+.section {
+  padding-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
+}
+
+.sample {
+  margin: 14px 0 0;
+  color: var(--ink-3);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* =========================================================
+   B · knowing vs doing
+   ========================================================= */
+.prompt {
+  max-width: 44rem;
+  margin: 28px auto 0;
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: clamp(19px, 1rem + 0.6vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.prompt span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink-3);
+  font-family: var(--f-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.compareStage {
+  --pos: 50%;
+  position: relative;
+  height: clamp(440px, 58vh, 600px);
+  margin-top: 26px;
+  overflow: hidden;
+  border-radius: var(--r-stage);
+  box-shadow: var(--shadow-float);
+  user-select: none;
+}
+
+.side {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--sky-deep);
+}
+
+.sideShade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 22, 44, 0.45), rgba(10, 22, 44, 0.05) 30%, rgba(10, 22, 44, 0.25) 60%, rgba(10, 22, 44, 0.85));
+}
+
+.sidePhoto {
+  position: absolute;
+  inset: 0 40% 0 0;
+}
+
+.sideAfter .sidePhoto {
+  inset: 0 0 0 40%;
+}
+
+.side:not(.sideAfter) .sidePhoto img {
+  filter: saturate(0.55) brightness(0.85);
+}
+
+.afterClip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--pos));
+}
+
+.sideTag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sideAfter .sideTag {
+  left: auto;
+  right: 20px;
+  background: var(--card);
+  color: var(--ink);
+}
+
+.sideCard {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  display: grid;
+  gap: 12px;
+  width: min(400px, calc(50% - 50px));
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 22px;
+  background: rgba(14, 26, 46, 0.5);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  color: #fff;
+}
+
+.sideAfter .sideCard {
+  left: auto;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--ink);
+}
+
+.sideReply {
+  margin: 0;
+  font-family: var(--f-display);
+  font-size: clamp(16px, 0.9rem + 0.4vw, 19px);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.cmpWave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.cmpWave i {
+  width: 3px;
+  height: 100%;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.75);
+  animation: jitter 0.35s steps(3) infinite alternate;
+}
+
+.cmpWave i:nth-child(3n) {
+  animation-duration: 0.22s;
+}
+
+@keyframes jitter {
+  0% {
+    transform: scaleY(0.15);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.4);
+  }
+}
+
+.cmpWaveCalm i {
+  background: var(--sky-1);
+  animation: wave 1.1s ease-in-out infinite alternate;
+}
+
+.cmpWaveCalm i:nth-child(3n) {
+  animation-duration: 1.1s;
+}
+
+.sideStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.sideStats div {
+  display: grid;
+  gap: 2px;
+}
+
+.sideStats dt {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.sideStats dd {
+  margin: 0;
+  font-family: var(--f-display);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sideMarker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--r-pill);
+  background: var(--coral-soft);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  width: 3px;
+  background: #fff;
+  translate: -50% 0;
+  pointer-events: none;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.handle span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: var(--shadow-float);
+  translate: -50% -50%;
+}
+
+.range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+
+.range:focus-visible + * {
+  outline: none;
+}
+
+.compareStage:has(.range:focus-visible) .handle span {
+  box-shadow:
+    0 0 0 4px var(--sky-3),
+    var(--shadow-float);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  /* phones: no slider, before and after stack as two full cards */
+  .compareStage {
+    display: grid;
+    gap: 12px;
+    height: auto;
+    overflow: visible;
+    box-shadow: none;
+  }
+  .side,
+  .afterClip {
+    position: relative;
+    height: 440px;
+    overflow: hidden;
+    border-radius: 26px;
+    clip-path: none;
+  }
+  .afterClip .side {
+    position: absolute;
+  }
+  .sidePhoto,
+  .sideAfter .sidePhoto {
+    inset: 0;
+  }
+  .sideCard,
+  .sideAfter .sideCard {
+    width: auto;
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+  }
+  .sideAfter .sideTag {
+    left: 14px;
+    right: auto;
+  }
+  .handle,
+  .range,
+  .dragHint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cmpWave i {
+    animation: none;
+  }
+}

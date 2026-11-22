@@ -1,0 +1,229 @@
+/*
+ * "Goonj gets you": full-screen film panels that stack as you scroll.
+ * Two tones alternate, like a duotone print: the clip's light and shade
+ * (greyscale, high contrast) blended by luminosity over a solid colour.
+ * WhyFilm animates [data-frame] (clip-path, scale), [data-media] (yPercent),
+ * [data-dim] (opacity) and the words; without it, the panels just stack.
+ */
+
+.section {
+  position: relative;
+  background: #000;
+}
+
+.intro {
+  padding: var(--section) 0 clamp(40px, 6vw, 80px);
+  background:
+    radial-gradient(50% 60% at 50% 0%, rgba(0, 60, 52, 0.45), transparent 70%),
+    linear-gradient(180deg, var(--ink), #000);
+}
+
+.introInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+.stack {
+  position: relative;
+}
+
+.panel {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+}
+
+/* Time to read each panel before the next one starts to cover it. */
+.panel + .panel {
+  margin-top: 36svh;
+}
+
+.stack::after {
+  /* and a moment on the last one */
+  content: "";
+  display: block;
+  height: 36svh;
+}
+
+.frame {
+  --tint: #ee6418;
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--tint);
+  transform-origin: 50% 35%;
+  will-change: transform, clip-path;
+}
+
+.panel[data-tone="ink"] .frame {
+  --tint: #0a3a3c;
+}
+
+.media {
+  /* the blend sits here (not on the video): this layer is what moves */
+  position: absolute;
+  inset: -14% 0;
+  z-index: 0;
+  mix-blend-mode: luminosity;
+  will-change: transform;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(1) contrast(1.45) brightness(0.6);
+}
+
+.panel[data-tone="ink"] .video {
+  filter: grayscale(1) contrast(1.35) brightness(0.52);
+}
+
+.shade {
+  /* keeps the words legible on whichever side they sit */
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(10, 4, 0, 0.62) 0%, rgba(10, 4, 0, 0.3) 45%, transparent 75%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.35), transparent 40%);
+  pointer-events: none;
+}
+
+.panel[data-side="right"] .shade {
+  background:
+    linear-gradient(270deg, rgba(0, 8, 10, 0.66) 0%, rgba(0, 8, 10, 0.32) 45%, transparent 75%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.35), transparent 40%);
+}
+
+.frame::after {
+  /* still film grain */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.09;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.content {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: max(var(--gutter), calc((100% - var(--maxw)) / 2));
+  translate: 0 -50%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(18px, 2.4vw, 30px);
+  width: min(720px, calc(100% - var(--gutter) * 2));
+  color: #fff;
+}
+
+.panel[data-side="right"] .content {
+  left: auto;
+  right: max(var(--gutter), calc((100% - var(--maxw)) / 2));
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+}
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.26em;
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(46px, 6.6vw, 108px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  /* room for descenders inside the mask */
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
+}
+
+.word > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.body {
+  max-width: 30em;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+
+
+
+.dim {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .content,
+  .panel[data-side="right"] .content {
+    top: auto;
+    /* clear of the phone's sticky "Get early access" bar */
+    bottom: 104px;
+    left: var(--gutter);
+    right: var(--gutter);
+    width: auto;
+    translate: none;
+  }
+
+  .shade,
+  .panel[data-side="right"] .shade {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 50%, transparent 80%);
+  }
+
+
+  .pill {
+    height: 32px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    position: relative;
+  }
+
+  .panel + .panel {
+    margin-top: 0;
+  }
+
+  .stack::after {
+    display: none;
+  }
+}

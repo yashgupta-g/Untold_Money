@@ -1,0 +1,78 @@
+/*
+ * Goonj v6 tokens: the app's own look. Charcoal surfaces, emerald-teal
+ * glows, white pill buttons and one neon-orange accent (from the app's
+ * splash logo). Overrides the v4 token names so every section reskins.
+ * The only place raw colours live for v6.
+ */
+
+.app[data-goonj="app"] {
+  /* page */
+  --page: #111318;
+  --card: #1b1e25;
+  --card-2: #23262f;
+
+  /* "sky" becomes the app's emerald glow */
+  --sky-1: #3f8f7f;
+  --sky-2: #46686a;
+  --sky-3: #294d43;
+  --sky-4: #1e2b2a;
+  --sky-deep: #0d211d;
+  --tint: rgba(21, 72, 63, 0.55);
+
+  --glow-1: #15483f;
+  --glow-2: #294d43;
+  --glow-3: #46686a;
+
+  /* glass */
+  --glass: rgba(255, 255, 255, 0.07);
+  --glass-2: rgba(255, 255, 255, 0.12);
+  --glass-strong: rgba(35, 38, 47, 0.82);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --glass-dark: rgba(8, 10, 14, 0.42);
+
+  /* ink (light on charcoal) */
+  --ink: #f3f5f4;
+  --ink-2: rgba(243, 245, 244, 0.76);
+  --ink-3: rgba(243, 245, 244, 0.58);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-2: rgba(255, 255, 255, 0.16);
+  --on-sky: #ffffff;
+  --on-ink: #111318;
+
+  /* the app's mint headline gradient ("Goonj Knows You Deeply") */
+  --mint-1: #a6e6cf;
+  --mint-2: #5fb8a2;
+
+  /* accent: the app's neon orange */
+  --coral: #f57220;
+  --coral-2: #ff9350;
+  --coral-soft: rgba(245, 114, 32, 0.16);
+  --blue-ui: #5fb8a2;
+  --signal: var(--coral);
+  --signal-2: var(--coral);
+  --signal-soft: var(--coral-soft);
+  --signal-ink: #ffa36b;
+
+  --ios-bg: #171a21;
+  --ios-card: #23262f;
+  --surface-2: #23262f;
+
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 50px -28px rgba(0, 0, 0, 0.8);
+  --shadow-float: 0 24px 60px -24px rgba(0, 0, 0, 0.75);
+  --shadow-device: 0 2px 6px rgba(0, 0, 0, 0.4), 0 40px 80px -24px rgba(0, 0, 0, 0.75), 0 80px 140px -60px rgba(21, 72, 63, 0.6);
+
+  /* the app's emerald backdrop, reused by section glows */
+  --app-glow:
+    radial-gradient(60% 45% at 15% 0%, rgba(21, 72, 63, 0.75), transparent 70%),
+    radial-gradient(50% 40% at 90% 10%, rgba(70, 104, 106, 0.45), transparent 70%);
+}
+
+:global(html):has([data-goonj="app"]) {
+  background: #111318;
+  color-scheme: dark;
+}
+
+/* The black wordmark turns white on charcoal (nav, floating bar, footer). */
+.app[data-goonj="app"] :global(img[src*="goonj-logo-black"]) {
+  filter: invert(1);
+}

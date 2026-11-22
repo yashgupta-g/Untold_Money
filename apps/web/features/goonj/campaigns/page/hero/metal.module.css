@@ -1,0 +1,24 @@
+/* A small black tile holding an orange-metal icon (MetalIcon.tsx). */
+
+.tile {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 70%),
+    #030405;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 8px 20px -8px rgba(0, 0, 0, 0.8);
+}
+
+.svg {
+  width: 38px;
+  height: 38px;
+  overflow: visible;
+}

@@ -1,0 +1,17 @@
+{
+  "name": "goonj-figma",
+  "private": true,
+  "type": "module",
+  "description": "Captures the Goonj campaign page and builds the Figma plugin bundle that recreates it as an interactive prototype.",
+  "scripts": {
+    "capture": "node capture.mjs && node capture-anim.mjs",
+    "serve": "node serve.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "23.11.1"
+  },
+  "dependencies": {
+    "gifenc": "^1.0.3",
+    "pngjs": "^7.0.0"
+  }
+}

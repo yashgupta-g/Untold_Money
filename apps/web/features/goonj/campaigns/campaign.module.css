@@ -1,0 +1,1528 @@
+/*
+ * Goonj campaign / limited-release page. goonj.com's own palette (deep teal
+ * ink, orange #f47220, warm cream). Built to convert: a one-row sign-up
+ * form sits in the middle of the hero, so it's visible on arrival, with the
+ * campaign's photo or video below it; real stories come next as proof, then
+ * the reasons to join early.
+ */
+
+.theme {
+  --ink: #010d12;
+  --deep: #020f15;
+  --card: #031f25;
+  --teal: #00302e;
+  --teal-2: #0c2e34;
+  --cream: #faf8f5;
+  --cream-2: rgba(250, 248, 245, 0.72);
+  --muted: #97a8ab;
+  --line: rgba(250, 248, 245, 0.1);
+  --line-2: rgba(250, 248, 245, 0.18);
+  --orange: #f47220;
+  --orange-deep: #c45a17;
+  --orange-soft: rgba(244, 114, 32, 0.14);
+  --paper: #fbf8f3;
+  --paper-line: rgba(1, 13, 18, 0.12);
+  --text-strong: #010d12;
+  --text-muted: #49585d;
+  --error: #e5484d;
+  --error-ink: #b42a30;
+
+  --f-display: var(--font-general), "Helvetica Neue", Arial, sans-serif;
+  /* one family across the page: General Sans for headings and body alike */
+  --f-body: var(--font-general), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --maxw: 1240px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --section: clamp(72px, 10vw, 136px);
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  min-height: 100svh;
+}
+
+/* Lenis smooth scroll (SmoothScroll.tsx) */
+:global(html.lenis),
+:global(html.lenis body) {
+  height: auto;
+}
+
+:global(.lenis.lenis-stopped) {
+  overflow: clip;
+}
+
+.theme *,
+.theme *::before,
+.theme *::after {
+  box-sizing: border-box;
+}
+
+.theme :where(h1, h2, h3, p, ol, ul, figure, blockquote) {
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: calc(var(--maxw) + var(--gutter) * 2);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.accent {
+  background: linear-gradient(95deg, #ff9a52 0%, var(--orange) 55%, #f25c1b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cream-2);
+  letter-spacing: 0.01em;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px var(--orange-soft);
+}
+
+.h2 {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(34px, 4.4vw, 60px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.lede {
+  color: var(--cream-2);
+  font-size: clamp(16px, 1.25vw, 18px);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* Buttons ----------------------------------------------------------------- */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 54px;
+  padding: 0 6px 0 24px;
+  border-radius: 999px;
+  border: 0;
+  /* the page's one button style: glossy warm cream with an ink arrow disc */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, #fff8ef 0%, #f3e2cf 100%);
+  color: #120a04;
+  font: 500 16px/1 var(--f-display);
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 10px 26px -10px rgba(244, 114, 32, 0.6);
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 14px 32px -10px rgba(244, 114, 32, 0.85);
+}
+
+.btnArrow {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #1c2a2e, #050d10);
+  color: #ffb37a;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    0 4px 10px -4px rgba(0, 0, 0, 0.6);
+}
+
+.btnArrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Nav --------------------------------------------------------------------- */
+
+
+
+.logo {
+  display: block;
+  height: 38px;
+  width: auto;
+}
+
+
+
+
+
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .footerGlow i {
+    animation: none;
+  }
+}
+
+
+/* Hero (see page/hero.module.css) ----------------------------------------- */
+
+.badge {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 999px;
+  /* the same borderless frosted glass as the nav pill */
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, 0.55);
+  /* same face, size and weight as the nav links */
+  font-family: var(--f-display);
+  font-size: 14.5px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: rgba(250, 248, 245, 0.88);
+}
+
+
+.h1 {
+  margin-top: 26px;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.bullets li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15.5px;
+  color: var(--cream);
+}
+
+.tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  color: var(--orange);
+}
+
+.tick svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Proof: real early users' faces, linking to their stories */
+.proof {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 20px 7px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(250, 248, 245, 0.04);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+
+.proof:hover {
+  background: rgba(250, 248, 245, 0.08);
+  border-color: var(--line-2);
+}
+
+.proof:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
+
+.faces {
+  display: flex;
+}
+
+.face {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-left: -11px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #031a1f;
+  background: var(--teal-2);
+}
+
+.face:first-child {
+  margin-left: 0;
+}
+
+.face img {
+  object-fit: cover;
+  object-position: 50% 25%;
+}
+
+.proofText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.proofTitle {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.proofLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.proofLink svg {
+  width: 12px;
+  height: 12px;
+}
+
+.creator {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: rgba(2, 15, 21, 0.5);
+  border: 1px solid var(--line-2);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  line-height: 1.3;
+}
+
+.creatorName {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.creatorHandle {
+  font-size: 13px;
+  color: var(--cream-2);
+}
+
+/* Sign-up card (step 2) ---------------------------------------------------- */
+
+/* Dark frosted glass, like the sign-up bar and the access pass: a hairline
+   edge with a warm beam travelling around it, glass fields, cream text. */
+.formCard {
+  --edge: 1px;
+  container: card / inline-size;
+  max-width: 640px;
+  margin-inline: auto;
+  position: relative;
+  isolation: isolate;
+  color-scheme: dark;
+  color: var(--cream);
+  /* the form speaks in the same face as the nav and the headline */
+  font-family: var(--f-display);
+  border-radius: 28px;
+  padding: clamp(22px, 2.6vw, 32px);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(244, 114, 32, 0.12), transparent 60%),
+    linear-gradient(180deg, rgba(9, 30, 35, 0.78), rgba(2, 13, 17, 0.88));
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  backdrop-filter: blur(24px) saturate(150%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 90px -36px rgba(0, 0, 0, 0.9);
+}
+
+.formCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: var(--edge);
+  background:
+    conic-gradient(
+      from var(--bar-angle),
+      transparent 0deg 260deg,
+      rgba(244, 114, 32, 0.8) 300deg,
+      #ffe0c4 322deg,
+      rgba(244, 114, 32, 0.8) 342deg,
+      transparent 360deg
+    ),
+    linear-gradient(rgba(250, 248, 245, 0.12), rgba(250, 248, 245, 0.12));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  animation: barSpin 7s linear infinite;
+  pointer-events: none;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.progressText {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  font-variant-numeric: tabular-nums;
+  color: #ffb37a;
+}
+
+.progressBars {
+  display: flex;
+  gap: 6px;
+}
+
+.progressBars i {
+  width: 28px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(250, 248, 245, 0.14);
+  transition: background 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.progressBars i[data-on] {
+  background: linear-gradient(90deg, #ffb37a, var(--orange));
+  box-shadow: 0 0 10px rgba(244, 114, 32, 0.6);
+}
+
+.formHead {
+  margin-bottom: 22px;
+}
+
+.formTitle {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(26px, 2.4vw, 32px);
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.formSub {
+  margin-top: 10px;
+  font-size: 15.5px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--cream-2);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 12px;
+}
+
+.field {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.half {
+  grid-column: span 1;
+}
+
+@container card (min-width: 360px) {
+  .pairHalf {
+    grid-column: span 1;
+  }
+}
+
+.label {
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--cream);
+}
+
+.req {
+  color: var(--orange);
+  margin-left: 2px;
+}
+
+.optional {
+  float: right;
+  font-weight: 400;
+  color: rgba(250, 248, 245, 0.42);
+  font-size: 13.5px;
+}
+
+.input {
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(250, 248, 245, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cream);
+  caret-color: var(--orange);
+  font: 400 16.5px/1.2 var(--f-display);
+  letter-spacing: -0.005em;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+  appearance: none;
+}
+
+textarea.input {
+  height: auto;
+  min-height: 110px;
+  padding: 14px 18px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+select.input {
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5l5-5' stroke='%23faf8f5' stroke-opacity='.7' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+select.input option {
+  background: #0b2226;
+  color: var(--cream);
+}
+
+.input::placeholder {
+  color: rgba(250, 248, 245, 0.34);
+  font-weight: 400;
+}
+
+.input:hover {
+  border-color: rgba(250, 248, 245, 0.22);
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+/* focus: no ring, just a touch lighter, so you can see where you're typing */
+.input:focus,
+.input:focus-visible {
+  outline: none;
+  border-color: rgba(250, 248, 245, 0.24);
+  background-color: rgba(255, 255, 255, 0.09);
+}
+
+/* Autofill: the browser paints its own fill colour on autofilled fields.
+   Delaying that background change "forever" keeps our glass showing through,
+   and the text keeps the page's colour and font. */
+.input:autofill,
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--cream);
+  caret-color: var(--orange);
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}
+
+.input:-webkit-autofill::first-line {
+  font-family: var(--f-display);
+  font-size: 16.5px;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.input[aria-invalid="true"]:focus {
+  border-color: var(--error);
+}
+
+.phone {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: 8px;
+}
+
+.segment {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  border: 1px solid rgba(250, 248, 245, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  align-self: flex-start;
+  flex-wrap: wrap;
+}
+
+.segment label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--cream-2);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.segment label:hover {
+  color: var(--cream);
+}
+
+.segment input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segment label:has(input:checked) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #fff8ef, #f3e2cf);
+  color: #120a04;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 12px -6px rgba(244, 114, 32, 0.6);
+}
+
+.segment label:has(input:focus-visible) {
+  outline: 2px solid var(--orange);
+  outline-offset: 1px;
+}
+
+.error {
+  font-size: 13px;
+  color: #ff9b94;
+}
+
+.consent {
+  grid-column: span 2;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--cream-2);
+  line-height: 1.45;
+}
+
+.consent input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--orange);
+}
+
+.consent a {
+  color: var(--cream);
+  text-underline-offset: 2px;
+}
+
+/* the main button: the same glossy warm cream as "Count me in" */
+.submit {
+  grid-column: span 2;
+  margin-top: 6px;
+  width: 100%;
+  height: 56px;
+  padding: 0 7px 0 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, #fff8ef 0%, #f3e2cf 100%);
+  color: #120a04;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 12px 30px -12px rgba(244, 114, 32, 0.6);
+}
+
+.submit:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, #fffaf4 0%, #f6e7d6 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 16px 36px -12px rgba(244, 114, 32, 0.85);
+}
+
+.submit .ctaText {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 16.5px;
+  letter-spacing: -0.01em;
+}
+
+.submit .ctaText > span {
+  background: none;
+  color: #120a04;
+  animation: none;
+}
+
+.submit:disabled:not([aria-busy="true"]) {
+  opacity: 0.7;
+  cursor: progress;
+  transform: none;
+}
+
+/* Busy (saving / sending): the button stays solid; the words shimmer and
+   the disc's arrow becomes a small voice wave. */
+.submit[aria-busy="true"],
+.barBtn[aria-busy="true"] {
+  opacity: 1;
+  cursor: progress;
+}
+
+.busyText {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  white-space: nowrap;
+  background: linear-gradient(90deg, #120a04 0%, #120a04 35%, #d4621a 50%, #120a04 65%, #120a04 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: busyShimmer 1.6s linear infinite;
+}
+
+@keyframes busyShimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 2.5px;
+  height: 16px;
+}
+
+.wave i {
+  width: 2.5px;
+  height: 100%;
+  border-radius: 2px;
+  background: #160800;
+  transform-origin: center;
+  animation: waveBar 0.9s ease-in-out infinite;
+}
+
+.wave i:nth-child(2) {
+  animation-delay: -0.6s;
+}
+
+.wave i:nth-child(3) {
+  animation-delay: -0.3s;
+}
+
+.wave i:nth-child(4) {
+  animation-delay: -0.75s;
+}
+
+@keyframes waveBar {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.actions {
+  grid-column: span 2;
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.actions .submit {
+  flex: 1;
+  margin-top: 0;
+}
+
+.back {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid rgba(250, 248, 245, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cream);
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+}
+
+.back:hover {
+  border-color: rgba(250, 248, 245, 0.28);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.back svg {
+  width: 18px;
+  height: 18px;
+}
+
+.legal {
+  grid-column: span 2;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.legal a {
+  color: var(--cream);
+  text-underline-offset: 2px;
+}
+
+.trustRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-family: var(--f-display);
+  font-size: 13.5px;
+  color: var(--cream-2);
+  text-align: center;
+}
+
+/* Inline bar: step 1 as one row, in the middle of the hero */
+.barWrap {
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+@property --bar-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+/* Frosted glass: a translucent, blurred pane with a lit top edge, inside a
+   hairline ring where a warm arc of light keeps travelling. ::before repeats
+   the arc, blurred, as a soft glow behind the glass. */
+.bar {
+  --bar-ring: conic-gradient(
+    from var(--bar-angle),
+    rgba(250, 248, 245, 0.16) 0deg,
+    rgba(250, 248, 245, 0.16) 210deg,
+    rgba(255, 154, 82, 0.9) 270deg,
+    #ffe0c4 305deg,
+    rgba(244, 114, 32, 0.9) 330deg,
+    rgba(250, 248, 245, 0.16) 360deg
+  );
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 780px;
+  padding: 6px;
+  border: 0;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
+    rgba(4, 22, 27, 0.5);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+    0 24px 60px -24px rgba(0, 0, 0, 0.85);
+  animation: barSpin 6s linear infinite;
+  transition: box-shadow 0.3s var(--ease);
+}
+
+.bar::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--bar-ring);
+  filter: blur(22px);
+  opacity: 0.22;
+  transition: opacity 0.3s var(--ease), filter 0.3s var(--ease);
+  pointer-events: none;
+}
+
+/* the ring itself: only the 1.5px edge, so the arc never shows through the glass */
+.bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: var(--bar-ring);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+
+
+@keyframes barSpin {
+  to {
+    --bar-angle: 360deg;
+  }
+}
+
+.barField {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* the email gets a little more room than the names */
+.barField:has(input[type="email"]) {
+  flex: 1.4;
+}
+
+.barField + .barField::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 15px;
+  bottom: 15px;
+  width: 1px;
+  background: rgba(250, 248, 245, 0.16);
+}
+
+.bar .input {
+  height: 52px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--cream);
+  caret-color: var(--orange);
+  transition:
+    background 0.25s,
+    box-shadow 0.25s;
+}
+
+.bar .input::placeholder {
+  color: rgba(250, 248, 245, 0.5);
+}
+
+.bar .input:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.bar .input:focus,
+.bar .input:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: none;
+}
+
+
+
+/* the bar's fields have their own transitions; keep the autofill delay here too */
+.bar .input:autofill,
+.bar .input:-webkit-autofill,
+.bar .input:-webkit-autofill:hover,
+.bar .input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--cream);
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}
+
+.bar .input[aria-invalid="true"] {
+  box-shadow: inset 0 0 0 1.5px var(--error);
+}
+
+/* The button: glossy warm cream, the one solid thing on the glass. */
+.barBtn {
+  flex: none;
+  height: 52px;
+  padding: 0 6px 0 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, #fff8ef 0%, #f3e2cf 100%);
+  color: #120a04;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 10px 26px -10px rgba(244, 114, 32, 0.6);
+}
+
+.barBtn:hover {
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 52%),
+    linear-gradient(180deg, #fffaf4 0%, #f6e7d6 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 -1px 0 rgba(120, 60, 20, 0.2) inset,
+    0 14px 32px -10px rgba(244, 114, 32, 0.85);
+}
+
+.barBtn .ctaText {
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.barBtn .ctaText > span {
+  background: none;
+  color: #120a04;
+  animation: none;
+}
+
+/* Button label: warm gradient text that drifts slowly; on hover the label
+   rolls up and a copy rolls in from below. */
+.ctaText {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.ctaText > span {
+  grid-area: 1 / 1;
+  background: linear-gradient(90deg, var(--cream) 0%, #ffd2a8 30%, #ff9a52 50%, #ffd2a8 70%, var(--cream) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ctaDrift 5s linear infinite;
+  transition: transform 0.45s var(--ease);
+}
+
+.ctaText > span + span {
+  transform: translateY(110%);
+}
+
+.btn:hover .ctaText > span:first-child {
+  transform: translateY(-110%);
+}
+
+.btn:hover .ctaText > span + span {
+  transform: none;
+}
+
+@keyframes ctaDrift {
+  to {
+    background-position: -220% 0;
+  }
+}
+
+/* The orange disc with the arrow, which nudges forward now and then. */
+.ctaDisc {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9a52, var(--orange) 55%, #f25c1b);
+  color: #160800;
+  box-shadow: 0 6px 16px -6px rgba(244, 114, 32, 0.9);
+  transition: transform 0.3s var(--ease);
+}
+
+.ctaDisc svg {
+  width: 17px;
+  height: 17px;
+  animation: nudge 2.4s var(--ease) infinite;
+}
+
+.btn:hover .ctaDisc {
+  transform: scale(1.08) rotate(-45deg);
+}
+
+.btn:hover .ctaDisc svg {
+  animation: none;
+}
+
+@keyframes nudge {
+  0%,
+  60%,
+  100% {
+    transform: none;
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* A light sweep across the call to action every few seconds. */
+.barBtn,
+.submit {
+  position: relative;
+  overflow: hidden;
+}
+
+.barBtn::after,
+.submit::after {
+  content: "";
+  z-index: 0;
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 45%;
+  /* bright, since both buttons are cream now */
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.75), transparent);
+  transform: translateX(-120%) skewX(-18deg);
+  animation: sheen 3.6s var(--ease) 1.2s infinite;
+  pointer-events: none;
+}
+
+.barBtn:disabled::after,
+.submit:disabled::after {
+  animation: none;
+}
+
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  45%,
+  100% {
+    transform: translateX(340%) skewX(-18deg);
+  }
+}
+
+.barAlert {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 14px;
+  font-size: 13.5px;
+  color: #ffb4a8;
+}
+
+.barLegal {
+  max-width: 36em;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+  text-wrap: balance;
+}
+
+.barLegal a {
+  color: var(--cream);
+  text-underline-offset: 2px;
+}
+
+.barWrap .trustRow {
+  margin-top: 0;
+  color: var(--cream-2);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 8px;
+    border-radius: var(--r-lg);
+  }
+
+  .barField + .barField::before {
+    display: none;
+  }
+
+  .bar .input {
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(250, 248, 245, 0.12);
+    border-radius: var(--r-md);
+  }
+
+  .barBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.alert {
+  grid-column: span 2;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(229, 72, 77, 0.3);
+  background: rgba(229, 72, 77, 0.12);
+  color: #ffb4ae;
+  font-size: 14px;
+}
+
+.previewNote {
+  grid-column: span 2;
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.honey {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+
+
+
+
+/* Footer ------------------------------------------------------------------ */
+
+.footer {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(48px, 6vw, 88px) 0 32px;
+  background: var(--ink);
+}
+
+/* Warm light rising behind the echo rings, drifting slowly (kept low so
+   the dark gaps between the rings stay crisp). */
+.footerGlow {
+  position: absolute;
+  inset: auto 0 0;
+  height: 70%;
+  z-index: -1;
+  opacity: 0.45;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 45%);
+  mask-image: linear-gradient(180deg, transparent, #000 45%);
+}
+
+.footerGlow i {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+}
+
+.footerGlow i:nth-child(1) {
+  left: 30%;
+  bottom: -30%;
+  width: 46%;
+  height: 90%;
+  background: radial-gradient(closest-side, rgba(244, 114, 32, 0.85), rgba(196, 70, 16, 0.4) 60%, transparent);
+  animation: glowA 18s ease-in-out infinite alternate;
+}
+
+.footerGlow i:nth-child(2) {
+  left: 8%;
+  bottom: -20%;
+  width: 38%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(0, 96, 88, 0.8), transparent);
+  animation: glowB 22s ease-in-out infinite alternate;
+}
+
+.footerGlow i:nth-child(3) {
+  right: 4%;
+  bottom: -26%;
+  width: 34%;
+  height: 76%;
+  background: radial-gradient(closest-side, rgba(255, 176, 122, 0.55), rgba(244, 114, 32, 0.25) 55%, transparent);
+  animation: glowC 16s ease-in-out infinite alternate;
+}
+
+@keyframes glowA {
+  to {
+    transform: translate(12%, -8%) scale(1.12);
+  }
+}
+
+@keyframes glowB {
+  to {
+    transform: translate(30%, -6%) scale(0.9);
+  }
+}
+
+@keyframes glowC {
+  to {
+    transform: translate(-28%, -10%) scale(1.1);
+  }
+}
+
+
+
+
+.footerCols {
+  display: grid;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  padding: 48px 0;
+}
+
+.footerBrand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--cream-2);
+}
+
+.footerBrand .logo {
+  height: 52px;
+}
+
+.colTitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+.colLinks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.colLinks a {
+  color: var(--cream);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+.colLinks a:hover {
+  color: var(--orange);
+}
+
+.footerBase {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* Mobile CTA -------------------------------------------------------------- */
+
+.mobileCta {
+  display: none;
+}
+
+/* Reveal motion ----------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme[data-motion] [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.6s var(--ease),
+      transform 0.6s var(--ease);
+    transition-delay: calc(var(--i, 0) * 60ms);
+  }
+
+  .theme[data-motion] [data-reveal][data-in] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* slower, calmer busy cues rather than none, so waiting still reads as waiting */
+  .busyText {
+    animation-duration: 3.2s;
+  }
+
+  .wave i {
+    animation-duration: 1.8s;
+  }
+
+  .bar,
+  .barBtn::after,
+  .submit::after,
+  .ctaText > span,
+  .ctaDisc svg {
+    animation: none;
+  }
+}
+
+/* Responsive -------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+
+  .footerCols {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footerBrand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .h1 {
+    margin-top: 18px;
+    font-size: clamp(34px, 9.6vw, 42px);
+  }
+
+  .fields {
+    grid-template-columns: 1fr;
+  }
+
+  .half,
+  .field,
+  .consent,
+  .submit,
+  .actions,
+  .legal,
+  .alert,
+  .previewNote {
+    grid-column: 1 / -1;
+  }
+
+
+
+  .footerCols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobileCta {
+    display: flex;
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 45;
+    transition:
+      transform 0.35s var(--ease),
+      opacity 0.35s var(--ease);
+  }
+
+  .mobileCta[data-hidden] {
+    transform: translateY(140%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .mobileCta .btn {
+    width: 100%;
+  }
+
+  .footer {
+    padding-bottom: 96px;
+  }
+}

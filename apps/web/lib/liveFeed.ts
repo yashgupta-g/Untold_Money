@@ -10,6 +10,8 @@
  * Protocol: apps/api/app/modules/stream/router.py.
  */
 
+import { STREAM_URL } from "./constants";
+
 export interface LiveTick {
   symbol: string;
   ltp: number;
@@ -41,8 +43,8 @@ const OFF: LiveSnapshot = { live: false, state: "off", provider: null, prices: {
 const MAX_BACKOFF_MS = 30_000;
 
 function socketUrl(): string {
-  const base = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-  return `${base.replace(/^http/, "ws").replace(/\/$/, "")}/api/v1/stream`;
+  const base = STREAM_URL || window.location.origin;
+  return `${base.replace(/^http/, "ws")}/api/v1/stream`;
 }
 
 class LiveFeed {

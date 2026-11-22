@@ -5,13 +5,12 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
+import { API_URL } from "@/lib/constants";
 import type { ApiResponse, AuthResponse } from "@/types";
 import { logout, setCredentials } from "../slices/authSlice";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 const rawBaseQuery = fetchBaseQuery({
-  baseUrl: `${API_BASE_URL}/api/v1`,
+  baseUrl: `${API_URL}/api/v1`,
   // Sends the httpOnly refresh cookie to /auth/* (the cookie's path limits it).
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {

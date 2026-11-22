@@ -1,0 +1,124 @@
+/*
+ * Footer echo rings (EchoRings.tsx). Bands are thick stroked arcs; their
+ * opacity comes from --o (warm inside, faint outside), and a slow pulse
+ * travels outward through them (--i staggers it).
+ */
+
+.wrap {
+  position: relative;
+  margin: clamp(24px, 4vw, 56px) calc(var(--gutter) * -1) 0;
+  /* melt the outer edge of the rings into the footer */
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 100%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(120% 100% at 50% 100%, #000 55%, transparent 100%);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  overflow: visible;
+}
+
+.band {
+  stroke: #f47220;
+  stroke-opacity: var(--o);
+}
+
+.ring:nth-child(even) .band {
+  /* alternate a deeper ember so neighbouring bands read apart */
+  stroke: #c9531a;
+}
+
+.label {
+  fill: rgba(255, 226, 204, 0.62);
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.24em;
+}
+
+.logo {
+  filter: drop-shadow(0 0 18px rgba(244, 114, 32, 0.55));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* an echo: a brightening that travels outward, ring by ring */
+  .band {
+    animation: echo 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.32s);
+  }
+
+  .label {
+    animation: echoText 5s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.32s);
+  }
+
+  .logo {
+    animation: beat 5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}
+
+@keyframes echo {
+  0%,
+  100% {
+    stroke-opacity: var(--o);
+  }
+  18% {
+    stroke-opacity: calc(var(--o) + 0.22);
+  }
+}
+
+@keyframes echoText {
+  0%,
+  100% {
+    fill: rgba(255, 226, 204, 0.62);
+  }
+  18% {
+    fill: rgba(255, 240, 228, 0.95);
+  }
+}
+
+@keyframes beat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  8% {
+    transform: scale(1.06);
+  }
+}
+
+/* Rings rise into place as the footer scrolls in, where the browser can tie
+   animation to scroll; elsewhere they're simply there. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ring {
+      animation: ringIn linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i) * 6%) entry 100%;
+      transform-box: view-box;
+      transform-origin: 50% 100%;
+    }
+  }
+}
+
+@keyframes ringIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@media (max-width: 720px) {
+  .svg {
+    /* taller box + "slice" crops the sides, so the centre stays readable */
+    aspect-ratio: 1.15 / 1;
+  }
+
+  .label {
+    font-size: 22px;
+    letter-spacing: 0.18em;
+  }
+}

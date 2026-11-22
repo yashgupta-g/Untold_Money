@@ -1,0 +1,26 @@
+/* "Why join early": the section and its heading row. */
+
+.section {
+  position: relative;
+  padding: var(--section) 0 calc(var(--section) + 40px);
+  overflow: hidden;
+  background:
+    radial-gradient(40% 35% at 50% 55%, rgba(244, 114, 32, 0.07), transparent 70%),
+    linear-gradient(180deg, var(--ink), #03171c 55%, var(--ink));
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px 40px;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 760px;
+}

@@ -1,0 +1,97 @@
+/*
+ * Goonj v4 tokens: soft sky, frosted glass, one warm coral accent.
+ * The only place raw colours live for v4.
+ */
+
+.theme {
+  /* page */
+  --page: #e8eff9;
+  --card: #ffffff;
+  --card-2: #f3f7fd;
+
+  /* sky stage */
+  --sky-1: #4674b8;
+  --sky-2: #6f9ad3;
+  --sky-3: #a6c3e9;
+  --sky-4: #d9e6f7;
+  --sky-deep: #1f3f73;
+  --tint: rgba(56, 98, 168, 0.55); /* blue duotone over photos */
+
+  /* glass */
+  --glass: rgba(255, 255, 255, 0.16);
+  --glass-2: rgba(255, 255, 255, 0.3);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-line: rgba(255, 255, 255, 0.42);
+  --glass-dark: rgba(18, 36, 68, 0.32);
+  --warm-glass: rgba(120, 74, 60, 0.42); /* phone widgets over a warm photo */
+
+  /* ink */
+  --ink: #0e1a2e;
+  --ink-2: #3a4860;
+  --ink-3: #66748c; /* 4.7:1 on --page */
+  --line: rgba(14, 26, 46, 0.09);
+  --line-2: rgba(14, 26, 46, 0.16);
+  --on-sky: #ffffff;
+  --on-sky-2: rgba(255, 255, 255, 0.84);
+  --on-sky-3: rgba(255, 255, 255, 0.66);
+
+  /* accent */
+  --coral: #f2774f;
+  --coral-2: #ff9a76;
+  --coral-soft: #fde6dd;
+  --blue-ui: #4f86d8; /* data rings */
+
+  /* phone frame (shared Phone component) */
+  --ti-1: #3a3d44;
+  --ti-2: #16181c;
+  --ti-3: #4a4e56;
+  --ti-4: #0f1013;
+  --bezel: #050506;
+  --ios-bg: #f4f7fb;
+  --ios-card: #ffffff;
+  --ios-dark: #0b0d12;
+  --ios-dark-2: #171a21;
+  --shadow-device: 0 2px 6px rgba(14, 26, 46, 0.2), 0 40px 80px -24px rgba(14, 26, 46, 0.55),
+    0 80px 140px -60px rgba(14, 26, 46, 0.45);
+  --lab-text: #ffffff;
+  --lab-text-2: rgba(255, 255, 255, 0.78);
+  --lab-text-3: rgba(255, 255, 255, 0.55);
+  --lab-3: rgba(255, 255, 255, 0.12);
+  --signal: var(--coral);
+  --signal-2: var(--coral);
+  --signal-soft: var(--coral-soft);
+  --signal-ink: #b04a24;
+  --surface-2: #e6edf6;
+  --line-2-ios: rgba(14, 26, 46, 0.16);
+
+  /* shape */
+  --r-stage: 36px;
+  --r-lg: 28px;
+  --r-md: 20px;
+  --r-sm: 14px;
+  --r-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(14, 26, 46, 0.04), 0 18px 44px -22px rgba(14, 26, 46, 0.22);
+  --shadow-float: 0 24px 60px -24px rgba(14, 26, 46, 0.35);
+
+  /* type */
+  --f-display: var(--font-general), "Helvetica Neue", Arial, sans-serif;
+  --f-body: var(--font-switzer), -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --f-hl: var(--f-display);
+  --f-mono: var(--f-body);
+  --fs-hero: clamp(46px, 6.4vw, 104px);
+  --fs-h2: clamp(36px, 4.4vw, 68px);
+
+  /* layout */
+  --gutter: clamp(16px, 4vw, 48px);
+  --maxw: 1280px;
+  --section: clamp(4.5rem, 2.5rem + 4.5vw, 7rem);
+
+  /* motion */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:global(html):has(.theme) {
+  background: #e8eff9;
+  color-scheme: light;
+}

@@ -1,0 +1,178 @@
+/*
+ * "Why join early" reel: big rounded wallpaper cards in an endless row that
+ * drifts right to left. Reel.tsx moves .track and each card's [data-bg]; without JS
+ * or with reduced motion it's a plain swipeable row (duplicates hidden).
+ */
+
+.reel {
+  position: relative;
+  padding: 8px 0 0;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.reel[data-drag] {
+  cursor: grabbing;
+}
+
+.track {
+  --card-w: clamp(280px, 31vw, 520px);
+  --card-gap: clamp(12px, 1.4vw, 22px);
+  display: flex;
+  gap: var(--card-gap);
+  width: max-content;
+  will-change: transform;
+}
+
+.reel:not([data-live]) {
+  cursor: auto;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+}
+
+.reel:not([data-live])::-webkit-scrollbar {
+  display: none;
+}
+
+.reel:not([data-live]) [data-dup] {
+  display: none;
+}
+
+.card {
+  position: relative;
+  flex: none;
+  width: var(--card-w);
+  aspect-ratio: 16 / 10.4;
+  border-radius: clamp(20px, 1.8vw, 28px);
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(120% 90% at 75% 30%, #12191b, #07090a 70%);
+  scroll-snap-align: start;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 40px 90px -50px rgba(0, 0, 0, 0.9);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  transform: scale(1.16);
+  will-change: transform;
+}
+
+
+.card::after {
+  /* keeps the text legible on any wallpaper */
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.32) 0%, transparent 24%),
+    linear-gradient(0deg, rgba(4, 7, 8, 0.9) 0%, rgba(4, 7, 8, 0.45) 34%, transparent 60%);
+  pointer-events: none;
+}
+
+
+
+/* still film grain over the art */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.08;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.text {
+  position: absolute;
+  left: clamp(18px, 2.2vw, 34px);
+  right: clamp(18px, 2.2vw, 34px);
+  bottom: clamp(18px, 2.2vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #fff;
+}
+
+.title {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(20px, 1.6vw, 26px);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  max-width: 16em;
+}
+
+.body {
+  max-width: 34em;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: clamp(13px, 0.9vw, 14.5px);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.toggle {
+  position: absolute;
+  right: var(--gutter);
+  bottom: -60px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: rgba(250, 248, 245, 0.04);
+  color: var(--cream);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle:hover {
+  background: rgba(250, 248, 245, 0.1);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
+}
+
+.toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Off screen: freeze any loops inside the cards too. */
+.reel[data-idle] * {
+  animation-play-state: paused !important;
+}
+
+@media (max-width: 720px) {
+  .track {
+    --card-w: 78vw;
+  }
+
+  .card {
+    aspect-ratio: 4 / 3.6;
+  }
+
+
+
+  .title {
+    font-size: 21px;
+  }
+
+  .body {
+    font-size: 14px;
+  }
+}
