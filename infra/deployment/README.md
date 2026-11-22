@@ -20,8 +20,10 @@ either. Railway's services sleep when idle, and Render has no free workers.
    - Shape: **Ampere → VM.Standard.A1.Flex**, 2 OCPU, 12 GB.
    - Add SSH keys: **Save private key**, and keep the file safe, for example
      `~/.ssh/oracle.key`.
-   - If it says "Out of capacity", try another availability domain or try
-     again later.
+   - If it says "Out of capacity" (common, and Mumbai/Hyderabad have only
+     one availability domain), let `infra/deployment/oracle-create.sh`
+     retry for you. It keeps launching until Oracle has room, then prints
+     the public IP. Setup steps are at the top of the script.
 3. Open the instance → **Subnet → Default security list → Add ingress
    rules**. Add source `0.0.0.0/0` with TCP destination ports `80` and `443`.
 4. Copy the instance's **public IP**.
