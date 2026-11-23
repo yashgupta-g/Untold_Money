@@ -76,6 +76,38 @@ async def connect(
     return _ok("Continue on your broker's sign-in page", {"login_url": login_url})
 
 
+class PasswordLogin(BaseModel):
+    """
+    Login details for brokers that only offer login by password (Angel One).
+    Used once to start the session; never stored or logged.
+    """
+
+    client_code: str = Field(..., min_length=3, max_length=20, pattern=r"^[A-Za-z0-9]+$")
+    pin: str = Field(..., min_length=4, max_length=8, pattern=r"^\d+$")
+    totp: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$")
+
+    def __repr__(self) -> str:  # keep the PIN out of tracebacks and logs
+        return f"PasswordLogin(client_code={self.client_code!r})"
+
+    __str__ = __repr__
+
+
+@router.post("/{broker}/login", summary="Link a broker with your login details (Angel One)")
+async def password_login(
+    broker: str, data: PasswordLogin, session: AsyncSessionDep, user_id: CurrentUserIdDep
+) -> dict:
+    service = BrokerService(session)
+    conn = await service.password_connect(
+        user_id, broker, data.client_code.strip().upper(), data.pin, data.totp
+    )
+    try:
+        await service.sync(conn)
+    except AppException as exc:
+        # Linked fine; the first sync can be retried from the page.
+        logger.warning("broker_initial_sync_failed", broker=broker, error=exc.message)
+    return _ok("Connected. Holdings and today's trades are synced.", service.connection_view(conn))
+
+
 @router.get("/{broker}/callback", summary="Broker redirects here after sign-in", include_in_schema=False)
 async def callback(
     broker: str,

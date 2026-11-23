@@ -1,10 +1,21 @@
 """
 Angel One SmartAPI adapter (read-only).
 
+Login: Angel One's publisher login (redirect) only works for old API keys.
+SmartAPI staff: "The redirect URL is available for the old API keys only …
+we request the users to use 2FA using login by password API". New keys get
+"Invalid redirect url" on publisher-login. So the user enters their client
+code, PIN and current TOTP once; password_login() exchanges them for a
+session and they're never stored or logged. Only the session tokens are
+kept, encrypted, like any other broker.
+
 Verified against the official SDK (angel-one/smartapi-python, smartConnect.py):
-- Root https://apiconnect.angelone.in. Publisher (third-party) login at
-  https://smartapi.angelone.in/publisher-login?api_key=…, so the app never
-  handles the user's PIN or TOTP.
+- Root https://apiconnect.angelone.in. Login by password:
+  POST /rest/auth/angelbroking/user/v1/loginByPassword with
+  {clientcode, password (the PIN), totp}; data has jwtToken, refreshToken,
+  feedToken. Same headers as every call, without Authorization.
+- Publisher (third-party) login at
+  https://smartapi.angelone.in/publisher-login?api_key=… (old keys only).
 - Routes: user/v1/getProfile, user/v1/getRMS, portfolio/v1/getHolding,
   order/v1/getPosition, order/v1/getTradeBook (under /rest/secure/angelbroking/).
 - Headers: Authorization "Bearer <jwt>", X-PrivateKey (api key),
@@ -47,6 +58,7 @@ from app.modules.brokers.adapters.base import (
 
 ROOT = "https://apiconnect.angelone.in"
 LOGIN = "https://smartapi.angelone.in/publisher-login"
+PASSWORD_LOGIN = "/rest/auth/angelbroking/user/v1/loginByPassword"
 SECURE = "/rest/secure/angelbroking"
 EXPIRED_CODES = {"AG8001", "AG8002", "AG8003"}
 
@@ -66,6 +78,7 @@ def _first(params: dict, *names: str):
 class AngelOneAdapter(BrokerAdapter):
     name = "angelone"
     label = "Angel One"
+    login_flow = "password"
 
     @staticmethod
     def platform_credentials() -> Optional[AppCredentials]:
@@ -95,10 +108,35 @@ class AngelOneAdapter(BrokerAdapter):
             state=params.get("state"),
         )
 
-    def _headers(self, tokens: TokenBundle) -> dict:
+    async def password_login(self, client_code: str, pin: str, totp: str) -> TokenBundle:
+        http = await self._http()
+        response = await http.post(
+            f"{ROOT}{PASSWORD_LOGIN}",
+            headers=self._headers(None),
+            json={"clientcode": client_code, "password": pin, "totp": totp},
+        )
+        try:
+            body = response.json()
+        except ValueError:
+            raise BrokerError(f"Angel One login failed ({response.status_code}). Try again in a minute.")
+        data = body.get("data") or {}
+        token = data.get("jwtToken")
+        if not (body.get("status") is True or str(body.get("status")).lower() == "true") or not token:
+            # Angel One's own message, e.g. "Invalid totp" or "Invalid clientcode or password".
+            raise BrokerError(body.get("message") or "Angel One didn't accept those details")
+        return TokenBundle(
+            access_token=str(token).removeprefix("Bearer ").strip(),
+            refresh_token=data.get("refreshToken"),
+            feed_token=data.get("feedToken"),
+            # Undocumented; lapses are caught from AG800x as well.
+            expires_at=next_morning_ist(5, 0),
+        )
+
+    def _headers(self, tokens: Optional[TokenBundle]) -> dict:
         settings = get_settings()
+        auth = {"Authorization": f"Bearer {tokens.access_token}"} if tokens else {}
         return {
-            "Authorization": f"Bearer {tokens.access_token}",
+            **auth,
             "Content-Type": "application/json",
             "Accept": "application/json",
             "X-UserType": "USER",

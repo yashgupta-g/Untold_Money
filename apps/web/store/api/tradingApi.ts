@@ -33,8 +33,15 @@ export interface BrokerEntry {
   /** Masked app ID when the user added their own key, e.g. "ABCD…-100". */
   own_key: string | null;
   needs_secret: boolean;
+  /**
+   * "redirect": the user signs in on the broker's own page.
+   * "password": the user enters client code, PIN and TOTP here (Angel One).
+   */
+  login_flow: "redirect" | "password";
   /** Where the user's own broker app must redirect after sign-in. */
   redirect_uri: string;
+  /** The server IP a user's own SmartAPI app must allow (password flow). */
+  static_ip: string | null;
   /** Connect is possible: platform app or own key. */
   configured: boolean;
   connection: BrokerConnection | null;
@@ -139,6 +146,14 @@ export const tradingApi = baseApi.injectEndpoints({
     connectBroker: builder.mutation<ApiResponse<{ login_url: string }>, BrokerName>({
       query: (broker) => ({ url: `/brokers/${broker}/connect`, method: "POST" }),
     }),
+    /** Login by client code + PIN + TOTP (Angel One). Used once; never stored. */
+    loginBroker: builder.mutation<
+      ApiResponse<BrokerConnection>,
+      { broker: BrokerName; client_code: string; pin: string; totp: string }
+    >({
+      query: ({ broker, ...body }) => ({ url: `/brokers/${broker}/login`, method: "POST", body }),
+      invalidatesTags: ["Broker", "Portfolio", "Trade"],
+    }),
     syncBroker: builder.mutation<ApiResponse<BrokerSyncResult>, string>({
       query: (id) => ({ url: `/brokers/connections/${id}/sync`, method: "POST" }),
       invalidatesTags: ["Broker", "Portfolio", "Trade"],
@@ -202,6 +217,7 @@ export const {
   useSaveBrokerCredentialsMutation,
   useRemoveBrokerCredentialsMutation,
   useConnectBrokerMutation,
+  useLoginBrokerMutation,
   useSyncBrokerMutation,
   useGetBrokerSnapshotQuery,
   useDisconnectBrokerMutation,

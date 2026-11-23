@@ -27,6 +27,7 @@ import { useLiveFeed, useLivePrices } from "@/hooks/useLivePrices";
 import {
   useConnectBrokerMutation,
   useDisconnectBrokerMutation,
+  useLoginBrokerMutation,
   useGetBrokerSnapshotQuery,
   useGetBrokersQuery,
   useRemoveBrokerCredentialsMutation,
@@ -234,10 +235,19 @@ function OwnKeyPanel({ entry }: { entry: BrokerEntry }) {
   const [remove, { isLoading: removing }] = useRemoveBrokerCredentialsMutation();
   const idLabel = entry.broker === "fyers" ? "App ID" : "API key";
   const fieldId = (name: string) => `${entry.broker}-${name}`;
+  // Redirect brokers need our callback URL in their app; password-login
+  // brokers (Angel One) need our server's static IP instead.
+  const passwordFlow = entry.login_flow === "password";
+  const setting = passwordFlow
+    ? entry.static_ip
+      ? { label: "Set its primary static IP to:", value: entry.static_ip, name: "static IP" }
+      : null
+    : { label: "Set its redirect URL to:", value: entry.redirect_uri, name: "redirect URL" };
 
   const onCopy = async () => {
+    if (!setting) return;
     try {
-      await navigator.clipboard.writeText(entry.redirect_uri);
+      await navigator.clipboard.writeText(setting.value);
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
     } catch {
@@ -319,20 +329,22 @@ function OwnKeyPanel({ entry }: { entry: BrokerEntry }) {
           <ol className="list-decimal space-y-1.5 pl-5 text-[13px] text-pretty text-muted-foreground">
             <li>
               Create an app in the {entry.label} developer portal
-              {entry.broker === "angelone" ? " (SmartAPI, publisher login)" : ""}, signed in with
-              your own trading account.
+              {entry.broker === "angelone" ? " (SmartAPI)" : ""}, signed in with your own trading
+              account.
             </li>
-            <li>Set its redirect URL to:</li>
+            {setting && <li>{setting.label}</li>}
           </ol>
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/50 py-1.5 pl-3.5 pr-1.5">
-            <code className="min-w-0 flex-1 truncate font-sans text-[12.5px] text-foreground" title={entry.redirect_uri}>
-              {entry.redirect_uri}
-            </code>
-            <Button type="button" variant="ghost" size="sm" onClick={onCopy} aria-label="Copy redirect URL">
-              {copied ? <Check /> : <Copy />}
-              {copied ? "Copied" : "Copy"}
-            </Button>
-          </div>
+          {setting && (
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-muted/50 py-1.5 pl-3.5 pr-1.5">
+              <code className="min-w-0 flex-1 truncate font-sans text-[12.5px] text-foreground" title={setting.value}>
+                {setting.value}
+              </code>
+              <Button type="button" variant="ghost" size="sm" onClick={onCopy} aria-label={`Copy ${setting.name}`}>
+                {copied ? <Check /> : <Copy />}
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </div>
+          )}
           <p className="text-[13px] text-muted-foreground">Then paste the app&apos;s details here.</p>
 
           <div className="space-y-1.5">
@@ -385,15 +397,119 @@ function OwnKeyPanel({ entry }: { entry: BrokerEntry }) {
   );
 }
 
+/**
+ * Angel One's newer API keys only allow login by password, so the user
+ * enters their client ID, PIN and current TOTP here. They go to Angel One
+ * once to start today's session and are never stored.
+ */
+function PasswordLoginForm({ entry, onDone }: { entry: BrokerEntry; onDone: () => void }) {
+  const [login, { isLoading }] = useLoginBrokerMutation();
+  const [clientCode, setClientCode] = useState(entry.connection?.broker_user_id ?? "");
+  const [pin, setPin] = useState("");
+  const [totp, setTotp] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const fieldId = (name: string) => `${entry.broker}-login-${name}`;
+  const digits = (value: string, max: number) => value.replace(/\D/g, "").slice(0, max);
+  const ready = /^[A-Za-z0-9]{3,20}$/.test(clientCode.trim()) && /^\d{4,8}$/.test(pin) && /^\d{6}$/.test(totp);
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!ready) return;
+    setError(null);
+    try {
+      await login({ broker: entry.broker, client_code: clientCode.trim(), pin, totp }).unwrap();
+      toast.success(`${entry.label} connected. Holdings and today's trades are synced.`);
+      onDone();
+    } catch (e) {
+      const message = errorMessage(e, `Couldn't log in to ${entry.label}. Check the details and try again.`);
+      setError(message);
+      toast.error(message);
+      // The code is single-use; keep the client ID and PIN so only the code is retyped.
+      setTotp("");
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-4" noValidate aria-label={`Log in to ${entry.label}`}>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-1.5">
+          <Label htmlFor={fieldId("client")}>Client ID</Label>
+          <Input
+            id={fieldId("client")}
+            autoComplete="username"
+            autoCapitalize="characters"
+            spellCheck={false}
+            placeholder="e.g. A123456"
+            value={clientCode}
+            onChange={(e) => setClientCode(e.target.value.toUpperCase())}
+            aria-invalid={!!error}
+            aria-describedby={error ? fieldId("error") : undefined}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor={fieldId("pin")}>PIN</Label>
+          <Input
+            id={fieldId("pin")}
+            type="password"
+            inputMode="numeric"
+            autoComplete="current-password"
+            value={pin}
+            onChange={(e) => setPin(digits(e.target.value, 8))}
+            aria-invalid={!!error}
+            aria-describedby={error ? fieldId("error") : undefined}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor={fieldId("totp")}>Authenticator code</Label>
+          <Input
+            id={fieldId("totp")}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            placeholder="6 digits"
+            value={totp}
+            onChange={(e) => setTotp(digits(e.target.value, 6))}
+            aria-invalid={!!error}
+            aria-describedby={error ? fieldId("error") : fieldId("hint")}
+          />
+        </div>
+      </div>
+      {error ? (
+        <p id={fieldId("error")} role="alert" className="text-[13px] text-destructive">
+          {error}
+        </p>
+      ) : (
+        <p id={fieldId("hint")} className="text-[12px] text-pretty text-muted-foreground">
+          Sent to {entry.label} once to start today&apos;s session. We never store your PIN or code.{" "}
+          {entry.label} ends sessions daily, so you&apos;ll log in again each trading day.
+        </p>
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        <Button type="submit" disabled={!ready || isLoading}>
+          {isLoading ? <CircleNotch className="animate-spin" /> : <LockKey />}
+          {isLoading ? "Logging in" : `Log in to ${entry.label}`}
+        </Button>
+        <Button type="button" variant="ghost" onClick={onDone} disabled={isLoading}>
+          Cancel
+        </Button>
+      </div>
+    </form>
+  );
+}
+
 function BrokerCard({ entry }: { entry: BrokerEntry }) {
   const [connect, { isLoading: connecting }] = useConnectBrokerMutation();
   const [sync, { isLoading: syncing }] = useSyncBrokerMutation();
   const [disconnect, { isLoading: disconnecting }] = useDisconnectBrokerMutation();
   const [confirm, setConfirm] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false);
   const conn = entry.connection;
   const status = conn ? STATUS[conn.status] : null;
 
   const onConnect = async () => {
+    if (entry.login_flow === "password") {
+      setLoggingIn(true);
+      return;
+    }
     try {
       const response = await connect(entry.broker).unwrap();
       // Off to the broker's own sign-in page; it sends the browser back here.
@@ -466,6 +582,9 @@ function BrokerCard({ entry }: { entry: BrokerEntry }) {
           </p>
         )}
 
+        {loggingIn ? (
+          <PasswordLoginForm entry={entry} onDone={() => setLoggingIn(false)} />
+        ) : (
         <div className="flex flex-wrap items-center gap-2">
           {!conn || conn.status === "pending" || conn.status === "expired" ? (
             <Button onClick={onConnect} disabled={!entry.configured || connecting}>
@@ -502,6 +621,7 @@ function BrokerCard({ entry }: { entry: BrokerEntry }) {
               </Button>
             ))}
         </div>
+        )}
 
         <OwnKeyPanel entry={entry} />
       </CardContent>
@@ -546,8 +666,10 @@ function Brokers() {
         <p className="text-pretty">
           Read-only for now: UntoldMoney can see your holdings, positions, funds and today&apos;s
           trades, and can&apos;t place orders or move money. Once linked, prices across the app
-          come live from your broker, for you only. You sign in on your broker&apos;s own page; we
-          never see your password or PIN. Your money always stays with your broker.
+          come live from your broker, for you only. Fyers sign-in happens on Fyers&apos; own page.
+          Angel One asks for your client ID, PIN and authenticator code here; they go to Angel
+          One once to start the session and are never stored. Your money always stays with your
+          broker.
           Want to practise first? Use{" "}
           <Link href="/paper" className="font-medium text-primary-ink hover:underline">
             paper trading

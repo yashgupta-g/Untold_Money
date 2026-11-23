@@ -50,7 +50,7 @@ return {allowed, tostring(wait)}
 """
 
 # Paths that brute-force and credential-stuffing attacks target.
-_AUTH_SUFFIXES = ("/auth/login", "/auth/register", "/auth/refresh")
+_AUTH_SUFFIXES = ("/auth/login", "/auth/register", "/auth/refresh", "/brokers/angelone/login")
 # Never limited: health checks from load balancers, docs.
 _EXEMPT_PREFIXES = ("/health", "/version", "/docs", "/redoc", "/openapi.json")
 

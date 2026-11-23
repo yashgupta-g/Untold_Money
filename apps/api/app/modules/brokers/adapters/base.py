@@ -156,6 +156,10 @@ class BrokerAdapter(ABC):
     name: str
     label: str
     needs_secret: bool = False
+    # "redirect": the user signs in on the broker's page (login_url →
+    # callback). "password": the user gives us their login details once and
+    # password_login() starts the session (Angel One's newer API keys).
+    login_flow: str = "redirect"
     # Quotes and candles through the user's own connection (shown only to
     # that user; never stored in shared tables or rebroadcast).
     supports_market_data: bool = False
@@ -197,6 +201,10 @@ class BrokerAdapter(ABC):
 
     @abstractmethod
     async def complete_login(self, params: dict, redirect_uri: str) -> CallbackResult: ...
+
+    async def password_login(self, client_code: str, pin: str, totp: str) -> TokenBundle:
+        """Start a session from login details. Only for login_flow == "password"."""
+        raise NotImplementedError
 
     @abstractmethod
     async def profile(self, tokens: TokenBundle) -> BrokerProfile: ...

@@ -18,7 +18,7 @@ from sqlalchemy import select
 from app.core.config import get_settings
 from app.modules.brokers import crypto
 from app.modules.brokers.adapters.angelone import AngelOneAdapter
-from app.modules.brokers.adapters.base import BrokerAuthExpired, TokenBundle
+from app.modules.brokers.adapters.base import BrokerAuthExpired, BrokerError, TokenBundle
 from app.modules.brokers.adapters.fyers import FyersAdapter, parse_fyers_time
 from app.modules.brokers.models import BrokerConnection
 from app.modules.brokers.symbols import to_instrument_symbol
@@ -177,6 +177,12 @@ def angel_transport(calls: list):
 
     def handler(request: httpx.Request) -> httpx.Response:
         calls.append(request)
+        if request.url.path.endswith("/loginByPassword"):
+            body = json.loads(request.content)
+            if (body["clientcode"], body["password"], body["totp"]) != ("A1234", "4321", "123456"):
+                return httpx.Response(200, json={"status": False, "message": "Invalid totp", "errorcode": "AB1050", "data": None})
+            return httpx.Response(200, json={"status": True, "message": "SUCCESS", "errorcode": "", "data": {
+                "jwtToken": "Bearer angel-jwt", "refreshToken": "angel-ref", "feedToken": "angel-feed"}})
         if request.headers.get("authorization") == "Bearer expired":
             return httpx.Response(200, json={"status": False, "message": "Invalid Token", "errorcode": "AG8001", "data": None})
         path = request.url.path.removeprefix("/rest/secure/angelbroking")
@@ -212,6 +218,21 @@ async def test_angel_expired_token(broker_settings):
     adapter = AngelOneAdapter(client=httpx.AsyncClient(transport=angel_transport([])))
     with pytest.raises(BrokerAuthExpired):
         await adapter.holdings(TokenBundle(access_token="expired"))
+
+
+async def test_angel_password_login(broker_settings):
+    calls: list = []
+    adapter = AngelOneAdapter(client=httpx.AsyncClient(transport=angel_transport(calls)))
+    tokens = await adapter.password_login("A1234", "4321", "123456")
+    assert (tokens.access_token, tokens.refresh_token, tokens.feed_token) == ("angel-jwt", "angel-ref", "angel-feed")
+
+    [login] = calls
+    assert login.url.path == "/rest/auth/angelbroking/user/v1/loginByPassword"
+    assert json.loads(login.content) == {"clientcode": "A1234", "password": "4321", "totp": "123456"}
+    assert login.headers["x-privatekey"] == "angel-key" and "authorization" not in login.headers
+
+    with pytest.raises(BrokerError, match="Invalid totp"):
+        await adapter.password_login("A1234", "4321", "000000")
 
 
 # ------------------------------------------------------------------ full flow
@@ -307,6 +328,54 @@ async def test_callback_rejects_unknown_or_mismatched_state(db_client, broker_se
     forged = await db_client.get("/api/v1/brokers/fyers/callback?auth_code=abc&state=forged")
     assert forged.status_code == 303
     assert "error=" in forged.headers["location"]
+
+
+async def test_angel_password_connect_flow(db_client, db_session, instruments, broker_settings, monkeypatch):
+    monkeypatch.setattr(
+        "app.modules.brokers.service.get_adapter",
+        lambda broker, credentials=None: AngelOneAdapter(
+            client=httpx.AsyncClient(transport=angel_transport([])), credentials=credentials
+        ),
+    )
+    headers = await _user(db_client, "angel@example.com")
+    overview = (await db_client.get("/api/v1/brokers", headers=headers)).json()["data"]["brokers"]
+    assert {b["broker"]: b["login_flow"] for b in overview} == {"angelone": "password", "fyers": "redirect"}
+
+    # Wrong TOTP: Angel One's own message comes back, nothing is linked.
+    bad = await db_client.post(
+        "/api/v1/brokers/angelone/login", headers=headers,
+        json={"client_code": "a1234", "pin": "4321", "totp": "000000"},
+    )
+    assert bad.status_code == 400 and "Invalid totp" in bad.json()["message"]
+    assert await db_session.scalar(select(BrokerConnection)) is None
+
+    # Malformed details never reach Angel One.
+    malformed = await db_client.post(
+        "/api/v1/brokers/angelone/login", headers=headers,
+        json={"client_code": "A1234", "pin": "12ab", "totp": "12345"},
+    )
+    assert malformed.status_code == 422
+
+    ok = await db_client.post(
+        "/api/v1/brokers/angelone/login", headers=headers,
+        json={"client_code": "a1234", "pin": "4321", "totp": "123456"},
+    )
+    assert ok.status_code == 200
+    view = ok.json()["data"]
+    assert (view["status"], view["broker_user_id"]) == ("active", "A1234")
+
+    conn = await db_session.scalar(select(BrokerConnection))
+    assert crypto.decrypt(conn.access_token_enc) == "angel-jwt"
+    # The PIN is never stored anywhere in the row.
+    row = json.dumps({c.name: str(getattr(conn, c.name)) for c in conn.__table__.columns})
+    assert "4321" not in row and "123456" not in row
+
+    # Fyers still uses its own sign-in page.
+    wrong_flow = await db_client.post(
+        "/api/v1/brokers/fyers/login", headers=headers,
+        json={"client_code": "A1234", "pin": "4321", "totp": "123456"},
+    )
+    assert wrong_flow.status_code == 400
 
 
 async def test_unconfigured_broker_cannot_connect(db_client):

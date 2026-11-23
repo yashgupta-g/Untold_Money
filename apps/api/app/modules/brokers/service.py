@@ -121,8 +121,11 @@ class BrokerService:
                     "platform_configured": cls.is_configured(),
                     "own_key": _mask(own.app_id) if own else None,
                     "needs_secret": cls.needs_secret,
+                    "login_flow": cls.login_flow,
                     # The URL users register in their own developer app.
                     "redirect_uri": redirect_uri(name),
+                    # The IP a user's own SmartAPI app must allow (password flow).
+                    "static_ip": get_settings().BROKER_EGRESS_IP or None,
                     "configured": cls.is_configured() or own is not None,
                     "connection": self.connection_view(conn) if conn else None,
                 }
@@ -206,7 +209,42 @@ class BrokerService:
             profile = await adapter.profile(result.tokens)
         finally:
             await adapter.aclose()
+        return await self._activate(user_id, broker, conn, result.tokens, profile)
 
+    async def password_connect(
+        self, user_id: uuid.UUID, broker: str, client_code: str, pin: str, totp: str
+    ) -> BrokerConnection:
+        """
+        Link a broker whose API only offers login by password (Angel One's
+        newer keys). The PIN and TOTP are passed straight to the broker and
+        dropped: never stored, logged or audited.
+        """
+        cls = ADAPTERS.get(broker)
+        if not cls:
+            raise NotFoundException("Unknown broker")
+        if cls.login_flow != "password":
+            raise BadRequestException(f"{cls.label} connects through its own sign-in page")
+        conn = await self._find(user_id, broker)
+        adapter = self.adapter(broker, conn)
+        try:
+            adapter.credentials()
+            tokens = await adapter.password_login(client_code, pin, totp)
+            profile = await adapter.profile(tokens)
+        except BrokerError as exc:
+            raise BadRequestException(str(exc))
+        finally:
+            await adapter.aclose()
+        return await self._activate(user_id, broker, conn, tokens, profile)
+
+    async def _activate(
+        self,
+        user_id: uuid.UUID,
+        broker: str,
+        conn: Optional[BrokerConnection],
+        tokens: TokenBundle,
+        profile,
+    ) -> BrokerConnection:
+        """Store a fresh session (encrypted) and mark the link active."""
         if not conn:
             conn = BrokerConnection(user_id=user_id, broker=broker)
             self.session.add(conn)
@@ -214,10 +252,10 @@ class BrokerService:
         conn.last_error = None
         conn.broker_user_id = profile.broker_user_id or conn.broker_user_id
         conn.display_name = profile.name or conn.display_name
-        conn.access_token_enc = crypto.encrypt(result.tokens.access_token)
-        conn.refresh_token_enc = crypto.encrypt(result.tokens.refresh_token)
-        conn.feed_token_enc = crypto.encrypt(result.tokens.feed_token)
-        conn.token_expires_at = result.tokens.expires_at
+        conn.access_token_enc = crypto.encrypt(tokens.access_token)
+        conn.refresh_token_enc = crypto.encrypt(tokens.refresh_token)
+        conn.feed_token_enc = crypto.encrypt(tokens.feed_token)
+        conn.token_expires_at = tokens.expires_at
         await self.session.flush()
         await self._portfolio(conn)
 
