@@ -2,3 +2,11 @@
 	encode gzip
 	reverse_proxy api:8000
 }
+
+# Container logs (Dozzle), password-protected. See infra/deployment/README.md.
+{$LOGS_DOMAIN} {
+	basic_auth {
+		{$LOGS_USER} {$LOGS_PASSWORD_HASH}
+	}
+	reverse_proxy dozzle:8080
+}

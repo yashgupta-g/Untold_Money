@@ -6,9 +6,13 @@
 | API, Celery worker, scheduler, Postgres, Redis | One Oracle Cloud Always Free Arm server, via `docker-compose.prod.yml` | Free |
 | Goonj campaigns database | Supabase (already live) | Free |
 
-Vercel can't run the backend: Celery and the live price stream need a
-process that never stops. Railway's and Render's free plans don't allow that
-either. Railway's services sleep when idle, and Render has no free workers.
+Why not Vercel for the backend: it can now run FastAPI, WebSockets and
+long-running workers (Daemons, beta), but broker APIs need a fixed outgoing
+IP (Angel One requires the registered static IP), and Vercel functions call
+out from changing IPs unless you buy its static IP add-on. The Celery
+worker, scheduler, Postgres and Redis would also each become a separate
+paid or limited service. One free Oracle server covers all of it with a
+fixed IP. Railway's services sleep when idle, and Render has no free workers.
 
 ## 1. Create the server (one time, ~15 minutes)
 
@@ -71,6 +75,16 @@ Then update the broker redirect URLs in the Fyers and Angel One developer
 apps to `https://untold-money.vercel.app/api/v1/brokers/<broker>/callback`.
 They go through the website, because the site forwards `/api/v1/*` to the
 API.
+
+### Viewing logs
+
+Open `https://<LOGS_DOMAIN>` (e.g. `https://logs.130-210-55-41.sslip.io`)
+and log in as `LOGS_USER` with the password in `.env.production`
+(`LOGS_PASSWORD`). It's Dozzle: live logs, search and CPU/memory for every
+container. It's read-only and only reachable through Caddy's password.
+To change the password, set a new `LOGS_PASSWORD`, put its hash
+(`docker run --rm caddy:2-alpine caddy hash-password --plaintext '…'`) in
+`LOGS_PASSWORD_HASH`, and deploy.
 
 Useful commands on the server (`cd untoldmoney` first):
 

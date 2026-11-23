@@ -89,12 +89,30 @@ services:
       - "443:443"
     environment:
       API_DOMAIN: ${API_DOMAIN}
+      LOGS_DOMAIN: ${LOGS_DOMAIN}
+      LOGS_USER: ${LOGS_USER}
+      LOGS_PASSWORD_HASH: ${LOGS_PASSWORD_HASH}
     volumes:
       - ./infra/deployment/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
       - api
+      - dozzle
+
+  # Log viewer for every container, at https://LOGS_DOMAIN behind Caddy's
+  # password (LOGS_USER / LOGS_PASSWORD_HASH). Read-only: the Docker socket
+  # is mounted read-only and container actions are off. Not published on
+  # any port; only Caddy can reach it.
+  dozzle:
+    image: amir20/dozzle:v11.4.2
+    restart: unless-stopped
+    environment:
+      DOZZLE_NO_ANALYTICS: "true"
+      DOZZLE_ENABLE_ACTIONS: "false"
+      DOZZLE_ENABLE_SHELL: "false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
   postgres_data:
